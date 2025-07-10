@@ -4598,6 +4598,7 @@ function Library:Notify(...)
 end
 
 function Library:CreateWindow(WindowInfo)
+    print("Library:CreateWindow called")
     WindowInfo = Library:Validate(WindowInfo, Templates.Window)
     local ViewportSize: Vector2 = workspace.CurrentCamera.ViewportSize
     if RunService:IsStudio() and ViewportSize.X <= 5 and ViewportSize.Y <= 5 then
@@ -5840,6 +5841,7 @@ function Library:CreateWindow(WindowInfo)
         Library.IsRobloxFocused = false
     end))
 
+    print("Window object created successfully, returning window.")
     return Window
 end
 
