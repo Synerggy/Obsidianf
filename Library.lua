@@ -2214,7 +2214,7 @@ do
         })
 
         --// Context Menu \\--
-        local ContextMenu = Library:AddContextMenu(Holder, UDim2.fromOffset(93, 0), function()
+        local ContextMenu = Library:AddContextMenu(Holder, UDim.fromOffset(93, 0), function()
             return { Holder.AbsoluteSize.X + 1.5, 0.5 }
         end, 1)
         ColorPicker.ContextMenu = ContextMenu
@@ -2802,7 +2802,8 @@ do
             Button.Base.TextTransparency = Button.Disabled and 0.8 or 0.4
             Button.Stroke.Transparency = Button.Disabled and 0.5 or 0
 
-            Library.Registry[Button.Base].BackgroundColor3 = Button.Disabled and "BackgroundColor" or "MainColor"
+            Library.Registry[Button.Base].BackgroundColor3 = Button.Disabled and "BackgroundColor"
+                or "MainColor"
         end
 
         function Button:SetDisabled(Disabled: boolean)
@@ -4934,7 +4935,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.fromScale(1, 1),
+                    Size = UDim.fromScale(1, 1),
                     SizeConstraint = Enum.SizeConstraint.RelativeYY,
                     Parent = TabButton,
                 })
@@ -5224,7 +5225,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageColor3 = "FontColor",
                     ImageRectOffset = ArrowIcon and ArrowIcon.ImageRectOffset or Vector2.zero,
                     ImageRectSize = ArrowIcon and ArrowIcon.ImageRectSize or Vector2.zero,
-                    Position = UDim2.new(1, -12, 0, 17),
+                    Position = UDim2.new(1, -12, 0.5, 0),
                     Size = UDim2.fromOffset(16, 16),
                     Parent = GroupboxHolder,
                 })
@@ -5269,24 +5270,24 @@ function Library:CreateWindow(WindowInfo)
             }
 
             GroupboxContainer.Visible = not Groupbox.IsCollapsed
-            Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
+            Arrow.Rotation = Groupbox.IsCollapsed and 0 or -90
 
             HeaderButton.MouseButton1Click:Connect(function()
                 Groupbox.IsCollapsed = not Groupbox.IsCollapsed
                 GroupboxContainer.Visible = not Groupbox.IsCollapsed
-                Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
+                Arrow.Rotation = Groupbox.IsCollapsed and 0 or -90
                 Groupbox:Resize()
             end)
 
             function Groupbox:Resize()
                 if Groupbox.IsCollapsed then
-                    Background.Size = UDim2.new(1, 0, 0, 38 * Library.DPIScale)
+                    Background.Size = UDim2.new(1, 0, 0, 38)
                 else
                     Background.Size = UDim2.new(
                         1,
                         0,
                         0,
-                        GroupboxList.AbsoluteContentSize.Y + 53 * Library.DPIScale
+                        GroupboxList.AbsoluteContentSize.Y + 45
                     )
                 end
             end
