@@ -5175,6 +5175,8 @@ function Library:CreateWindow(WindowInfo)
 
             local GroupboxContainer
             local GroupboxList
+            local Arrow
+            local HeaderButton
 
             do
                 GroupboxHolder = New("Frame", {
@@ -5220,7 +5222,7 @@ function Library:CreateWindow(WindowInfo)
                     Parent = GroupboxLabel,
                 })
 
-                local Arrow = New("ImageLabel", {
+                Arrow = New("ImageLabel", {
                     AnchorPoint = Vector2.new(1, 0.5),
                     Image = ArrowIcon and ArrowIcon.Url or "",
                     ImageColor3 = "FontColor",
@@ -5231,7 +5233,7 @@ function Library:CreateWindow(WindowInfo)
                     Parent = GroupboxHolder,
                 })
 
-                local HeaderButton = New("TextButton", {
+                HeaderButton = New("TextButton", {
                     BackgroundTransparency = 1,
                     Size = UDim2.new(1, 0, 0, 34),
                     Text = "",
