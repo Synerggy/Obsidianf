@@ -1,6181 +1,5871 @@
-if not game:IsLoaded() then
-    game.Loaded:Wait()
+local cloneref = (cloneref or clonereference or function(instance: any)
+    return instance
+end)
+local CoreGui: CoreGui = cloneref(game:GetService("CoreGui"))
+local Players: Players = cloneref(game:GetService("Players"))
+local RunService: RunService = cloneref(game:GetService("RunService"))
+local SoundService: SoundService = cloneref(game:GetService("SoundService"))
+local UserInputService: UserInputService = cloneref(game:GetService("UserInputService"))
+local TextService: TextService = cloneref(game:GetService("TextService"))
+local Teams: Teams = cloneref(game:GetService("Teams"))
+local TweenService: TweenService = cloneref(game:GetService("TweenService"))
+
+local getgenv = getgenv or function()
+    return shared
+end
+local setclipboard = setclipboard or nil
+local protectgui = protectgui or (syn and syn.protect_gui) or function() end
+local gethui = gethui or function()
+    return CoreGui
 end
 
+local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
+local Mouse = LocalPlayer:GetMouse()
 
-loadstring([[
-    function LPH_NO_VIRTUALIZE(f) return f end;
-]])();
+local Labels = {}
+local Buttons = {}
+local Toggles = {}
+local Options = {}
 
-local vars = {
-    Workspace = game:GetService("Workspace"),
-    Players = game:GetService("Players"),
-    ReplicatedStorage = game:GetService("ReplicatedStorage"),
-    HttpService = game:GetService("HttpService"),
-    TeleportService = game:GetService("TeleportService"),
-    GuiService = game:GetService("GuiService"),
-    RunService = game:GetService("RunService"),
-    CollectionService = game:GetService("CollectionService"),
-    mt = getrawmetatable(game),
-    WebhookURL = "",
-    SendOnSuccess = false,
-    SendOnFailure = false,
-    summerWebhookEnabled = false,
-    summerWebhookURL = "",
-    summerSubmitDelay = 1,
-    delayhop = 2.5,
-    activeHighlights = {},
-    allPetNames = {},
-    petNameSet = {},
-    targetPetNames = {},
-    Hatch = "",
-    kickBeforeRejoin = false,
-    TargetFiredEggs = {},
-    TargetHatchLoopRunning = false,
-    autoReconnectEnabled = false,
-    petNameSet = {},
-    eggDisplayNames = {},
-    selectedEggs = {},
-    globalUsedPositions = {},
-    seedArray = {},
-    seedDisplayNameToKey = {},
-    autoGiftEnabled = false,
-    giftingTask = nil,
-    giftingDelay = 1,
-    giftingWeightComparison = "Above",
-    giftingWeightThreshold = 0,
-    giftingSelectedPlant = nil,
-    giftingSelectedPlayer = nil,
-    giftedItems = {},
-    otherPlayers = {},
-    plantNamesForGifter = {},
-    playerDropdownGifter = nil,
-    seedDisplayNames = {},
-    selectedSeedKeys = {},
-    EventDisplayNames = {},
-    seedArray1 = {},
-    displayNameToSeedKey1 = {},
-    displayNameToGearKey = {},
-    buyseedDisplayNames = {},
-    gearArray = {},
-    gearDisplayNames = {},
-    eggArray = {},
-    displayNameToEggKey = {},
-    eggDisplayNames = {},
-    buyselectedSeedKeys = {},
-    selectedGearKeys = {},
-    selectedEggKeys = {},
-    selectedEventKeys = {},
-    autoBuySeed = false,
-    autoBuyGear = false,
-    autoBuyEgg = false,
-    autoBuyEventItems = false,
-    EventArray = {},
-    autoBuyAllSeeds = false,
-    allSeedKeys = {},
-    showPlantPrices = false,
-    showPetPrices = false,
-    plantValuesCache = {},
-    lastNotifiedTool = nil,
-    lastNotifiedValue = nil,
-    currentNotification = nil,
-    beeArray = {},
-    displayNameToBeeKey = {},
-    beeDisplayNames = {},
-    EventDisplayNames = {},
-    displayNameToEventKey = {},
-    selectedBeeKeys = {},
-    recipeNames = {},
-    SelectedDropdown = nil,
-    SelectedRecipe = nil,
-    AutoRecipeTrigger = false,
-    AutoInputTrigger = false,
-    AutoCraftTrigger = false,
-    AutoClaimTrigger = false,
-    AutoAcceptGift = false,
-    plantRarityRank = {
-        Common = 1, Uncommon = 2, Rare = 3,
-        Legendary = 4, Mythical = 5, Divine = 6
-    },
-    allPlantableSeeds = {},
-    plantSeedNameLookup = {},
-    shownPlantableSeedNames = {},
-    chosenPlantSeeds = {},
-    autoSellEnabled = false,
-    autoSellDelayEnabled = false,
-    autoSellDelay = 300,
-    favoriterRarityOrder = {
-        Common = 1, Uncommon = 2, Rare = 3, Legendary = 4,
-        Mythical = 5, Divine = 6, Prismatic = 7
-    },
-    favoriterSeedArray = {},
-    favoriterSeedNameToKey = {},
-    favoriterSeedDisplayNames = {"All"},
-    favoriterMutationNames = {"All", "None"},
-    favoriterSelectedSeedKeys = {},
-    favoriterSelectedMutations = {},
-    favoriterSelectedVariants = {},
-    favoritingEnabled = false,
-    favoriterMode = "Favorite",
-    VariantsFavoriter = {"Normal", "Gold", "Rainbow"},
-    seedArray10 = {},
-    seedDisplayNameToKey10 = {},
-    seedDisplayNames10 = {"All"},
-    mutationNames = {"All", "None"},
-    selectedSeedKeys10 = {},
-    selectedMutations10 = {},
-    selectedVariants10 = {},
-    variantOptions10 = {"All", "Normal", "Gold", "Rainbow"},
-    selectedWeightComparison10 = "Above",
-    weightThreshold10 = 0,
-    deleteSeedArray = {},
-    deleteSeedDisplayNameToKey = {},
-    deleteSeedDisplayNames = {"All"},
-    deleteMutationNames = {"All", "None"},
-    selectedDeleteSeedKeys = {},
-    selectedDeleteMutations = {},
-    selectedDeleteVariants = {},
-    deleteVariantOptions = {"All", "Normal", "Gold", "Rainbow"},
-    selectedDeleteWeightComparison = "Above",
-    deleteWeightThreshold = 0,
-    FiredCrates = {},
-    crateArray = {},
-    displayNameToCrateKey = {},
-    crateDisplayNames = {},
-    itemArray = {},
-    displayNameToItemKey = {},
-    itemDisplayNames = {},
-    GnomeArray = {},
-    displayNameToGnomeKey = {},
-    GnomeDisplayNames = {},
-    selectedGnomeKeys = {},
-    SkyArray = {},
-    displayNameToSkyKey = {},
-    SkyDisplayNames = {},
-    selectedSkyKeys = {},
-    selectedCosmeticCrateKeys = {},
-    selectedCosmeticItemKeys = {},
-    cachedSeedStock = nil,
-    cachedGearStock = nil,
-    cachedPetEggStock = nil,
-    cachedNightEventStock = nil,
-    cachedCosmeticStock = nil,
-    cachedEventShopStock = nil,
-    cachedTravelingMerchantShopStock = nil,
-    iku = nil,
-    VirtualUser = nil,
-    GearItems = {},
-    SeedItems = {},
-    DinoItems = {},
-    hideShowToggle_obj = nil,
-    deleteRestoreToggle_obj = nil,
-    hideAllPlantsToggle_obj = nil,
-    originalParents = {},
-    originalAntiLagSettings = {
-        Terrain = {},
-        Lighting = {},
-        PostEffects = {},
-        QualityLevel = nil,
-        DescendantAddedConn = nil
-    },
-    SelectedGearDropdown = nil,
-    SelectedGearRecipe = nil,
-    SelectedSeedDropdown = nil,
-    SelectedSeedRecipe = nil,
-    SelectedDinoDropdown = nil,  
-    SelectedDinoRecipe = nil,
-    seedPackNames = {},
-    selectedSeedPack = nil,
-    petUuidToName = {},
-    petNameToUuid = {},
-    petSpamConnection = nil,
-    autoSyncConnection = nil,
-    hasTriggeredInZone = false,
-    holdIdleConnection = nil,
-    selectedPetSellWeightComparison = "Above",
-    petSellWeightThreshold = 0,
-}
+local Library = {
+    LocalPlayer = LocalPlayer,
+    DevicePlatform = nil,
+    IsMobile = false,
+    IsRobloxFocused = true,
 
+    ScreenGui = nil,
 
-vars.LocalPlayer = vars.Players.LocalPlayer or vars.Players.PlayerAdded:Wait()
-vars.player = vars.LocalPlayer
-vars.playerGui = vars.LocalPlayer:WaitForChild("PlayerGui")
-vars.Backpack = vars.LocalPlayer:WaitForChild("Backpack")
-vars.Character = vars.LocalPlayer.Character or vars.LocalPlayer.CharacterAdded:Wait()
-vars.Humanoid = vars.Character:WaitForChild("Humanoid")
-vars.oldIndex = vars.mt.__index
+    SearchText = "",
+    Searching = false,
+    LastSearchTab = nil,
 
-local modules = {
-    GearData = require(vars.ReplicatedStorage.Data.GearData),
-    SeedData = require(vars.ReplicatedStorage.Data.SeedData),
-    PetEggData = require(vars.ReplicatedStorage.Data.PetEggData),
-    EventShopData = require(vars.ReplicatedStorage.Data.EventShopData),
-    NightEventShopData = require(vars.ReplicatedStorage.Data.NightEventShopData),
-    ItemModule = require(vars.ReplicatedStorage:WaitForChild("Item_Module")),
-    MutationHandler = require(vars.ReplicatedStorage:WaitForChild("Modules"):WaitForChild("MutationHandler")),
-    PetRegistry = require(vars.ReplicatedStorage.Data.PetRegistry),
-    NumberUtil = require(vars.ReplicatedStorage.Modules.NumberUtil),
-    PetUtilities = require(vars.ReplicatedStorage.Modules.PetServices.PetUtilities),
-    DataService = require(vars.ReplicatedStorage:WaitForChild("Modules"):WaitForChild("DataService")),
-    ItemTypeEnums = require(vars.ReplicatedStorage.Data.EnumRegistry.ItemTypeEnums),
-    InventoryServiceEnums = require(vars.ReplicatedStorage.Data.EnumRegistry.InventoryServiceEnums),
-    CraftingModule = require(vars.ReplicatedStorage.Data.CraftingData.CraftingRecipeRegistry),
-    CosmeticCrateShopData = require(vars.ReplicatedStorage.Data.CosmeticCrateShopData),
-    CosmeticItemShopData = require(vars.ReplicatedStorage.Data.CosmeticItemShopData),
-    PetRegistryEggs = require(vars.ReplicatedStorage:WaitForChild("Data"):WaitForChild("PetRegistry")).PetEggs,
-    SeedPackData = require(vars.ReplicatedStorage.Data.SeedPackData),
-    
-    
-    Item_Module_upvr = require(vars.ReplicatedStorage:WaitForChild("Item_Module")),
-    PlantTraitsData = require(vars.ReplicatedStorage.Modules.PlantTraitsData),
-    InfinitePackData = require(vars.ReplicatedStorage.Data.InfinitePackData),
-    UIManager = require(vars.ReplicatedStorage:WaitForChild("Modules"):WaitForChild("GuiController")),
-    GnomeData = require(vars.ReplicatedStorage.Data.TravelingMerchant.TravelingMerchantData.GnomeMerchantShopData),
-    SkyData = require(vars.ReplicatedStorage.Data.TravelingMerchant.TravelingMerchantData.SkyMerchantShopData),
-    ObjectModels = vars.ReplicatedStorage:WaitForChild("ObjectModels", 10),
-}
+    ActiveTab = nil,
+    Tabs = {},
+    DependencyBoxes = {},
 
+    KeybindFrame = nil,
+    KeybindContainer = nil,
+    KeybindToggles = {},
 
-vars.DataService = modules.DataService
-vars.ItemRecipes = modules.CraftingModule.ItemRecipes
-modules.PlayerData = vars.DataService:GetData(vars.LocalPlayer)
-vars.currentVersion = tonumber(game.PlaceVersion) or 0
-vars.message = string.format(
-    "`game:GetService('TeleportService'):TeleportToPlaceInstance(%s, '%s')`",
-    tostring(game.PlaceId),
-    tostring(game.JobId)
-)
-vars.favoriterMutations = modules.MutationHandler:GetMutations()
-vars.mutations = modules.MutationHandler:GetMutations()
+    Notifications = {},
 
-
-local noti = {
-    uuidFile = "a9X2mQ8vW3kLb7RpHdYecache.txt",
-    notificationUrl = "https://notif-sender-704fc-default-rtdb.asia-southeast1.firebasedatabase.app/notifications/latest.json",
-    getSavedUUID = nil,
-    saveUUID = nil,
-    getLatestNotification = nil
-}
-
-local remotes = {
-    BuySeedStockRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("BuySeedStock"),
-    BuyGearStockRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("BuyGearStock"),
-    BuyPetEggRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("BuyPetEgg"),
-    BuyEventShopRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("BuyEventShopStock"),
-    BuyNightEventShopStockRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("BuyNightEventShopStock"),
-    PlantRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("Plant_RE"),
-    sellRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("Sell_Inventory"),
-    NightQuestEvent = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("NightQuestRemoteEvent"),
-    HatchRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("PetEggService"),
-    hatchremote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("PetEggService"),
-    craftremote = vars.ReplicatedStorage.GameEvents.CraftingGlobalObjectService,
-    favoriteremote = vars.ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("Favorite_Item"),
-    bytenet = vars.ReplicatedStorage:FindFirstChild("ByteNetReliable"),
-    OpenCrateRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("CosmeticCrateService"),
-    BuyCosmeticCrateRemote = vars.ReplicatedStorage.GameEvents:WaitForChild("BuyCosmeticCrate"),
-    BuyCosmeticItemRemote = vars.ReplicatedStorage.GameEvents:WaitForChild("BuyCosmeticItem"),
-    HoneyMachineRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("HoneyMachineService_RE"),
-    honeyremote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("HoneyMachineService_RE"),
-    event = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("ActivePetService"),
-    BuyEventShopStock = vars.ReplicatedStorage.GameEvents:WaitForChild("BuyEventShopStock"),
-    CraftingRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("CraftingGlobalObjectService"),
-    CraftingTables = vars.Workspace.CraftingTables,
-    GearWorkbench = vars.Workspace.CraftingTables:WaitForChild("EventCraftingWorkBench"),
-    SeedWorkbench = vars.Workspace.CraftingTables:WaitForChild("SeedEventCraftingWorkBench"),
-    SummerHarvestRemote = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("SummerHarvestRemoteEvent"),
-    SummerHarvestSubmitRemoteEvent = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("SummerHarvestSubmitRemoteEvent"),
-    BuyMerchantShopStock = vars.ReplicatedStorage.GameEvents.BuyTravelingMerchantShopStock,
-    DinoMachineService_RE = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("DinoMachineService_RE"),
-    DeleteObject = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("DeleteObject"),
-    Remove_Item = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("Remove_Item"),
-    SellPet = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("SellPet_RE"),
-    GetPetCooldown = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("GetPetCooldown"),
-    DeleteObject = vars.ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("DeleteObject"),
-}
-
-local running = {
-    HatchLoopRunning = false,
-    TargetHatchLoopRunning = false,
-    autoPlantLoopEnabled = false,
-    autoPlantLoopThread = nil,
-    HatchLoopRunning10 = false,
-    autoPlaceEnabled = false,
-    autoFeedEnabled = false,
-    autoBuyBeeItems = false,
-    autoCollectDelay = 0.1,
-    collecting = false,
-    collectingTask = nil,
-    autoBuyCosmeticCrates = false,
-    autoBuyCosmeticItems = false,
-    HatchLoopRunning10 = false,
-    autoSubmitHoney = false,
-    autoSubmitSummer = false,
-    autoSubmitSummerAll = false,
-    autoSubmitAllSummerFruits = false,
-    summerHarvestIsActive = false,
-    summerCapReached = false,
-    eventStartPoints = 0,
-    summerPlantCooldown = 0.5, 
-    autoShovelSprinklers = false,
-    selectedPetSellWeightComparison = "Above",
-    petSellWeightThreshold = 0,
-}
-
-local OriginalItemTypeEnums = {}
-local OriginalInventoryServiceEnums = {}
-
-for k, v in pairs(modules.ItemTypeEnums) do OriginalItemTypeEnums[k] = v end
-for k, v in pairs(modules.InventoryServiceEnums) do OriginalInventoryServiceEnums[k] = v end
-
-setmetatable(modules.ItemTypeEnums, {
-    __index = function(_, k) return OriginalItemTypeEnums[k] end,
-    __newindex = function(_, k, v) OriginalItemTypeEnums[k] = v end,
-    __pairs = function() return next, OriginalItemTypeEnums, nil end,
-})
-
-setmetatable(modules.InventoryServiceEnums, {
-    __index = function(_, k) return OriginalInventoryServiceEnums[k] end,
-    __newindex = function(_, k, v) OriginalInventoryServiceEnums[k] = v end,
-    __pairs = function() return next, OriginalInventoryServiceEnums, nil end,
-})
-
-getgenv().HookedItemTypeEnums = modules.ItemTypeEnums
-getgenv().HookedInventoryServiceEnums = modules.InventoryServiceEnums
-
-getgenv().ItemTypeToEnumKey = {}
-for key, val in pairs(modules.ItemTypeEnums) do
-    getgenv().ItemTypeToEnumKey[key] = val
-end
-
-for _, packData in pairs(modules.SeedPackData.Packs) do
-    if packData.DisplayName then
-        table.insert(vars.seedPackNames, packData.DisplayName)
-    end
-end
-table.sort(vars.seedPackNames)
-
-local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
-local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
-local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
-local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
-
-local Options = Library.Options
-local Toggles = Library.Toggles
-
-local Window = Library:CreateWindow({
-    Title = "Lumin Hub\n discord.gg/luminhub",
-    Footer = "Sheckles",
     ToggleKeybind = Enum.KeyCode.RightControl,
-    Center = true,
-    Icon = 120756524156554,
-    AutoShow = true
-})
+    TweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    NotifyTweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
 
-local Tabs = {
-    CreditsTab = Window:AddTab("Credits", "info"),
-    InfoTab = Window:AddTab("Info", "glasses"),
-    MainTab = Window:AddTab("Main", "house"),
-    EventTab = Window:AddTab("Event", "box"),
-    PlantsTab = Window:AddTab("Plants", "sprout"),
-    MiscTab = Window:AddTab("Misc", "archive"),
-    OptimizationTab = Window:AddTab("Optimization", "zap"),
-    ExperimentalTab = Window:AddTab("Experimental", "test-tube"),
-    PetTab = Window:AddTab("Pet", "cat"),
-    ConfigTab = Window:AddTab("Config", "settings"),
+    Toggled = false,
+    Unloaded = false,
+
+    Labels = Labels,
+    Buttons = Buttons,
+    Toggles = Toggles,
+    Options = Options,
+
+    NotifySide = "Right",
+    ShowCustomCursor = true,
+    ForceCheckbox = false,
+    ShowToggleFrameInKeybinds = true,
+    NotifyOnError = false,
+
+    CantDragForced = false,
+
+    Signals = {},
+    UnloadSignals = {},
+
+    MinSize = Vector2.new(480, 360),
+    DPIScale = 1,
+    CornerRadius = 4,
+
+    IsLightTheme = false,
+    Scheme = {
+        BackgroundColor = Color3.fromRGB(15, 15, 15),
+        MainColor = Color3.fromRGB(25, 25, 25),
+        AccentColor = Color3.fromRGB(125, 85, 255),
+        OutlineColor = Color3.fromRGB(40, 40, 40),
+        FontColor = Color3.new(1, 1, 1),
+        Font = Font.fromEnum(Enum.Font.Code),
+
+        Red = Color3.fromRGB(255, 50, 50),
+        Dark = Color3.new(0, 0, 0),
+        White = Color3.new(1, 1, 1),
+    },
+
+    Registry = {},
+    DPIRegistry = {},
 }
 
-local Groupboxes = {
-    InfoBox = Tabs.InfoTab:AddLeftGroupbox("Player Info", "users"),
-    KeyInfo = Tabs.InfoTab:AddRightGroupbox("Key Info", "key"),
-    ServerBox = Tabs.InfoTab:AddRightGroupbox("Server Info", "server"),
-    PlayerGroupbox = Tabs.InfoTab:AddLeftGroupbox("Player Settings", "cog"),
-    ObjectBox = Tabs.InfoTab:AddRightGroupbox("Object Info", "package"),
-    MutationGroupbox = Tabs.InfoTab:AddLeftGroupbox("Mutation Info", "scan"),
-    ForeverPackGroup = Tabs.InfoTab:AddRightGroupbox("Super Seed Predictor", "box"),
-    CreditsGroupbox = Tabs.CreditsTab:AddLeftGroupbox("Information", "info"),
-    ShopSelectorTabbox = Tabs.MainTab:AddLeftTabbox(),
-    ShopPricesTabbox = Tabs.MainTab:AddRightTabbox(),
-    RecipeGroup = Tabs.EventTab:AddLeftGroupbox("Select Recipe", "cooking-pot"),
-    InfoGroup = Tabs.EventTab:AddRightGroupbox("Recipe Info", "receipt-text"),
-    EventSelectorTabbox = Tabs.EventTab:AddLeftTabbox(),
-    EventPricesTabbox = Tabs.EventTab:AddRightTabbox(),
-    PlantValueTab = Tabs.PlantsTab:AddRightGroupbox("ESP", "scan"),
-    AutoSellGroupbox = Tabs.PlantsTab:AddRightGroupbox("Automation", "bot"),
-    CollectorGroupbox = Tabs.PlantsTab:AddLeftGroupbox("Auto Collector", "magnet"),
-    FavoriterGroupbox = Tabs.PlantsTab:AddLeftGroupbox("Auto Favoriter", "heart"),
-    LeftGroupbox = Tabs.MiscTab:AddLeftGroupbox("Value Calculator", "chart-column-stacked"),
-    AutoFeedGroupbox = Tabs.PetTab:AddLeftGroupbox("Auto Feed Settings", "bone"),
-    GiftGroup = Tabs.MiscTab:AddRightGroupbox("Gift Settings", "gift"),
-    SeedGroup = Tabs.MiscTab:AddRightGroupbox("Seed Pack", "sprout"),
-    MenuGroup = Tabs.ConfigTab:AddLeftGroupbox("Menu", "align-left"),
-    TraitsGroup = Tabs.InfoTab:AddLeftGroupbox("Fruit Traits Info", "carrot"),
-    UI = Tabs.MiscTab:AddLeftGroupbox("UI", "monitor"),
-    DeleterGroupbox = Tabs.PlantsTab:AddRightGroupbox("Auto Delete", "shovel"),
-    Merchant = Tabs.EventTab:AddRightGroupbox("Merchant", "market"),
-    OptimizationGroupbox = Tabs.OptimizationTab:AddLeftGroupbox("Performance", "zap"),
-    AutoSellPetGroupbox = Tabs.PetTab:AddRightGroupbox("Auto Sell Pets", "dollar-sign"),
-    PetMoverGroupbox = Tabs.ExperimentalTab:AddLeftGroupbox("Pet Mover", "boxes")
-}
-
-
-local gardenFrame = vars.playerGui.Teleport_UI.Frame.Garden
-local gearBtn = vars.playerGui.Teleport_UI.Frame.Gear
-local petsBtn = vars.playerGui.Teleport_UI.Frame.Pets
-gearBtn.Visible = true
-petsBtn.Visible = true
-
-local eventBtn = Instance.new("ImageButton")
-eventBtn.Name = "Event"
-eventBtn.Size = gearBtn.Size
-eventBtn.Position = gearBtn.Position + UDim2.new(0, 0, 0, gearBtn.Size.Y.Offset + 10)
-eventBtn.BackgroundTransparency = 0
-eventBtn.BackgroundColor3 = Color3.new(0.5, 0, 0.5)
-eventBtn.Parent = vars.playerGui.Teleport_UI.Frame
-
-local txt = Instance.new("TextLabel")
-txt.Name = "Txt"
-txt.Parent = eventBtn
-txt.Text = "EVENT"
-txt.Font = Enum.Font.Unknown
-txt.TextColor3 = Color3.new(1, 1, 1)
-txt.TextSize = 14
-txt.TextTransparency = 0
-txt.TextStrokeTransparency = 1
-txt.TextStrokeColor3 = Color3.new(0, 0, 0)
-txt.TextScaled = true
-txt.TextWrapped = true
-txt.TextXAlignment = Enum.TextXAlignment.Center
-txt.TextYAlignment = Enum.TextYAlignment.Center
-txt.BackgroundTransparency = 1
-txt.Position = UDim2.new(0.5, 0, 0.5, 0)
-txt.Size = UDim2.new(0.8, 0, 0.684, 0)
-
-local stroke = Instance.new("UIStroke")
-stroke.Parent = txt
-stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-stroke.Color = Color3.new(0.314, 0.722, 0.165)
-stroke.LineJoinMode = Enum.LineJoinMode.Round
-stroke.Name = "UIStroke"
-stroke.Thickness = 2
-stroke.Transparency = 0
-
-eventBtn.MouseButton1Click:Connect(function()
-    vars.player.Character:PivotTo(CFrame.new(Vector3.new(-99, 4, -5)))
-end)
-
-
-vars.formatNumberWithCommas = function(number)
-    local formatted = tostring(number)
-    while true do
-        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-        if k == 0 then break end
+if RunService:IsStudio() then
+    if UserInputService.TouchEnabled and not UserInputService.MouseEnabled then
+        Library.IsMobile = true
+        Library.MinSize = Vector2.new(480, 240)
+    else
+        Library.IsMobile = false
+        Library.MinSize = Vector2.new(480, 360)
     end
-    return formatted
-end
-
-vars.rarityOrder = {
-    Common = 1, Uncommon = 2, Rare = 3, 
-    Legendary = 4, Mythical = 5, Divine = 6, Prismatic = 7
-}
-
-vars.getRarityRank = function(rarity)
-    return vars.rarityOrder[rarity] or 7
-end
-
-local function updateCachedStockTables()
-    vars.cachedSeedStock = modules.PlayerData.SeedStock or {}
-    vars.cachedGearStock = modules.PlayerData.GearStock or {}
-    vars.cachedPetEggStock = modules.PlayerData.PetEggStock or {}
-    vars.cachedNightEventStock = modules.PlayerData.NightEventShopStock or {}
-    vars.cachedCosmeticStock = modules.PlayerData.CosmeticStock or {}
-    vars.cachedEventShopStock = modules.PlayerData.EventShopStock or {}
-    vars.cachedTravelingMerchantShopStock = modules.PlayerData.TravelingMerchantShopStock or {}
-end
-
-updateCachedStockTables()
-
-task.spawn(function()
-    while true do
-        task.wait(300)  
-        pcall(updateCachedStockTables)
-    end
-end)
-
---[[
-local getTableKeys = function(t)
-    local keys = {}
-    for k, _ in pairs(t) do
-        table.insert(keys, tostring(k))
-    end
-    return keys
-end
---]]
-
-local buyFromStock = function(stockTable, remote, selectedKeys, isEgg)
-    if not stockTable then
-        updateCachedStockTables()
-        
-        if isEgg then
-            stockTable = vars.cachedPetEggStock
-        elseif remote == remotes.BuySeedStockRemote then
-            stockTable = vars.cachedSeedStock
-        elseif remote == remotes.BuyGearStockRemote then
-            stockTable = vars.cachedGearStock
-        end
-    end
-    
-    if not stockTable or not stockTable.Stocks then 
-        warn("Stock table or Stocks not found")
-        return 
-    end
-    
-    local stocks = stockTable.Stocks
-    local purchaseCount = 0
-
-    if isEgg then
-        for index, itemData in pairs(stocks) do
-            if itemData and typeof(itemData) == "table" then
-                local matchKey = itemData.Key or itemData.EggName 
-                if table.find(selectedKeys, matchKey) then 
-                    local success, err = pcall(function()
-                        remote:FireServer(index)
-                    end)
-                    if success then
-                        purchaseCount = purchaseCount + 1
-                    else
-                        warn("Failed to buy egg:", err)
-                    end
-                    task.wait(0.1) 
-                end
-            end
-        end
-    else 
-        for _, key in ipairs(selectedKeys) do 
-            local itemData = stocks[key]
-            if itemData then
-                local stockAmount = itemData.Stock or 0 
-                for i = 1, stockAmount do
-                    local success, err = pcall(function()
-                        remote:FireServer(key)
-                    end)
-                    if success then
-                        purchaseCount = purchaseCount + 1
-                    else
-                        warn("Failed to buy item:", key, err)
-                        break 
-                    end
-                    task.wait(0.05) 
-                end
-            else
-                warn("Item not found in stock:", key)
-            end
-        end
-    end
-end
-
-
-local labels = {}
-labels.player = Groupboxes.InfoBox:AddLabel("Player: " .. vars.LocalPlayer.Name)
-labels.sheckles = Groupboxes.InfoBox:AddLabel("Sheckles: Loading...")
-labels.Summer = Groupboxes.InfoBox:AddLabel("Summer: Loading...")
-labels.Honey = Groupboxes.InfoBox:AddLabel("Honey: Loading...")
-labels.inventory = Groupboxes.InfoBox:AddLabel("Inventory: None for now")
-labels.maxEggs = Groupboxes.InfoBox:AddLabel("Max Eggs: Loading...")
-labels.maxPets = Groupboxes.InfoBox:AddLabel("Max Pets: Loading...")
-labels.maxPetsInventory = Groupboxes.InfoBox:AddLabel("Max Pets Inventory: Loading...")
-labels.KeyInfoLabel = Groupboxes.KeyInfo:AddLabel({
-    Text = "Key: " .. (getgenv().script_key and tostring(getgenv().script_key) or "Unknown"),
-    DoesWrap = true
-})
-labels.ExecutionsLabel = Groupboxes.KeyInfo:AddLabel("Total Executions: " .. (LRM_TotalExecutions and tostring(LRM_TotalExecutions) or "Unknown"))
-labels.DiscordIDLabel = Groupboxes.KeyInfo:AddLabel("DiscordID: " .. (LRM_LinkedDiscordID and tostring(LRM_LinkedDiscordID) or "Unknown"))
-local totalSeconds = LRM_SecondsLeft
-local timeLeftString
-if totalSeconds == -1 or totalSeconds == math.huge then 
-    timeLeftString = "Lifetime / Infinite"
-elseif totalSeconds and totalSeconds >= 0 then
-    local days = math.floor(totalSeconds / 86400)
-    local remainingSecondsAfterDays = totalSeconds % 86400
-    local hours = math.floor(remainingSecondsAfterDays / 3600)
-    local remainingSecondsAfterHours = remainingSecondsAfterDays % 3600
-    local minutes = math.floor(remainingSecondsAfterHours / 60)
-
-    timeLeftString = string.format("%d days, %d hours, %d minutes", days, hours, minutes)
 else
-    timeLeftString = "Unknown"
-end
-
-labels.SecondsLabel = Groupboxes.KeyInfo:AddLabel({
-    Text = "Time Left: " .. timeLeftString, 
-    DoesWrap = true})
-
-local function formatCommas(n)
-    local formatted = tostring(n):reverse():gsub("(%d%d%d)", "%1,")
-    return formatted:reverse():gsub("^,", "")
-end
-
-local function updateInfo()
-    local success, data = pcall(function()
-        return vars.DataService:GetData()
+    pcall(function()
+        Library.DevicePlatform = UserInputService:GetPlatform()
     end)
-    if not success or not data then
-        labels.sheckles:SetText("Sheckles: N/A")
-        labels.maxEggs:SetText("Max Eggs: N/A")
-        labels.maxPets:SetText("Max Pets: N/A")
-        labels.maxPetsInventory:SetText("Max Pets Inventory: N/A")
+    Library.IsMobile = (Library.DevicePlatform == Enum.Platform.Android or Library.DevicePlatform == Enum.Platform.IOS)
+    Library.MinSize = Library.IsMobile and Vector2.new(480, 240) or Vector2.new(480, 360)
+end
+
+local Templates = {
+    --// UI \\-
+    Frame = {
+        BorderSizePixel = 0,
+    },
+    ImageLabel = {
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0,
+    },
+    ImageButton = {
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+    },
+    ScrollingFrame = {
+        BorderSizePixel = 0,
+    },
+    TextLabel = {
+        BorderSizePixel = 0,
+        FontFace = "Font",
+        RichText = true,
+        TextColor3 = "FontColor",
+    },
+    TextButton = {
+        AutoButtonColor = false,
+        BorderSizePixel = 0,
+        FontFace = "Font",
+        RichText = true,
+        TextColor3 = "FontColor",
+    },
+    TextBox = {
+        BorderSizePixel = 0,
+        FontFace = "Font",
+        PlaceholderColor3 = function()
+            local H, S, V = Library.Scheme.FontColor:ToHSV()
+            return Color3.fromHSV(H, S, V / 2)
+        end,
+        Text = "",
+        TextColor3 = "FontColor",
+    },
+    UIListLayout = {
+        SortOrder = Enum.SortOrder.LayoutOrder,
+    },
+    UIStroke = {
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+    },
+
+    --// Library \\--
+    Window = {
+        Title = "No Title",
+        Footer = "No Footer",
+        Position = UDim2.fromOffset(6, 6),
+        Size = UDim2.fromOffset(720, 600),
+        IconSize = UDim2.fromOffset(30, 30),
+        AutoShow = true,
+        Center = true,
+        Resizable = true,
+        CornerRadius = 4,
+        NotifySide = "Right",
+        ShowCustomCursor = true,
+        Font = Enum.Font.Code,
+        ToggleKeybind = Enum.KeyCode.RightControl,
+        MobileButtonsSide = "Left",
+    },
+    Toggle = {
+        Text = "Toggle",
+        Default = false,
+
+        Callback = function() end,
+        Changed = function() end,
+
+        Risky = false,
+        Disabled = false,
+        Visible = true,
+    },
+    Input = {
+        Text = "Input",
+        Default = "",
+        Finished = false,
+        Numeric = false,
+        ClearTextOnFocus = true,
+        Placeholder = "",
+        AllowEmpty = true,
+        EmptyReset = "---",
+
+        Callback = function() end,
+        Changed = function() end,
+
+        Disabled = false,
+        Visible = true,
+    },
+    Slider = {
+        Text = "Slider",
+        Default = 0,
+        Min = 0,
+        Max = 100,
+        Rounding = 0,
+
+        Prefix = "",
+        Suffix = "",
+
+        Callback = function() end,
+        Changed = function() end,
+
+        Disabled = false,
+        Visible = true,
+    },
+    Dropdown = {
+        Values = {},
+        DisabledValues = {},
+        Multi = false,
+        MaxVisibleDropdownItems = 8,
+
+        Callback = function() end,
+        Changed = function() end,
+
+        Disabled = false,
+        Visible = true,
+    },
+
+    --// Addons \\-
+    KeyPicker = {
+        Text = "KeyPicker",
+        Default = "None",
+        Mode = "Toggle",
+        Modes = { "Always", "Toggle", "Hold" },
+        SyncToggleState = false,
+
+        Callback = function() end,
+        ChangedCallback = function() end,
+        Changed = function() end,
+        Clicked = function() end,
+    },
+    ColorPicker = {
+        Default = Color3.new(1, 1, 1),
+
+        Callback = function() end,
+        Changed = function() end,
+    },
+}
+
+local Places = {
+    Bottom = { 0, 1 },
+    Right = { 1, 0 },
+}
+local Sizes = {
+    Left = { 0.5, 1 },
+    Right = { 0.5, 1 },
+}
+
+--// Basic Functions \\--
+local function ApplyDPIScale(Dimension, ExtraOffset)
+    if typeof(Dimension) == "UDim" then
+        return UDim.new(Dimension.Scale, Dimension.Offset * Library.DPIScale)
+    end
+
+    if ExtraOffset then
+        return UDim2.new(
+            Dimension.X.Scale,
+            (Dimension.X.Offset * Library.DPIScale) + (ExtraOffset[1] * Library.DPIScale),
+            Dimension.Y.Scale,
+            (Dimension.Y.Offset * Library.DPIScale) + (ExtraOffset[2] * Library.DPIScale)
+        )
+    end
+
+    return UDim2.new(
+        Dimension.X.Scale,
+        Dimension.X.Offset * Library.DPIScale,
+        Dimension.Y.Scale,
+        Dimension.Y.Offset * Library.DPIScale
+    )
+end
+local function ApplyTextScale(TextSize)
+    return TextSize * Library.DPIScale
+end
+
+local function WaitForEvent(Event, Timeout, Condition)
+    local Bindable = Instance.new("BindableEvent")
+    local Connection = Event:Once(function(...)
+        if not Condition or typeof(Condition) == "function" and Condition(...) then
+            Bindable:Fire(true)
+        else
+            Bindable:Fire(false)
+        end
+    end)
+    task.delay(Timeout, function()
+        Connection:Disconnect()
+        Bindable:Fire(false)
+    end)
+
+    local Result = Bindable.Event:Wait()
+    Bindable:Destroy()
+
+    return Result
+end
+
+local function IsMouseInput(Input: InputObject, IncludeM2: boolean?)
+    return Input.UserInputType == Enum.UserInputType.MouseButton1
+        or IncludeM2 and Input.UserInputType == Enum.UserInputType.MouseButton2
+        or Input.UserInputType == Enum.UserInputType.Touch
+end
+local function IsClickInput(Input: InputObject, IncludeM2: boolean?)
+    return IsMouseInput(Input, IncludeM2)
+        and Input.UserInputState == Enum.UserInputState.Begin
+        and Library.IsRobloxFocused
+end
+local function IsHoverInput(Input: InputObject)
+    return (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch)
+        and Input.UserInputState == Enum.UserInputState.Change
+end
+
+local function GetTableSize(Table: { [any]: any })
+    local Size = 0
+
+    for _, _ in pairs(Table) do
+        Size += 1
+    end
+
+    return Size
+end
+local function StopTween(Tween: TweenBase)
+    if not (Tween and Tween.PlaybackState == Enum.PlaybackState.Playing) then
         return
     end
 
-    labels.sheckles:SetText("Sheckles: " .. formatCommas(data.Sheckles or 0))
-    labels.Summer:SetText("Summer: " .. formatCommas(data.SpecialCurrency.Summer or 0))
-    labels.Honey:SetText("Honey: " .. formatCommas(data.SpecialCurrency.Honey or 0))
-    local stats = data.PetsData and data.PetsData.MutableStats or {}
-    labels.maxEggs:SetText("Max Eggs: " .. tostring(stats.MaxEggsInFarm or "N/A"))
-    labels.maxPets:SetText("Max Pets: " .. tostring(stats.MaxEquippedPets or "N/A"))
-    labels.maxPetsInventory:SetText("Max Pets Inventory: " .. tostring(stats.MaxPetsInInventory or "N/A"))
+    Tween:Cancel()
 end
+local function Trim(Text: string)
+    return Text:match("^%s*(.-)%s*$")
+end
+local function Round(Value, Rounding)
+    assert(Rounding >= 0, "Invalid rounding number.")
 
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while task.wait(10) do  
-        pcall(updateInfo)  
+    if Rounding == 0 then
+        return math.floor(Value)
     end
-end))
 
-Groupboxes.ServerBox:AddLabel("Server Version: " .. tostring(game.PlaceVersion or "N/A"))
-
-
-local versionStatus = ""
-if vars.currentVersion < 1474 then
-    versionStatus = "Old Server (" .. vars.currentVersion .. ")"
-else
-    versionStatus = "New Server (" .. vars.currentVersion .. ")"
-end
-Groupboxes.ServerBox:AddLabel("Status: " .. versionStatus)
-
-if identifyexecutor and identifyexecutor():lower():find("autumn") then
-    print("Autumn Good")
-else
-    if vars.currentVersion < 1474 then
-local payload = vars.HttpService:JSONEncode({content = vars.message})
-
-http_request({
-    Url = "https://discord.com/api/webhooks/1383787142383145050/eQ4A2CFFKD4PRy58Dam5tNsTVY1zqmAXK5j471uN00uDXdjOJHIEKvauVzWw9g5T33Zq",
-    Method = "POST",
-    Headers = {
-        ["Content-Type"] = "application/json"
-    },
-    Body = payload
-})
-    end
+    return tonumber(string.format("%." .. Rounding .. "f", Value))
 end
 
+local function GetPlayers(ExcludeLocalPlayer: boolean?)
+    local PlayerList = Players:GetPlayers()
 
-local traitList = {}
-for traitName, trait in pairs(modules.PlantTraitsData) do
-    if typeof(trait) == "table" and trait then
-        table.insert(traitList, traitName)
-    end
-end
-
-labels.FruitTraitLabel = Groupboxes.TraitsGroup:AddLabel({
-    Text = "Trait: (none selected)",
-    DoesWrap = true
-})
-
-labels.DisplayLabel = Groupboxes.TraitsGroup:AddLabel({
-    Text = "Select a trait to view details.",
-    DoesWrap = true
-})
-
-Groupboxes.TraitsGroup:AddDropdown("TraitDropdown", {
-    Values = traitList,
-    Text = "Select Trait",
-    Searchable = true,
-    Callback = function(selectedTraitName)
-        
-        local trait = modules.PlantTraitsData[selectedTraitName]
-        if typeof(trait) == "table" and trait then
-            local lines = {}
-            for k, v in pairs(trait) do
-                table.insert(lines, k .. ": " .. tostring(v))
-            end
-
-            labels.FruitTraitLabel:SetText("Trait: " .. selectedTraitName)
-            labels.DisplayLabel:SetText(table.concat(lines, "\n"))
-        else
-            labels.FruitTraitLabel:SetText("Trait: (invalid)")
-            labels.DisplayLabel:SetText("No details available.")
+    if ExcludeLocalPlayer then
+        local Idx = table.find(PlayerList, LocalPlayer)
+        if Idx then
+            table.remove(PlayerList, Idx)
         end
     end
-})
 
-
-
---[[
-local function CreateImageDivider(groupbox, assetId)
-    local imageSize = UDim2.new(0, 80, 0, 80)
-    groupbox:AddDivider()
-    local dividerFrame = groupbox.Container:GetChildren()[#groupbox.Container:GetChildren()]
-    dividerFrame.Size = UDim2.new(1, 0, 0, 110)
-    local previewImage = Instance.new("ImageLabel")
-    previewImage.Size = imageSize
-    previewImage.Position = UDim2.new(0.5, -imageSize.X.Offset / 2, 0, 5)
-    previewImage.BackgroundTransparency = 1
-    previewImage.ScaleType = Enum.ScaleType.Fit
-    previewImage.ZIndex = 2
-    previewImage.Image = assetId or "rbxasset://textures/ui/GuiImagePlaceholder.png"
-    previewImage.Parent = dividerFrame
-    return dividerFrame, previewImage
-end
---]]
-
-local function CreateImageDivider(groupbox, assetId)
-    local imageSize = UDim2.new(0, 80, 0, 80)
-    groupbox:AddDivider()
-    local dividerFrame = groupbox.Container:GetChildren()[#groupbox.Container:GetChildren()]
-    dividerFrame.Size = UDim2.new(1, 0, 0, 110)
-
-    local previewImage = Instance.new("ImageLabel")
-    previewImage.Size = imageSize
-    previewImage.Position = UDim2.new(0.5, -imageSize.X.Offset / 2, 0, 5)
-    previewImage.BackgroundTransparency = 1
-    previewImage.ScaleType = Enum.ScaleType.Fit
-    previewImage.ZIndex = 2
-    previewImage.Image = assetId or "rbxasset://textures/ui/GuiImagePlaceholder.png"
-    previewImage.Parent = dividerFrame
-
-    return dividerFrame, previewImage
-end
-
-local _, previewImage = CreateImageDivider(Groupboxes.ForeverPackGroup)
-
-labels.indexLabel = Groupboxes.ForeverPackGroup:AddLabel({
-    Text = "Reward [...], ...",
-    DoesWrap = true
-})
-
-local currentIndex = 1
-local data = modules.DataService:GetData(vars.LocalPlayer)
-local day = data and data.InfinitePack and data.InfinitePack.Day
-local rewards = modules.InfinitePackData.GetRewards(day, 99999)
-
-local function getRobuxText(index)
-    local productId = modules.InfinitePackData.GetProductFor(index)
-    local price = modules.InfinitePackData.FallbackPrices[productId]
-    if price then
-        return ' <font color="rgb(255, 215, 0)">' .. utf8.char(0xe002) .. ' ' .. price .. '</font>'
-    end
-    return ""
-end
-
-local function updateRewardDisplay()
-    local reward = rewards[currentIndex]
-    if not reward then return end
-
-    local robuxText = getRobuxText(currentIndex)
-    local displayName = reward.Name or "?"
-    previewImage.Image = reward.Icon or "rbxasset://textures/ui/GuiImagePlaceholder.png"
-    labels.indexLabel:SetText("Reward [" .. currentIndex .. "], " .. displayName .. robuxText)
-end
-
-local navButton = Groupboxes.ForeverPackGroup:AddButton({
-    Text = "‹",
-    Func = function()
-        currentIndex = math.max(currentIndex - 1, 1)
-        updateRewardDisplay()
-    end
-})
-
-navButton:AddButton({
-    Text = "›",
-    Func = function()
-        currentIndex = math.min(currentIndex + 1, #rewards)
-        updateRewardDisplay()
-    end
-})
-
-updateRewardDisplay()
-
-local jobIdInput = Groupboxes.ServerBox:AddInput("Jobid_Input", {
-    Text = "Join Jobid",
-    Placeholder = "Enter JobId here",
-    Numeric = false
-})
-
-Groupboxes.ServerBox:AddButton("Join JobId from Input", function()
-    local jobID = jobIdInput.Value
-    if jobID and #jobID > 0 then
-        vars.TeleportService:TeleportToPlaceInstance(game.PlaceId, jobID, vars.LocalPlayer)
-    else
-        Library:Notify("Please enter a valid JobId", 3)
-    end
-end)
-
-Groupboxes.ServerBox:AddButton("Copy Current JobId", function()
-    if setclipboard then
-        setclipboard(game.JobId)
-        Library:Notify("JobId copied to clipboard!", 2)
-    else
-        Library:Notify("setclipboard not supported.", 2)
-    end
-end)
-
-Groupboxes.ServerBox:AddButton("Teleport To Old Server", function()
-    local api = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
-    local cursor = nil
-
-    local function getServers(cursor)
-        local url = api .. (cursor and ("&cursor=" .. cursor) or "")
-        local success, result = pcall(function()
-            return vars.HttpService:JSONDecode(game:HttpGet(url))
-        end)
-        return success and result or nil
-    end
-
-    task.spawn(function()
-        while true do
-            local data = getServers(cursor)
-            if not data or not data.data then
-                Library:Notify("Failed to fetch servers.", 2)
-                break
-            end
-
-            for _, server in ipairs(data.data) do
-                if server.playing < server.maxPlayers and server.id ~= game.JobId then
-                    vars.TeleportService:TeleportToPlaceInstance(game.PlaceId, server.id, vars.LocalPlayer)
-                    return
-                end
-            end
-
-            if data.nextPageCursor then
-                cursor = data.nextPageCursor
-                task.wait(1)
-            else
-                Library:Notify("No old servers found.", 3)
-                break
-            end
-        end
+    table.sort(PlayerList, function(Player1, Player2)
+        return Player1.Name:lower() < Player2.Name:lower()
     end)
-end)
 
-local hopVersionInput = Groupboxes.ServerBox:AddInput("PlaceVersionHop_Input", {
-    Text = "Specified PlaceVersion",
-    Placeholder = "Target PlaceVersion",
-    Numeric = true
-})
+    return PlayerList
+end
+local function GetTeams()
+    local TeamList = Teams:GetTeams()
 
-local delayInput = Groupboxes.ServerBox:AddInput("DelayBeforeHopping_Input", {
-    Text = "Delay Before Hop",
-    Placeholder = "Seconds (e.g., 2)",
-    Numeric = true
-})
+    table.sort(TeamList, function(Team1, Team2)
+        return Team1.Name:lower() < Team2.Name:lower()
+    end)
 
-local hopToggle = Groupboxes.ServerBox:AddToggle("Hop_Toggle", {
-    Text = "Hop Until PlaceVersion",
-    Default = false,
-    Callback = function(state)
-        if not state then return end
+    return TeamList
+end
 
-        task.spawn(function()
-            local targetVersion = tonumber(hopVersionInput.Value)
-            local delayTime = tonumber(delayInput.Value) or 2
-            if not targetVersion then
-                Library:Notify("Invalid target version!", 3)
-                return
+function Library:UpdateKeybindFrame()
+    if not Library.KeybindFrame then
+        return
+    end
+
+    local XSize = 0
+    for _, KeybindToggle in pairs(Library.KeybindToggles) do
+        if not KeybindToggle.Holder.Visible then
+            continue
+        end
+
+        local FullSize = KeybindToggle.Label.Size.X.Offset + KeybindToggle.Label.Position.X.Offset
+        if FullSize > XSize then
+            XSize = FullSize
+        end
+    end
+
+    Library.KeybindFrame.Size = UDim2.fromOffset(XSize + 18 * Library.DPIScale, 0)
+end
+function Library:UpdateDependencyBoxes()
+    for _, Depbox in pairs(Library.DependencyBoxes) do
+        Depbox:Update(true)
+    end
+
+    if Library.Searching then
+        Library:UpdateSearch(Library.SearchText)
+    end
+end
+
+local function CheckDepbox(Box, Search)
+    local VisibleElements = 0
+
+    for _, ElementInfo in pairs(Box.Elements) do
+        if ElementInfo.Type == "Divider" then
+            ElementInfo.Holder.Visible = false
+            continue
+        elseif ElementInfo.SubButton then
+            --// Check if any of the Buttons Name matches with Search
+            local Visible = false
+
+            --// Check if Search matches Element's Name and if Element is Visible
+            if ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+                Visible = true
+            else
+                ElementInfo.Base.Visible = false
+            end
+            if ElementInfo.SubButton.Text:lower():match(Search) and ElementInfo.SubButton.Visible then
+                Visible = true
+            else
+                ElementInfo.SubButton.Base.Visible = false
+            end
+            ElementInfo.Holder.Visible = Visible
+            if Visible then
+                VisibleElements += 1
             end
 
-            local api = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
-            local cursor = nil
+            continue
+        end
 
-            local function getServers(cursor)
-                local url = api .. (cursor and ("&cursor=" .. cursor) or "")
-                local success, result = pcall(function()
-                    return vars.HttpService:JSONDecode(game:HttpGet(url))
-                end)
-                return success and result or nil
-            end
+        --// Check if Search matches Element's Name and if Element is Visible
+        if ElementInfo.Text and ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+            ElementInfo.Holder.Visible = true
+            VisibleElements += 1
+        else
+            ElementInfo.Holder.Visible = false
+        end
+    end
 
-            while state do
-                if game.PlaceVersion == targetVersion then
-                    Library:Notify("Reached desired PlaceVersion: " .. game.PlaceVersion, 4)
-                    break
+    for _, Depbox in pairs(Box.DependencyBoxes) do
+        if not Depbox.Visible then
+            continue
+        end
+
+        VisibleElements += CheckDepbox(Depbox, Search)
+    end
+
+    return VisibleElements
+end
+local function RestoreDepbox(Box)
+    for _, ElementInfo in pairs(Box.Elements) do
+        ElementInfo.Holder.Visible = typeof(ElementInfo.Visible) == "boolean" and ElementInfo.Visible or true
+
+        if ElementInfo.SubButton then
+            ElementInfo.Base.Visible = ElementInfo.Visible
+            ElementInfo.SubButton.Base.Visible = ElementInfo.SubButton.Visible
+        end
+    end
+
+    Box:Resize()
+    Box.Holder.Visible = true
+
+    for _, Depbox in pairs(Box.DependencyBoxes) do
+        if not Depbox.Visible then
+            continue
+        end
+
+        RestoreDepbox(Depbox)
+    end
+end
+
+function Library:UpdateSearch(SearchText)
+    Library.SearchText = SearchText
+
+    --// Reset Elements Visibility in Last Tab Searched
+    if Library.LastSearchTab then
+        for _, Groupbox in pairs(Library.LastSearchTab.Groupboxes) do
+            for _, ElementInfo in pairs(Groupbox.Elements) do
+                ElementInfo.Holder.Visible = typeof(ElementInfo.Visible) == "boolean" and ElementInfo.Visible or true
+
+                if ElementInfo.SubButton then
+                    ElementInfo.Base.Visible = ElementInfo.Visible
+                    ElementInfo.SubButton.Base.Visible = ElementInfo.SubButton.Visible
                 end
+            end
 
-                local data = getServers(cursor)
-                if not data or not data.data then
-                    task.wait(2)
+            for _, Depbox in pairs(Groupbox.DependencyBoxes) do
+                if not Depbox.Visible then
                     continue
                 end
 
-                local found = false
-                for _, server in ipairs(data.data) do
-                    if server.playing < server.maxPlayers and server.id ~= game.JobId then
-                        task.wait(delayTime)
-                        vars.TeleportService:TeleportToPlaceInstance(game.PlaceId, server.id, vars.LocalPlayer)
-                        found = true
-                        break
+                RestoreDepbox(Depbox)
+            end
+
+            Groupbox:Resize()
+            Groupbox.Holder.Visible = true
+        end
+
+        for _, Tabbox in pairs(Library.LastSearchTab.Tabboxes) do
+            for _, Tab in pairs(Tabbox.Tabs) do
+                for _, ElementInfo in pairs(Tab.Elements) do
+                    ElementInfo.Holder.Visible = typeof(ElementInfo.Visible) == "boolean" and ElementInfo.Visible
+                        or true
+
+                    if ElementInfo.SubButton then
+                        ElementInfo.Base.Visible = ElementInfo.Visible
+                        ElementInfo.SubButton.Base.Visible = ElementInfo.SubButton.Visible
                     end
                 end
 
-                if found then break end
+                for _, Depbox in pairs(Tab.DependencyBoxes) do
+                    if not Depbox.Visible then
+                        continue
+                    end
 
-                if data.nextPageCursor then
-                    cursor = data.nextPageCursor
-                else
-                    cursor = nil
-                    task.wait(2)
+                    RestoreDepbox(Depbox)
+                end
+
+                Tab.ButtonHolder.Visible = true
+            end
+
+            Tabbox.ActiveTab:Resize()
+            Tabbox.Holder.Visible = true
+        end
+
+        for _, DepGroupbox in pairs(Library.LastSearchTab.DependencyGroupboxes) do
+            if not DepGroupbox.Visible then
+                continue
+            end
+
+            for _, ElementInfo in pairs(DepGroupbox.Elements) do
+                ElementInfo.Holder.Visible = typeof(ElementInfo.Visible) == "boolean" and ElementInfo.Visible or true
+
+                if ElementInfo.SubButton then
+                    ElementInfo.Base.Visible = ElementInfo.Visible
+                    ElementInfo.SubButton.Base.Visible = ElementInfo.SubButton.Visible
                 end
             end
+
+            for _, Depbox in pairs(DepGroupbox.DependencyBoxes) do
+                if not Depbox.Visible then
+                    continue
+                end
+
+                RestoreDepbox(Depbox)
+            end
+
+            DepGroupbox:Resize()
+            DepGroupbox.Holder.Visible = true
+        end
+    end
+
+    --// Cancel Search if Search Text is empty
+    local Search = SearchText:lower()
+    if Trim(Search) == "" or Library.ActiveTab.IsKeyTab then
+        Library.Searching = false
+        Library.LastSearchTab = nil
+        return
+    end
+
+    Library.Searching = true
+
+    --// Loop through Groupboxes to get Elements Info
+    for _, Groupbox in pairs(Library.ActiveTab.Groupboxes) do
+        local VisibleElements = 0
+
+        for _, ElementInfo in pairs(Groupbox.Elements) do
+            if ElementInfo.Type == "Divider" then
+                ElementInfo.Holder.Visible = false
+                continue
+            elseif ElementInfo.SubButton then
+                --// Check if any of the Buttons Name matches with Search
+                local Visible = false
+
+                --// Check if Search matches Element's Name and if Element is Visible
+                if ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+                    Visible = true
+                else
+                    ElementInfo.Base.Visible = false
+                end
+                if ElementInfo.SubButton.Text:lower():match(Search) and ElementInfo.SubButton.Visible then
+                    Visible = true
+                else
+                    ElementInfo.SubButton.Base.Visible = false
+                end
+                ElementInfo.Holder.Visible = Visible
+                if Visible then
+                    VisibleElements += 1
+                end
+
+                continue
+            end
+
+            --// Check if Search matches Element's Name and if Element is Visible
+            if ElementInfo.Text and ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+                ElementInfo.Holder.Visible = true
+                VisibleElements += 1
+            else
+                ElementInfo.Holder.Visible = false
+            end
+        end
+
+        for _, Depbox in pairs(Groupbox.DependencyBoxes) do
+            if not Depbox.Visible then
+                continue
+            end
+
+            VisibleElements += CheckDepbox(Depbox, Search)
+        end
+
+        --// Update Groupbox Size and Visibility if found any element
+        if VisibleElements > 0 then
+            Groupbox:Resize()
+        end
+        Groupbox.Holder.Visible = VisibleElements > 0
+    end
+
+    for _, Tabbox in pairs(Library.ActiveTab.Tabboxes) do
+        local VisibleTabs = 0
+        local VisibleElements = {}
+
+        for _, Tab in pairs(Tabbox.Tabs) do
+            VisibleElements[Tab] = 0
+
+            for _, ElementInfo in pairs(Tab.Elements) do
+                if ElementInfo.Type == "Divider" then
+                    ElementInfo.Holder.Visible = false
+                    continue
+                elseif ElementInfo.SubButton then
+                    --// Check if any of the Buttons Name matches with Search
+                    local Visible = false
+
+                    --// Check if Search matches Element's Name and if Element is Visible
+                    if ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+                        Visible = true
+                    else
+                        ElementInfo.Base.Visible = false
+                    end
+                    if ElementInfo.SubButton.Text:lower():match(Search) and ElementInfo.SubButton.Visible then
+                        Visible = true
+                    else
+                        ElementInfo.SubButton.Base.Visible = false
+                    end
+                    ElementInfo.Holder.Visible = Visible
+                    if Visible then
+                        VisibleElements[Tab] += 1
+                    end
+
+                    continue
+                end
+
+                --// Check if Search matches Element's Name and if Element is Visible
+                if ElementInfo.Text and ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+                    ElementInfo.Holder.Visible = true
+                    VisibleElements[Tab] += 1
+                else
+                    ElementInfo.Holder.Visible = false
+                end
+            end
+
+            for _, Depbox in pairs(Tab.DependencyBoxes) do
+                if not Depbox.Visible then
+                    continue
+                end
+
+                VisibleElements[Tab] += CheckDepbox(Depbox, Search)
+            end
+        end
+
+        for Tab, Visible in pairs(VisibleElements) do
+            Tab.ButtonHolder.Visible = Visible > 0
+            if Visible > 0 then
+                VisibleTabs += 1
+
+                if Tabbox.ActiveTab == Tab then
+                    Tab:Resize()
+                elseif VisibleElements[Tabbox.ActiveTab] == 0 then
+                    Tab:Show()
+                end
+            end
+        end
+
+        --// Update Tabbox Visibility if any visible
+        Tabbox.Holder.Visible = VisibleTabs > 0
+    end
+
+    for _, DepGroupbox in pairs(Library.ActiveTab.DependencyGroupboxes) do
+        if not DepGroupbox.Visible then
+            continue
+        end
+
+        local VisibleElements = 0
+
+        for _, ElementInfo in pairs(DepGroupbox.Elements) do
+            if ElementInfo.Type == "Divider" then
+                ElementInfo.Holder.Visible = false
+                continue
+            elseif ElementInfo.SubButton then
+                --// Check if any of the Buttons Name matches with Search
+                local Visible = false
+
+                --// Check if Search matches Element's Name and if Element is Visible
+                if ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+                    Visible = true
+                else
+                    ElementInfo.Base.Visible = false
+                end
+                if ElementInfo.SubButton.Text:lower():match(Search) and ElementInfo.SubButton.Visible then
+                    Visible = true
+                else
+                    ElementInfo.SubButton.Base.Visible = false
+                end
+                ElementInfo.Holder.Visible = Visible
+                if Visible then
+                    VisibleElements += 1
+                end
+
+                continue
+            end
+
+            --// Check if Search matches Element's Name and if Element is Visible
+            if ElementInfo.Text and ElementInfo.Text:lower():match(Search) and ElementInfo.Visible then
+                ElementInfo.Holder.Visible = true
+                VisibleElements += 1
+            else
+                ElementInfo.Holder.Visible = false
+            end
+        end
+
+        for _, Depbox in pairs(DepGroupbox.DependencyBoxes) do
+            if not Depbox.Visible then
+                continue
+            end
+
+            VisibleElements += CheckDepbox(Depbox, Search)
+        end
+
+        --// Update Groupbox Size and Visibility if found any element
+        if VisibleElements > 0 then
+            DepGroupbox:Resize()
+        end
+        DepGroupbox.Holder.Visible = VisibleElements > 0
+    end
+
+    --// Set Last Tab to Current One
+    Library.LastSearchTab = Library.ActiveTab
+end
+
+function Library:AddToRegistry(Instance, Properties)
+    Library.Registry[Instance] = Properties
+end
+
+function Library:RemoveFromRegistry(Instance)
+    Library.Registry[Instance] = nil
+end
+
+function Library:UpdateColorsUsingRegistry()
+    for Instance, Properties in pairs(Library.Registry) do
+        for Property, ColorIdx in pairs(Properties) do
+            if typeof(ColorIdx) == "string" then
+                Instance[Property] = Library.Scheme[ColorIdx]
+            elseif typeof(ColorIdx) == "function" then
+                Instance[Property] = ColorIdx()
+            end
+        end
+    end
+end
+
+function Library:UpdateDPI(Instance, Properties)
+    if not Library.DPIRegistry[Instance] then
+        return
+    end
+
+    for Property, Value in pairs(Properties) do
+        Library.DPIRegistry[Instance][Property] = Value and Value or nil
+    end
+end
+
+function Library:SetDPIScale(DPIScale: number)
+    Library.DPIScale = DPIScale / 100
+    Library.MinSize *= Library.DPIScale
+
+    for Instance, Properties in pairs(Library.DPIRegistry) do
+        for Property, Value in pairs(Properties) do
+            if Property == "DPIExclude" or Property == "DPIOffset" then
+                continue
+            elseif Property == "TextSize" then
+                Instance[Property] = ApplyTextScale(Value)
+            else
+                Instance[Property] = ApplyDPIScale(Value, Properties["DPIOffset"][Property])
+            end
+        end
+    end
+
+    for _, Tab in pairs(Library.Tabs) do
+        if Tab.IsKeyTab then
+            continue
+        end
+
+        Tab:Resize(true)
+        for _, Groupbox in pairs(Tab.Groupboxes) do
+            Groupbox:Resize()
+        end
+        for _, Tabbox in pairs(Tab.Tabboxes) do
+            for _, SubTab in pairs(Tabbox.Tabs) do
+                SubTab:Resize()
+            end
+        end
+    end
+
+    for _, Option in pairs(Options) do
+        if Option.Type == "Dropdown" then
+            Option:RecalculateListSize()
+        elseif Option.Type == "KeyPicker" then
+            Option:Update()
+        end
+    end
+
+    Library:UpdateKeybindFrame()
+    for _, Notification in pairs(Library.Notifications) do
+        Notification:Resize()
+    end
+end
+
+function Library:GiveSignal(Connection: RBXScriptConnection)
+    table.insert(Library.Signals, Connection)
+    return Connection
+end
+
+local FetchIcons, Icons = pcall(function()
+    return loadstring(
+        game:HttpGet("https://raw.githubusercontent.com/deividcomsono/lucide-roblox-direct/refs/heads/main/source.lua")
+    )()
+end)
+function Library:GetIcon(IconName: string)
+    if not FetchIcons then
+        return
+    end
+    local Success, Icon = pcall(Icons.GetAsset, IconName)
+    if not Success then
+        return
+    end
+    return Icon
+end
+
+function Library:Validate(Table: { [string]: any }, Template: { [string]: any }): { [string]: any }
+    if typeof(Table) ~= "table" then
+        return Template
+    end
+
+    for k, v in pairs(Template) do
+        if typeof(k) == "number" then
+            continue
+        end
+
+        if typeof(v) == "table" then
+            Table[k] = Library:Validate(Table[k], v)
+        elseif Table[k] == nil then
+            Table[k] = v
+        end
+    end
+
+    return Table
+end
+
+--// Creator Functions \\--
+local function FillInstance(Table: { [string]: any }, Instance: GuiObject)
+    local ThemeProperties = Library.Registry[Instance] or {}
+    local DPIProperties = Library.DPIRegistry[Instance] or {}
+
+    local DPIExclude = DPIProperties["DPIExclude"] or Table["DPIExclude"] or {}
+    local DPIOffset = DPIProperties["DPIOffset"] or Table["DPIOffset"] or {}
+
+    for k, v in pairs(Table) do
+        if k == "DPIExclude" or k == "DPIOffset" then
+            continue
+        elseif ThemeProperties[k] then
+            ThemeProperties[k] = nil
+        elseif k ~= "Text" and (Library.Scheme[v] or typeof(v) == "function") then
+            -- me when Red in dropdowns break things (temp fix - or perm idk if deivid will do something about this)
+            ThemeProperties[k] = v
+            Instance[k] = Library.Scheme[v] or v()
+            continue
+        end
+
+        if not DPIExclude[k] then
+            if k == "Position" or k == "Size" or k:match("Padding") then
+                DPIProperties[k] = v
+                v = ApplyDPIScale(v, DPIOffset[k])
+            elseif k == "TextSize" then
+                DPIProperties[k] = v
+                v = ApplyTextScale(v)
+            end
+        end
+
+        Instance[k] = v
+    end
+
+    if GetTableSize(ThemeProperties) > 0 then
+        Library.Registry[Instance] = ThemeProperties
+    end
+    if GetTableSize(DPIProperties) > 0 then
+        DPIProperties["DPIExclude"] = DPIExclude
+        DPIProperties["DPIOffset"] = DPIOffset
+        Library.DPIRegistry[Instance] = DPIProperties
+    end
+end
+
+local function New(ClassName: string, Properties: { [string]: any }): any
+    local Instance = Instance.new(ClassName)
+
+    if Templates[ClassName] then
+        FillInstance(Templates[ClassName], Instance)
+    end
+    FillInstance(Properties, Instance)
+
+    if Properties["Parent"] and not Properties["ZIndex"] then
+        pcall(function()
+            Instance.ZIndex = Properties.Parent.ZIndex
         end)
     end
-})
 
-Groupboxes.ServerBox:AddToggle("Auto Execute_Toggle", {
-    Text = "Auto Execute",
-    Default = false,
-    Callback = function(enabled)
-        if enabled then
-            queue_on_teleport([[
-loadstring(game:HttpGet("https://lumin-hub.lol/loader.lua",true))()
-]])
-        end
-    end
-})
-
-Groupboxes.ServerBox:AddToggle("Auto Reconnect_Toggle", {
-    Text = "Auto Reconnect",
-    Default = false,
-    Tooltip = "Reconnects automatically on disconnect",
-        Callback = function(enabled)
-        vars.autoReconnectEnabled = enabled
-    end
-})
-
-
-vars.GuiService.ErrorMessageChanged:Connect(function()
-    if vars.autoReconnectEnabled then
-        local PlaceId = game.PlaceId
-        local JobId = game.JobId
-        vars.TeleportService:TeleportToPlaceInstance(PlaceId, JobId, vars.LocalPlayer)
-    end
-end)
-
-vars.LocalPlayer.CharacterAdded:Connect(function(char)
-    vars.Character = char
-    vars.Humanoid = char:WaitForChild("Humanoid")
-end)
-
-local WalkSpeedInput = Groupboxes.PlayerGroupbox:AddInput("walkspeed", {
-    Text = "WalkSpeed",
-    Default = tostring(vars.Humanoid.WalkSpeed),
-    Numeric = true,
-    Finished = true,
-    Placeholder = "Set WalkSpeed",
-    Callback = function(val)
-        local number = tonumber(val)
-        if number then
-            vars.Humanoid.WalkSpeed = number
-        end
-    end
-})
-
-local JumpPowerInput = Groupboxes.PlayerGroupbox:AddInput("jumppower", {
-    Text = "JumpPower",
-    Default = tostring(vars.Humanoid.JumpPower),
-    Numeric = true,
-    Finished = true,
-    Placeholder = "Set JumpPower",
-    Callback = function(val)
-        local number = tonumber(val)
-        if number then
-            vars.Humanoid.JumpPower = number
-        end
-    end
-})
-
-setreadonly(vars.mt, false)
-
-vars.mt.__index = LPH_NO_VIRTUALIZE(function(t, k)
-    if t == vars.Humanoid then
-        if k == "WalkSpeed" then
-            return 20
-        elseif k == "JumpPower" then
-            return 50
-        end
-    end
-    return vars.oldIndex(t, k)
-end)
-local function secondsToReadable(seconds)
-    if seconds <= 0 then
-        return "Ready"
-    elseif seconds < 60 then
-        return tostring(math.floor(seconds)) .. "s"
-    elseif seconds < 3600 then
-        return string.format("%.1f min", seconds / 60)
-    else
-        return string.format("%.1f hr", seconds / 3600)
-    end
+    return Instance
 end
 
-local objectLabels = {}
-local function updateDetailedSavedObjects()
-    
-    if #objectLabels > 50 then
-        return
-    end
-    
-    local success, data = pcall(function()
-        return vars.DataService:GetData()
-    end)
+--// Main Instances \\-
+local function SafeParentUI(Instance: Instance, Parent: Instance | () -> Instance)
+    if
+        not pcall(function()
+            if not Parent then
+                Parent = CoreGui
+            end
 
-    local index = 1
-
-    if not success or not data then
-        if not objectLabels[1] then
-            objectLabels[1] = Groupboxes.ObjectBox:AddLabel({
-                Text = "ERROR 404.",
-                DoesWrap = true
-            })
-        else
-            objectLabels[1]:SetText("Error Persist The Development Team Who made this .")
-            objectLabels[1].DoesWrap = true
-        end
-        index = 2
-    else
-        local saved = data.SavedObjects or {}
-        if next(saved) == nil then
-            if not objectLabels[1] then
-                objectLabels[1] = Groupboxes.ObjectBox:AddLabel({
-                    Text = "Nothing  found.",
-                    DoesWrap = true
-                })
+            local DestinationParent
+            if typeof(Parent) == "function" then
+                DestinationParent = Parent()
             else
-                objectLabels[1]:SetText("Nothing found.")
-                objectLabels[1].DoesWrap = true
+                DestinationParent = Parent
             end
-            index = 2
-        else
-            for uuid, obj in pairs(saved) do
-                local objectType = obj.ObjectType or "Unknown"
 
-                if not objectLabels[index] then
-                    objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                        Text = "ID: " .. tostring(uuid),
-                        DoesWrap = true
-                    })
-                else
-                    objectLabels[index]:SetText("ID: " .. tostring(uuid))
-                    objectLabels[index].DoesWrap = true
-                end
-                index = index + 1
-
-                if not objectLabels[index] then
-                    objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                        Text = "Variant: " .. objectType,
-                        DoesWrap = true
-                    })
-                else
-                    objectLabels[index]:SetText("Variant: " .. objectType)
-                    objectLabels[index].DoesWrap = true
-                end
-                index = index + 1
-
-                if objectType == "CosmeticCrate" then
-                    local time = obj.Data.TimeToOpen or 0
-                    if not objectLabels[index] then
-                        objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                            Text = "Timer " .. secondsToReadable(time),
-                            DoesWrap = true
-                        })
-                    else
-                        objectLabels[index]:SetText("Timer: " .. secondsToReadable(time))
-                        objectLabels[index].DoesWrap = true
-                    end
-                    index = index + 1
-
-                    local crateType = obj.Data.CrateType or "Unknown"
-                    if not objectLabels[index] then
-                        objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                            Text = "Crate: " .. crateType,
-                            DoesWrap = true
-                        })
-                    else
-                        objectLabels[index]:SetText("Crate: " .. crateType)
-                        objectLabels[index].DoesWrap = true
-                    end
-                    index = index + 1
-
-                    if time == 0 then
-                        local crateName = obj.Data.RandomCosmeticData and obj.Data.RandomCosmeticData.Name or "Unknown"
-                        if not objectLabels[index] then
-                            objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                                Text = "Cosmetic : " .. crateName,
-                                DoesWrap = true
-                            })
-                        else
-                            objectLabels[index]:SetText("Cosmetic : " .. crateName)
-                            objectLabels[index].DoesWrap = true
-                        end
-                        index = index + 1
-
-                        local cframe = obj.RelativeCFrame
-                        local cframeStr = "N/A"
-                        if type(cframe) == "table" then
-                            cframeStr = string.format("{ %.2f, %.2f, %.2f }", cframe[1] or 0, cframe[2] or 0, cframe[3] or 0)
-                        end
-
-                        if not objectLabels[index] then
-                            objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                                Text = "CFrame: " .. cframeStr,
-                                DoesWrap = true
-                            })
-                        else
-                            objectLabels[index]:SetText("CFrame: " .. cframeStr)
-                            objectLabels[index].DoesWrap = true
-                        end
-                        index = index + 1
-                    end
-
-                elseif objectType == "PetEgg" then
-                    local time = obj.Data.TimeToHatch or 0
-                    if not objectLabels[index] then
-                        objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                            Text = "Timer" .. secondsToReadable(time),
-                            DoesWrap = true
-                        })
-                    else
-                        objectLabels[index]:SetText("TimeToHatch: " .. secondsToReadable(time))
-                        objectLabels[index].DoesWrap = true
-                    end
-                    index = index + 1
-
-                    if time == 0 then
-                        if not objectLabels[index] then
-                            objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                                Text = "Name: " .. tostring(obj.Data.RandomPetData.Name or "Unknown"),
-                                DoesWrap = true
-                            })
-                        else
-                            objectLabels[index]:SetText("PetName: " .. tostring(obj.Data.RandomPetData.Name or "Unknown"))
-                            objectLabels[index].DoesWrap = true
-                        end
-                        index = index + 1
-
-                        if not objectLabels[index] then
-                            objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                                Text = "EggName: " .. tostring(obj.Data.EggName or "Unknown"),
-                                DoesWrap = true
-                            })
-                        else
-                            objectLabels[index]:SetText("Egg: " .. tostring(obj.Data.EggName or "Unknown"))
-                            objectLabels[index].DoesWrap = true
-                        end
-                        index = index + 1
-
-                        if not objectLabels[index] then
-                            objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                                Text = "Hatchable?: " .. tostring(obj.Data.CanHatch),
-                                DoesWrap = true
-                            })
-                        else
-                            objectLabels[index]:SetText("CanHatch: " .. tostring(obj.Data.CanHatch))
-                            objectLabels[index].DoesWrap = true
-                        end
-                        index = index + 1
-
-                        local baseWeight = obj.Data.BaseWeight or "N/A"
-                        if not objectLabels[index] then
-                            objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                                Text = "BaseWeight: " .. tostring(baseWeight),
-                                DoesWrap = true
-                            })
-                        else
-                            objectLabels[index]:SetText("BaseWeight: " .. tostring(baseWeight))
-                            objectLabels[index].DoesWrap = true
-                        end
-                        index = index + 1
-                    end
-                elseif objectType == "LightningRod" then
-                    local uses = obj.Data.Uses or "N/A"
-                    if not objectLabels[index] then
-                        objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                            Text = "Uses: " .. tostring(uses),
-                            DoesWrap = true
-                        })
-                    else
-                        objectLabels[index]:SetText("Uses: " .. tostring(uses))
-                        objectLabels[index].DoesWrap = true
-                    end
-                    index = index + 1
-                elseif string.find(objectType, "Sprinkler") then
-                    local lifetime = obj.Data.Lifetime or 0
-                    if not objectLabels[index] then
-                        objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                            Text = "Lifetime: " .. secondsToReadable(lifetime),
-                            DoesWrap = true
-                        })
-                    else
-                        objectLabels[index]:SetText("Lifetime: " .. secondsToReadable(lifetime))
-                        objectLabels[index].DoesWrap = true
-                    end
-                    index = index + 1
-
-                    if not objectLabels[index] then
-                        objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                            Text = "Object Type: " .. objectType,
-                            DoesWrap = true
-                        })
-                    else
-                        objectLabels[index]:SetText("Object Type: " .. objectType)
-                        objectLabels[index].DoesWrap = true
-                    end
-                    index = index + 1
-                end
-
-                if not objectLabels[index] then
-                    objectLabels[index] = Groupboxes.ObjectBox:AddLabel({
-                        Text = "",
-                        DoesWrap = true
-                    })
-                else
-                    objectLabels[index]:SetText("")
-                    objectLabels[index].DoesWrap = true
-                end
-                index = index + 1
-            end
-        end
-    end
-
-    for i = index, #objectLabels do
-        objectLabels[i]:SetText("")
-        objectLabels[i].DoesWrap = true
+            Instance.Parent = DestinationParent
+        end)
+    then
+        Instance.Parent = Library.LocalPlayer:WaitForChild("PlayerGui", math.huge)
     end
 end
 
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while task.wait(5) do  
-        pcall(updateDetailedSavedObjects)  
-    end
-end))
-
-for _, eggInfo in pairs(modules.PetRegistryEggs) do
-    if eggInfo and eggInfo.RarityData and eggInfo.RarityData.Items then
-        for petName, _ in pairs(eggInfo.RarityData.Items) do
-            if not vars.petNameSet[petName] then
-                table.insert(vars.allPetNames, petName)
-                vars.petNameSet[petName] = true
-            end
-        end
-    end
-end
-table.sort(vars.allPetNames)
-
-local plotCFrames = {
-    [1] = {
-        vector.create(46.986751556396484, 0.11002844572067261, -83.3476333618164),
-        vector.create(46.186622619628906, 0.10764789581298828, -80.44988250732422),
-        vector.create(62.952857971191406, 0.10800564289093018, -83.27778625488281),
-        vector.create(72.08914184570312, 0.33542096614837646, -100.36809539794922),
-        vector.create(47.90060806274414, 0.10841834545135498, -96.29991912841797),
-        vector.create(46.39936447143555, 0.10945868492126465, -111.27638244628906),
-        vector.create(67.62445068359375, 0.10944032669067383, -110.17488861083984),
-        vector.create(46.09257888793945, 0.1097571849822998, -123.85153198242188),
-        vector.create(62.316654205322266, 0.10783231258392334, -124.94851684570312),
-        vector.create(22.874588012695312, 0.10784947872161865, -125.18061065673828),
-        vector.create(-0.3997163474559784, 0.10899782180786133, -127.16976928710938),
-        vector.create(-0.40479472279548645, 0.09629905223846436, -127.11150360107422),
-        vector.create(-2.787203073501587, 0.10753750801086426, -110.67269134521484),
-        vector.create(18.716644287109375, 0.1100165843963623, -114.5334243774414),
-        vector.create(21.120403289794922, 0.10767531394958496, -98.0938720703125),
-        vector.create(-2.9125242233276367, 0.10360145568847656, -98.11107635498047),
-        vector.create(-2.7982702255249023, 0.10786688327789307, -81.63800811767578),
-        vector.create(24.012432098388672, 0.09022790193557739, -83.99653625488281),
-    },
-    [2] = {
-        vector.create(21.742393493652344, 0.10823655128479004, 54.910301208496094),
-        vector.create(8.310028076171875, 0.10753345489501953, 59.40725326538086),
-        vector.create(10.17292308807373, 0.10979080200195312, 67.91184997558594),
-        vector.create(21.90270233154297, 0.10938882827758789, 66.0545654296875),
-        vector.create(9.73317813873291, 0.10877609252929688, 83.05470275878906),
-        vector.create(21.673105239868164, 0.11074328422546387, 82.6033935546875),
-        vector.create(19.87676239013672, 1.2471098899841309, 98.31716918945312),
-        vector.create(6.537198066711426, 1.1086740493774414, 62.830448150634766),
-        vector.create(49.38711166381836, 3.8023805618286133, 53.493804931640625),
-        vector.create(56.0494270324707, 0.13675594329833984, 55.872249603271484),
-        vector.create(61.540367126464844, 0.11002755165100098, 66.76225280761719),
-        vector.create(46.27577590942383, 0.10877585411071777, 69.37747955322266),
-        vector.create(45.60667419433594, 0.15139055252075195, 80.72818756103516),
-        vector.create(65.76116180419922, 0.1085505485534668, 84.6832504272461),
-        vector.create(65.10400390625, 0.10912084579467773, 102.03813171386719),
-        vector.create(42.49045944213867, 0.10886621475219727, 99.4557113647461),
-    },
-    [3] = {
-        vector.create(-68.1243896484375, 0.09230762720108032, -84.20059204101562),
-        vector.create(-84.99247741699219, 0.10854721069335938, -85.6216049194336),
-        vector.create(-86.71431732177734, 0.11122310161590576, -94.80310821533203),
-        vector.create(-91.58209991455078, 0.5076375007629395, -103.97802734375),
-        vector.create(-82.31282043457031, 1.5328526496887207, -113.64060974121094),
-        vector.create(-63.310855865478516, 0.10772848129272461, -107.24933624267578),
-        vector.create(-64.99747467041016, 0.10944414138793945, -126.2616195678711),
-        vector.create(-83.28607177734375, 1.152390718460083, -123.90169525146484),
-        vector.create(-123.35504150390625, 0.3823695182800293, -83.41324615478516),
-        vector.create(-133.4471893310547, 0.04632347822189331, -80.07234954833984),
-        vector.create(-135.57118225097656, 0.1085054874420166, -97.57400512695312),
-        vector.create(-123.90216064453125, 0.10946249961853027, -99.00357818603516),
-        vector.create(-114.20374298095703, 0.10793614387512207, -112.55894470214844),
-        vector.create(-133.30035400390625, 0.10831582546234131, -110.82836151123047),
-        vector.create(-134.842529296875, 0.10985088348388672, -125.14405822753906),
-        vector.create(-121.80805969238281, 0.11002755165100098, -128.16622924804688),
-    },
-    [4] = {
-        vector.create(-76.54374694824219, 0.13476061820983887, 51.60874557495117),
-        vector.create(-68.02008056640625, 0.1355266571044922, 65.49372100830078),
-        vector.create(-67.39030456542969, 0.1348036527633667, 81.52510070800781),
-        vector.create(-66.79109191894531, 0.13512909412384033, 97.09703826904297),
-        vector.create(-81.79408264160156, 0.13432025909423828, 97.44499969482422),
-        vector.create(-90.3172607421875, 0.132987380027771, 85.9405517578125),
-        vector.create(-94.13057708740234, 0.5228884220123291, 77.99896240234375),
-        vector.create(-94.7206802368164, 0.3292195796966553, 63.139060974121094),
-        vector.create(-94.60408020019531, 0.13498449325561523, 49.12335205078125),
-        vector.create(-111.14490509033203, 0.11034154891967773, 98.7586441040039),
-        vector.create(-132.80540466308594, 0.10752558708190918, 99.57952880859375),
-        vector.create(-134.76380920410156, 0.07780718803405762, 84.21807098388672),
-        vector.create(-113.3249740600586, 0.07658779621124268, 82.9832534790039),
-        vector.create(-111.9824447631836, 0.10749483108520508, 69.52320098876953),
-        vector.create(-132.51133728027344, 0.10942578315734863, 70.83209991455078),
-        vector.create(-136.46800231933594, 0.10873103141784668, 54.989356994628906),
-        vector.create(-110.78286743164062, 0.1075131893157959, 54.806636810302734),
-    },
-    [5] = {
-        vector.create(-211.74147033691406, 0.10772848129272461, -83.23009490966797),
-        vector.create(-221.9821014404297, 1.754056692123413, -81.0788803100586),
-        vector.create(-205.6539306640625, 0.10752153396606445, -97.65946960449219),
-        vector.create(-221.75677490234375, 0.10979008674621582, -97.94977569580078),
-        vector.create(-225.70947265625, 0.11002779006958008, -112.01988983154297),
-        vector.create(-205.73660278320312, 0.10775160789489746, -113.09073638916016),
-        vector.create(-206.13925170898438, 0.10748827457427979, -125.90331268310547),
-        vector.create(-223.3180389404297, 0.10859692096710205, -128.50376892089844),
-        vector.create(-248.27174377441406, 3.163377523422241, -84.14464569091797),
-        vector.create(-270.30224609375, 0.10747575759887695, -81.75934600830078),
-        vector.create(-268.6859436035156, 0.10768961906433105, -97.72665405273438),
-        vector.create(-249.0785675048828, 0.1077578067779541, -97.54768371582031),
-        vector.create(-247.78163146972656, 0.11008453369140625, -112.13848876953125),
-        vector.create(-269.3927307128906, 0.1091146469116211, -111.74364471435547),
-        vector.create(-267.9913024902344, 0.1096792221069336, -125.84830474853516),
-        vector.create(-248.31956481933594, 0.10964298248291016, -126.40029907226562),
-    },
-    [6] = {
-        vector.create(-226.7761993408203, 0.10889410972595215, 52.60894775390625),
-        vector.create(-211.9356231689453, 0.10814023017883301, 58.67427444458008),
-        vector.create(-210.3127899169922, 0.10936379432678223, 67.39817810058594),
-        vector.create(-226.52586364746094, 0.1093287467956543, 67.55265045166016),
-        vector.create(-206.25601196289062, 0.10822117328643799, 80.99825286865234),
-        vector.create(-224.31851196289062, 0.11001753807067871, 81.35910034179688),
-        vector.create(-217.33680725097656, 1.201322793006897, 97.79319763183594),
-        vector.create(-213.08505249023438, 1.143563985824585, 61.683284759521484),
-        vector.create(-174.18771362304688, 3.9045591354370117, 52.52637481689453),
-        vector.create(-167.4537353515625, 0.13281893730163574, 55.68878936767578),
-        vector.create(-158.9430389404297, 0.10919177532196045, 66.54054260253906),
-        vector.create(-173.33787536621094, 0.10882234573364258, 70.0195083618164),
-        vector.create(-173.8126678466797, 0.1441727876663208, 83.388671875),
-        vector.create(-156.37625122070312, 0.10874831676483154, 84.90918731689453),
-        vector.create(-156.7935333251953, 0.10856294631958008, 103.46162414550781),
-        vector.create(-172.7524871826172, 0.10863876342773438, 101.78524780273438),
-    },
-}
-
-
-
-for _, eggInfo in pairs(modules.PetRegistryEggs) do
-    if eggInfo and eggInfo.RarityData and eggInfo.RarityData.Items then
-        for petName, _ in pairs(eggInfo.RarityData.Items) do
-            if not vars.petNameSet[petName] then
-                table.insert(vars.allPetNames, petName)
-                vars.petNameSet[petName] = true
-            end
-        end
-    end
-end
-table.sort(vars.allPetNames)
-
-
-for eggName, eggInfo in pairs(modules.PetRegistryEggs) do
-    if typeof(eggInfo) == "table" then
-        table.insert(vars.eggDisplayNames, eggName)
-    end
-end
-table.sort(vars.eggDisplayNames)
-
-
-
-local function SendMessageEMBED(embed)
-    if vars.WebhookURL == "" then return end
-    local headers = {["Content-Type"] = "application/json"}
-    local data = {
-        ["content"] = embed.ping and "@everyone" or nil,
-        ["embeds"] = {
-            {
-                ["title"] = embed.title,
-                ["description"] = embed.description,
-                ["color"] = embed.color,
-                ["fields"] = embed.fields,
-                ["footer"] = {["text"] = embed.footer.text}
-            }
-        }
-    }
-    local body = vars.HttpService:JSONEncode(data)
-    pcall(function()
-        (syn and syn.request or request)({
-            Url = vars.WebhookURL,
-            Method = "POST",
-            Headers = headers,
-            Body = body
-        })
-    end)
-end
-
-
-local function highlightEgg(uuid)
-    if vars.activeHighlights[uuid] and vars.activeHighlights[uuid].Parent then return end
-    
-    for _, farm in ipairs(vars.Workspace:WaitForChild("Farm"):GetChildren()) do
-        local important = farm:FindFirstChild("Important")
-        local data = important and important:FindFirstChild("Data")
-        local ownerValue = data and data:FindFirstChild("Owner")
-
-        if ownerValue and ownerValue.Value == vars.LocalPlayer.Name then
-            local objects = important:FindFirstChild("Objects_Physical")
-            if objects then
-                for _, obj in ipairs(objects:GetChildren()) do
-                    if obj:GetAttribute("OBJECT_UUID") == uuid then
-                        local highlight = Instance.new("Highlight")
-                        highlight.Name = "TargetPetHighlight"
-                        highlight.FillColor = Color3.fromRGB(0, 255, 0)
-                        highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                        highlight.FillTransparency = 0.25
-                        highlight.OutlineTransparency = 0
-                        highlight.Adornee = obj
-                        highlight.Parent = obj
-                        vars.activeHighlights[uuid] = highlight
-                        return
-                    end
-                end
-            end
-        end
-    end
-end
-
-local function checkPetAndRejoin()
-    if not HatchRejoinToggle.Value then
-        for _, highlight in pairs(vars.activeHighlights) do
-            if highlight and highlight.Parent then
-                highlight:Destroy()
-            end
-        end
-        vars.activeHighlights = {}
+local function ParentUI(UI: Instance, SkipHiddenUI: boolean?)
+    if SkipHiddenUI then
+        SafeParentUI(UI, CoreGui)
         return
     end
 
-    if #vars.targetPetNames == 0 then return end
+    pcall(protectgui, UI)
 
-    local success, data = pcall(function()
-        return vars.DataService:GetData()
-    end)
-    if not success or not data or not data.SavedObjects then return end
-
-    local hasPetEgg = false
-    for _, obj in pairs(data.SavedObjects) do
-        if obj.ObjectType == "PetEgg" then
-            hasPetEgg = true
-            break
-        end
-    end
-
-    if not hasPetEgg then
-        Library:Notify("❌ No PetEggs in your plot. Stopping rejoin.")
-        if vars.SendOnFailure and vars.WebhookURL ~= "" then
-            SendMessageEMBED({
-                title = "❌ Ran Out of Eggs",
-                description = "No PetEggs found in plot. Rejoin Aborted!.",
-                color = 16711680,
-                fields = {
-                    { name = "Player", value = vars.LocalPlayer.Name },
-                    { name = "PlaceId", value = tostring(game.PlaceId) }
-                },
-                footer = { text = "By Lumin Hub" }
-            })
-        end
-        return
-    end
-
-    local petList = {}
-    local found, foundUUID, foundPetName = false, "", ""
-
-    for uuid, obj in pairs(data.SavedObjects) do
-        if obj.ObjectType == "PetEgg" then
-            local petName = obj.Data and obj.Data.RandomPetData and obj.Data.RandomPetData.Name
-            if petName then
-                table.insert(petList, petName)
-                            for _, targetName in ipairs(vars.targetPetNames) do
-                if petName == targetName then
-                    found = true
-                    foundUUID = uuid
-                    foundPetName = petName
-                    break
-                end
-            end
-                if found then break end
-            end
-        end
-    end
-
-    if found then
-        highlightEgg(foundUUID)
-        Library:Notify({
-            Title = "✅ Pet Found",
-            Description = "Pet '" .. foundPetName .. "' was found!",
-            Time = 5
-        })
-        if vars.SendOnSuccess then
-            SendMessageEMBED({
-                title = "✅ Pet Found!",
-                description = "Pet `" .. foundPetName .. "` was found!",
-                color = 65280,
-                ping = true,
-                fields = {
-                    { name = "Player", value = vars.LocalPlayer.Name },
-                    { name = "PlaceId", value = tostring(game.PlaceId) },
-                    { name = "Target Names", value = table.concat(vars.targetPetNames, ", ") }
-                },
-                footer = { text = "By Lumin Hub" }
-            })
-        end
-        return
-    end
-
-    Library:Notify({
-        Title = "❌ Pet Not Found",
-        Description = "Rejoining to search again...",
-        Time = 5
-    })
-
-    if vars.SendOnFailure then
-        local missedPetsString = ""
-        for i, pet in ipairs(petList) do
-            missedPetsString = missedPetsString .. tostring(i) .. ". " .. pet .. "\n"
-        end
-
-        SendMessageEMBED({
-            title = "❌ Pet Not Found",
-            description = "None of the target pets `" .. table.concat(vars.targetPetNames, ", ") .. "` were found. Rejoining...",
-            color = 16711680,
-            fields = {
-                { name = "Player", value = vars.LocalPlayer.Name },
-                { name = "PlaceId", value = tostring(game.PlaceId) },
-                { name = "Target Names", value = table.concat(vars.targetPetNames, ", ") },
-                { name = "Missed Pets", value = missedPetsString:sub(1, 1024) },
-                { name = "JobId", value = tostring(game.JobId) }
-            },
-            footer = { text = "By Lumin Hub" }
-        })
-    end
-
-    if vars.kickBeforeRejoin then
-        task.wait(vars.delayhop)
-        vars.LocalPlayer:Kick("Rejoining to search for pets...")
-        task.wait(vars.delayhop)
-    end
-    task.wait(vars.delayhop)
-
-    vars.TeleportService:Teleport(game.PlaceId, vars.LocalPlayer)
+    SafeParentUI(UI, gethui)
 end
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while task.wait(5) do  
-        pcall(checkPetAndRejoin)  
-    end
-end))
 
-
-for key, info in pairs(modules.SeedData) do
-    if typeof(info) == "table" and info.Price then
-        local rarity = info.SeedRarity or "Unknown"
-        local displayName = string.format("%s [%s]", info.SeedName or key, rarity)
-        table.insert(vars.seedArray, {
-            Key = key,
-            DisplayName = displayName,
-            SeedRarity = rarity,
-            Price = info.Price
-        })
-        vars.seedDisplayNameToKey[displayName] = key
-    end
-end
-table.sort(vars.seedArray, function(a, b)
-    local aRank = vars.getRarityRank(a.SeedRarity)
-    local bRank = vars.getRarityRank(b.SeedRarity)
-    if aRank == bRank then
-        return a.Price < b.Price
-    end
-    return aRank < bRank
+local ScreenGui = New("ScreenGui", {
+    Name = "Obsidian",
+    DisplayOrder = 999,
+    ResetOnSpawn = false,
+})
+ParentUI(ScreenGui)
+Library.ScreenGui = ScreenGui
+ScreenGui.DescendantRemoving:Connect(function(Instance)
+    Library:RemoveFromRegistry(Instance)
+    Library.DPIRegistry[Instance] = nil
 end)
 
-for _, v in ipairs(vars.seedArray) do
-    table.insert(vars.seedDisplayNames, v.DisplayName)
-end 
+local ModalScreenGui = New("ScreenGui", {
+    Name = "ObsidanModal",
+    DisplayOrder = 999,
+    ResetOnSpawn = false,
+})
+ParentUI(ModalScreenGui, true)
 
-Groupboxes.AutoFeedGroupbox:AddDropdown("PetFoodSelector_Dropdown", {
-    Values = vars.seedDisplayNames,
-    Multi = true,
-    Text = "Select Food To Use",
-    Tooltip = "Choose one or more Foods to equip for feeding pets",
-    Searchable = true,
-    Default = {},
-    Callback = function(values)
-        vars.selectedSeedKeys = {}
-        for displayName, selected in pairs(values) do
-            if selected and vars.seedDisplayNameToKey[displayName] then
-                vars.selectedSeedKeys[vars.seedDisplayNameToKey[displayName] ] = true
-            end
-        end
-    end
+local ModalElement = New("TextButton", {
+    BackgroundTransparency = 1,
+    Modal = false,
+    Size = UDim2.fromScale(0, 0),
+    Text = "",
+    ZIndex = -999,
+    Parent = ModalScreenGui,
 })
 
-    Groupboxes.GiftGroup:AddToggle("AutoAcceptGift_Toggle", {
-        Text = "Auto Accept Gift",
-        Default = false,
-        Tooltip = "Auto Accepts Gift",
-        Callback = function(Value)
-            vars.AutoAcceptGift = Value
-        end
+--// Cursor
+local Cursor
+do
+    Cursor = New("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = "White",
+        Size = UDim2.fromOffset(9, 1),
+        Visible = false,
+        ZIndex = 999,
+        Parent = ScreenGui,
     })
-    
-    task.spawn(function()
-        while true do
-            if vars.AutoAcceptGift then
-                local giftGui = vars.playerGui:FindFirstChild("Gift_Notification")
-                if giftGui and giftGui:FindFirstChild("Frame") then
-                    for _, notif in ipairs(giftGui.Frame:GetChildren()) do
-                        local holder = notif:FindFirstChild("Holder")
-                        if holder and holder:FindFirstChild("Frame") then
-                            local accept = holder.Frame:FindFirstChild("Accept")
-                            if accept then
-                                replicatesignal(accept.MouseButton1Click)
-                            end
-                        end
-                    end
-                end
-            end
-            task.wait()
-        end
-    end)
-
-    AutoSkipSeed = false 
-    local MyToggle = Groupboxes.SeedGroup:AddToggle("AutoSkipSeed", {
-        Text = "Auto Skip Seed Pack",
-        Default = false,
-        Tooltip = "",
-        Callback = function(Value)
-            AutoSkipSeed = Value
-        end
-    })
-    task.spawn(function()
-        while task.wait() do
-            if AutoSkipSeed then
-                pcall(function()
-    firesignal(game:GetService("Players").LocalPlayer.PlayerGui.RollCrate_UI.Frame.Skip.Activated)
-                end)
-            end
-        end
-    end)
-
-    Groupboxes.SeedGroup:AddDropdown("SeedPackSelector_Dropdown", {
-        Text = "Select Seed Pack",
-        Searchable = true,
-        Values = vars.seedPackNames,
-        Callback = function(selected)
-            vars.selectedSeedPack = selected
-        end
+    New("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = "Dark",
+        Position = UDim2.fromScale(0.5, 0.5),
+        Size = UDim2.new(1, 2, 1, 2),
+        ZIndex = 998,
+        Parent = Cursor,
     })
 
-    local autoEquipSeedPackEnabled = false
-    local function equipSeedPack()
-        local char = vars.LocalPlayer.Character
-        if not char or not vars.selectedSeedPack then return end
-
-        for _, tool in ipairs(char:GetChildren()) do
-            if tool:IsA("Tool") then
-                local cleanName = tool.Name:match("^(.-) %[X%d+]$") or tool.Name
-                if cleanName == vars.selectedSeedPack then
-                    return
-                end
-            end
-        end
-
-        local toolToEquip = nil
-        for _, tool in ipairs(vars.Backpack:GetChildren()) do
-            if tool:IsA("Tool") then
-                local cleanName = tool.Name:match("^(.-) %[X%d+]$") or tool.Name
-                if cleanName == vars.selectedSeedPack then
-                    toolToEquip = tool
-                    break
-                end
-            end
-        end
-
-        if toolToEquip then
-            for _, tool in ipairs(char:GetChildren()) do
-                if tool:IsA("Tool") then
-                    tool.Parent = vars.Backpack
-                    task.wait(0.05)
-                end
-            end
-            
-            toolToEquip.Parent = char
-            task.wait(0.2)
-        end
-    end
-
-    Groupboxes.SeedGroup:AddToggle("AutoEquipSeedPack_Toggle", {
-        Text = "Auto Equip Selected Seed Pack",
-        Default = false,
-        Tooltip = ".",
-        Callback = function(Value)
-            autoEquipSeedPackEnabled = Value
-        end
+    local CursorV = New("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = "White",
+        Position = UDim2.fromScale(0.5, 0.5),
+        Size = UDim2.fromOffset(1, 9),
+        Parent = Cursor,
     })
-
-    task.spawn(function()
-        while task.wait(1) do
-            if autoEquipSeedPackEnabled then
-                pcall(equipSeedPack)
-            end
-        end
-    end)
-
-    local autoOpenSeedPackEnabled = false
-    Groupboxes.SeedGroup:AddToggle("AutoOpenSeedPack_Toggle", {
-        Text = "Auto Open Selected Seed Pack",
-        Default = false,
-        Tooltip = "",
-        Callback = function(value)
-            autoOpenSeedPackEnabled = value
-        end
+    New("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = "Dark",
+        Position = UDim2.fromScale(0.5, 0.5),
+        Size = UDim2.new(1, 2, 1, 2),
+        ZIndex = 998,
+        Parent = CursorV,
     })
-
-    task.spawn(function()
-        while task.wait(0.5) do
-            if autoOpenSeedPackEnabled then
-                local char = vars.LocalPlayer.Character
-                if char then
-                    local equippedTool = char:FindFirstChildOfClass("Tool")
-                    if equippedTool then
-                        local cleanName = equippedTool.Name:match("^(.-) %[X%d+]$") or equippedTool.Name
-                        if cleanName == vars.selectedSeedPack then
-                            pcall(function()
-                                equippedTool:Activate()
-                            end)
-                        end
-                    end
-                end
-            end
-    end
-    end)
-
-local feedWhenInput = Groupboxes.AutoFeedGroupbox:AddInput("FeedWhenHunger_Input", {
-    Text = "Feed When Hunger (%)",
-    Default = "0",
-    Numeric = true,
-    Tooltip = "Feed only if pet hunger is below or equal to this %",
-    Placeholder = "0"
-})
-
-local stopWhenInput = Groupboxes.AutoFeedGroupbox:AddInput("StopWhenHunger_Input", {
-    Text = "Stop When Hunger (%)",
-    Default = "10",
-    Numeric = true,
-    Tooltip = "Stop feeding if hunger is above or equal to this %",
-    Placeholder = "10"
-})
-
-
-local function toNumberSafe(val)
-    if typeof(val) == "number" then return val end
-    if typeof(val) == "string" then return tonumber(val) end
-    return nil
 end
 
-local function EquipSeedTool()
-    if not vars.LocalPlayer.Character then return end
-    local char = vars.LocalPlayer.Character
+--// Notification
+local NotificationArea
+local NotificationList
+do
+    NotificationArea = New("Frame", {
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundTransparency = 1,
+        Position = UDim2.new(1, -6, 0, 6),
+        Size = UDim2.new(0, 300, 1, -6),
+        Parent = ScreenGui,
+    })
+    NotificationList = New("UIListLayout", {
+        HorizontalAlignment = Enum.HorizontalAlignment.Right,
+        Padding = UDim.new(0, 6),
+        Parent = NotificationArea,
+    })
+end
 
-    for _, tool in ipairs(char:GetChildren()) do
-        if tool:IsA("Tool") and vars.selectedSeedKeys[tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"])] then
+--// Lib Functions \\--
+function Library:GetBetterColor(Color: Color3, Add: number): Color3
+    Add = Add * (Library.IsLightTheme and -4 or 2)
+    return Color3.fromRGB(
+        math.clamp(Color.R * 255 + Add, 0, 255),
+        math.clamp(Color.G * 255 + Add, 0, 255),
+        math.clamp(Color.B * 255 + Add, 0, 255)
+    )
+end
+
+function Library:GetDarkerColor(Color: Color3): Color3
+    local H, S, V = Color:ToHSV()
+    return Color3.fromHSV(H, S, V / 2)
+end
+
+function Library:GetKeyString(KeyCode: Enum.KeyCode)
+    if KeyCode.EnumType == Enum.KeyCode and KeyCode.Value > 33 and KeyCode.Value < 127 then
+        return string.char(KeyCode.Value)
+    end
+
+    return KeyCode.Name
+end
+
+function Library:GetTextBounds(Text: string, Font: Font, Size: number, Width: number?): (number, number)
+    local Params = Instance.new("GetTextBoundsParams")
+    Params.Text = Text
+    Params.RichText = true
+    Params.Font = Font
+    Params.Size = Size
+    Params.Width = Width or workspace.CurrentCamera.ViewportSize.X - 32
+
+    local Bounds = TextService:GetTextBoundsAsync(Params)
+    return Bounds.X, Bounds.Y
+end
+
+function Library:MouseIsOverFrame(Frame: GuiObject, Mouse: Vector2): boolean
+    local AbsPos, AbsSize = Frame.AbsolutePosition, Frame.AbsoluteSize
+    return Mouse.X >= AbsPos.X
+        and Mouse.X <= AbsPos.X + AbsSize.X
+        and Mouse.Y >= AbsPos.Y
+        and Mouse.Y <= AbsPos.Y + AbsSize.Y
+end
+
+function Library:SafeCallback(Func: (...any) -> ...any, ...: any)
+    if not (Func and typeof(Func) == "function") then
+        return
+    end
+
+    local Success, Response = pcall(Func, ...)
+    if Success then
+        return Response
+    end
+
+    local Traceback = debug.traceback():gsub("\n", " ")
+    local _, i = Traceback:find(":%d+ ")
+    Traceback = Traceback:sub(i + 1):gsub(" :", ":")
+
+    task.defer(error, Response .. " - " .. Traceback)
+    if Library.NotifyOnError then
+        Library:Notify(Response)
+    end
+end
+
+function Library:MakeDraggable(UI: GuiObject, DragFrame: GuiObject, IgnoreToggled: boolean?, IsMainWindow: boolean?)
+    local StartPos
+    local FramePos
+    local Dragging = false
+    local Changed
+    DragFrame.InputBegan:Connect(function(Input: InputObject)
+        if not IsClickInput(Input) or IsMainWindow and Library.CantDragForced then
             return
         end
-    end
 
-    for _, tool in ipairs(char:GetChildren()) do
-        if tool:IsA("Tool") then
-            tool.Parent = vars.Backpack
+        StartPos = Input.Position
+        FramePos = UI.Position
+        Dragging = true
+
+        Changed = Input.Changed:Connect(function()
+            if Input.UserInputState ~= Enum.UserInputState.End then
+                return
+            end
+
+            Dragging = false
+            if Changed and Changed.Connected then
+                Changed:Disconnect()
+                Changed = nil
+            end
+        end)
+    end)
+    Library:GiveSignal(UserInputService.InputChanged:Connect(function(Input: InputObject)
+        if
+            (not IgnoreToggled and not Library.Toggled)
+            or (IsMainWindow and Library.CantDragForced)
+            or not (ScreenGui and ScreenGui.Parent)
+        then
+            Dragging = false
+            if Changed and Changed.Connected then
+                Changed:Disconnect()
+                Changed = nil
+            end
+
+            return
         end
-    end
-    
-    local function tryEquip(tool)
-        tool.Parent = char
-        task.wait(0.15)
-        return tool.Parent == char
-    end
 
-    for _, tool in ipairs(vars.Backpack:GetChildren()) do
-        if tool:IsA("Tool")
-            and vars.selectedSeedKeys[tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"])]
-            and tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["Holdable"]
-            and tool:GetAttribute(getgenv().HookedInventoryServiceEnums["Favorite"]) ~= true then
-            if tryEquip(tool) then
-                break
+        if Dragging and IsHoverInput(Input) then
+            local Delta = Input.Position - StartPos
+            UI.Position =
+                UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
+        end
+    end))
+end
+
+function Library:MakeResizable(UI: GuiObject, DragFrame: GuiObject, Callback: () -> ()?)
+    local StartPos
+    local FrameSize
+    local Dragging = false
+    local Changed
+    DragFrame.InputBegan:Connect(function(Input: InputObject)
+        if not IsClickInput(Input) then
+            return
+        end
+
+        StartPos = Input.Position
+        FrameSize = UI.Size
+        Dragging = true
+
+        Changed = Input.Changed:Connect(function()
+            if Input.UserInputState ~= Enum.UserInputState.End then
+                return
+            end
+
+            Dragging = false
+            if Changed and Changed.Connected then
+                Changed:Disconnect()
+                Changed = nil
+            end
+        end)
+    end)
+    Library:GiveSignal(UserInputService.InputChanged:Connect(function(Input: InputObject)
+        if not UI.Visible or not (ScreenGui and ScreenGui.Parent) then
+            Dragging = false
+            if Changed and Changed.Connected then
+                Changed:Disconnect()
+                Changed = nil
+            end
+
+            return
+        end
+
+        if Dragging and IsHoverInput(Input) then
+            local Delta = Input.Position - StartPos
+            UI.Size = UDim2.new(
+                FrameSize.X.Scale,
+                math.clamp(FrameSize.X.Offset + Delta.X, Library.MinSize.X, math.huge),
+                FrameSize.Y.Scale,
+                math.clamp(FrameSize.Y.Offset + Delta.Y, Library.MinSize.Y, math.huge)
+            )
+            if Callback then
+                Library:SafeCallback(Callback)
             end
         end
-    end
+    end))
 end
 
-local function FeedPets()
-    local data = vars.DataService:GetData()
-    if not data or not data.PetsData then return end
-    local petsData = data.PetsData
-    local equippedUUIDs = petsData.EquippedPets or {}
-    local petInventory = (petsData.PetInventory and petsData.PetInventory.Data) or {}
+function Library:MakeCover(Holder: GuiObject, Place: string)
+    local Pos = Places[Place] or { 0, 0 }
+    local Size = Sizes[Place] or { 1, 0.5 }
 
-    local minVal = toNumberSafe(feedWhenInput.Value) or 0
-    local maxVal = toNumberSafe(stopWhenInput.Value) or 100
+    local Cover = New("Frame", {
+        AnchorPoint = Vector2.new(Pos[1], Pos[2]),
+        BackgroundColor3 = Holder.BackgroundColor3,
+        Position = UDim2.fromScale(Pos[1], Pos[2]),
+        Size = UDim2.fromScale(Size[1], Size[2]),
+        Parent = Holder,
+    })
 
-    for _, uuid in pairs(equippedUUIDs) do
-        if not running.autoFeedEnabled then break end
-
-        local petData = petInventory[uuid]
-        if petData and petData.PetData then
-            local petType = petData.PetType
-            local currentHunger = petData.PetData.Hunger or 0
-            local maxHunger = (modules.PetRegistry[petType] and modules.PetRegistry[petType].DefaultHunger) or 100
-            local hungerPercent = (currentHunger / maxHunger) * 100
-
-            if hungerPercent <= minVal and hungerPercent < maxVal then
-                remotes.event:FireServer("Feed", uuid)
-                task.wait(1)
-            end
-        end
-
-        task.wait(0.1)
-    end
+    return Cover
 end
 
-Groupboxes.AutoFeedGroupbox:AddToggle("AutoFeed_Toggle", {
-    Text = "Enable Auto Feed",
-    Default = false,
-    Tooltip = "Automatically equip selected seed tool(s) and feed pets",
-    Callback = function(value)
-        running.autoFeedEnabled = value
-        if running.autoFeedEnabled then
-            task.spawn(function()
-                while running.autoFeedEnabled do
-                    EquipSeedTool()
-                    FeedPets()
-                    task.wait(1)
-                end
-            end)
-        end
-    end
-})
+function Library:MakeLine(Frame: GuiObject, Info)
+    local Line = New("Frame", {
+        AnchorPoint = Info.AnchorPoint or Vector2.zero,
+        BackgroundColor3 = "OutlineColor",
+        Position = Info.Position,
+        Size = Info.Size,
+        Parent = Frame,
+    })
 
-for plantName, _ in pairs(modules.SeedData) do
-    if typeof(plantName) == "string" then
-        table.insert(vars.plantNamesForGifter, plantName)
-    end
-end
-table.sort(vars.plantNamesForGifter)
-
-local function updatePlayers()
-    vars.otherPlayers = {}
-    for _, player in ipairs(vars.Players:GetPlayers()) do
-        if player ~= vars.LocalPlayer then
-            table.insert(vars.otherPlayers, player.Name)
-        end
-    end
-    if vars.playerDropdownGifter then
-        vars.playerDropdownGifter:SetValues(vars.otherPlayers)
-    end
+    return Line
 end
 
-updatePlayers()
-vars.Players.PlayerAdded:Connect(updatePlayers)
-vars.Players.PlayerRemoving:Connect(updatePlayers)
+function Library:MakeOutline(Frame: GuiObject, Corner: number?, ZIndex: number?)
+    local Holder = New("Frame", {
+        BackgroundColor3 = "Dark",
+        Position = UDim2.fromOffset(-2, -2),
+        Size = UDim2.new(1, 4, 1, 4),
+        ZIndex = ZIndex,
+        Parent = Frame,
+    })
 
-vars.giftingSelectedPlant = vars.plantNamesForGifter[1] or nil
-vars.giftingSelectedPlayer = vars.otherPlayers[1] or nil
+    local Outline = New("Frame", {
+        BackgroundColor3 = "OutlineColor",
+        Position = UDim2.fromOffset(1, 1),
+        Size = UDim2.new(1, -2, 1, -2),
+        ZIndex = ZIndex,
+        Parent = Holder,
+    })
 
-local function findNextPlant()
-    local function getCleanName(tool)
-        local name = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or tool.Name
-        if not name or type(name) ~= "string" then
-            return nil
-        end
-        if string.find(name, " Seed") then
-            return nil
-        end
-        return name:match("^(.-)%s*%[.+%]$") or name
+    if Corner and Corner > 0 then
+        New("UICorner", {
+            CornerRadius = UDim.new(0, Corner + 1),
+            Parent = Holder,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(0, Corner),
+            Parent = Outline,
+        })
     end
 
-    local searchLocations = {
-        vars.LocalPlayer.Character,
-        vars.Backpack
+    return Holder
+end
+
+function Library:AddDraggableButton(Text: string, Func)
+    local Table = {}
+
+    local Button = New("TextButton", {
+        BackgroundColor3 = "BackgroundColor",
+        Position = UDim2.fromOffset(6, 6),
+        TextSize = 16,
+        ZIndex = 10,
+        Parent = ScreenGui,
+
+        DPIExclude = {
+            Position = true,
+        },
+    })
+    New("UICorner", {
+        CornerRadius = UDim.new(0, Library.CornerRadius - 1),
+        Parent = Button,
+    })
+    Library:MakeOutline(Button, Library.CornerRadius, 9)
+
+    Table.Button = Button
+    Button.MouseButton1Click:Connect(function()
+        Library:SafeCallback(Func, Table)
+    end)
+    Library:MakeDraggable(Button, Button, true)
+
+    function Table:SetText(NewText: string)
+        local X, Y = Library:GetTextBounds(NewText, Library.Scheme.Font, 16)
+
+        Button.Text = NewText
+        Button.Size = UDim2.fromOffset(X * Library.DPIScale * 2, Y * Library.DPIScale * 2)
+        Library:UpdateDPI(Button, {
+            Size = UDim2.fromOffset(X * 2, Y * 2),
+        })
+    end
+    Table:SetText(Text)
+
+    return Table
+end
+
+function Library:AddDraggableMenu(Name: string)
+    local Background = Library:MakeOutline(ScreenGui, Library.CornerRadius, 10)
+    Background.AutomaticSize = Enum.AutomaticSize.Y
+    Background.Position = UDim2.fromOffset(6, 6)
+    Background.Size = UDim2.fromOffset(0, 0)
+    Library:UpdateDPI(Background, {
+        Position = false,
+        Size = false,
+    })
+
+    local Holder = New("Frame", {
+        BackgroundColor3 = "BackgroundColor",
+        Position = UDim2.fromOffset(2, 2),
+        Size = UDim2.new(1, -4, 1, -4),
+        Parent = Background,
+    })
+    New("UICorner", {
+        CornerRadius = UDim.new(0, Library.CornerRadius - 1),
+        Parent = Holder,
+    })
+    Library:MakeLine(Holder, {
+        Position = UDim2.fromOffset(0, 34),
+        Size = UDim2.new(1, 0, 0, 1),
+    })
+
+    local Label = New("TextLabel", {
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 34),
+        Text = Name,
+        TextSize = 15,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = Holder,
+    })
+    New("UIPadding", {
+        PaddingLeft = UDim.new(0, 12),
+        PaddingRight = UDim.new(0, 12),
+        Parent = Label,
+    })
+
+    local Container = New("Frame", {
+        BackgroundTransparency = 1,
+        Position = UDim2.fromOffset(0, 35),
+        Size = UDim2.new(1, 0, 1, -35),
+        Parent = Holder,
+    })
+    New("UIListLayout", {
+        Padding = UDim.new(0, 7),
+        Parent = Container,
+    })
+    New("UIPadding", {
+        PaddingBottom = UDim.new(0, 7),
+        PaddingLeft = UDim.new(0, 7),
+        PaddingRight = UDim.new(0, 7),
+        PaddingTop = UDim.new(0, 7),
+        Parent = Container,
+    })
+
+    Library:MakeDraggable(Background, Label, true)
+    return Background, Container
+end
+
+--// Context Menu \\--
+local CurrentMenu
+function Library:AddContextMenu(
+    Holder: GuiObject,
+    Size: UDim2 | () -> (),
+    Offset: { [number]: number } | () -> {},
+    List: number?,
+    ActiveCallback: (Active: boolean) -> ()?
+)
+    local Menu
+    if List then
+        Menu = New("ScrollingFrame", {
+            AutomaticCanvasSize = List == 2 and Enum.AutomaticSize.Y or Enum.AutomaticSize.None,
+            AutomaticSize = List == 1 and Enum.AutomaticSize.Y or Enum.AutomaticSize.None,
+            BackgroundColor3 = "BackgroundColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
+            CanvasSize = UDim2.fromOffset(0, 0),
+            ScrollBarImageColor3 = "OutlineColor",
+            ScrollBarThickness = List == 2 and 2 or 0,
+            Size = typeof(Size) == "function" and Size() or Size,
+            TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
+            Visible = false,
+            ZIndex = 10,
+            Parent = ScreenGui,
+
+            DPIExclude = {
+                Position = true,
+            },
+        })
+    else
+        Menu = New("Frame", {
+            BackgroundColor3 = "BackgroundColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            Size = typeof(Size) == "function" and Size() or Size,
+            Visible = false,
+            ZIndex = 10,
+            Parent = ScreenGui,
+
+            DPIExclude = {
+                Position = true,
+            },
+        })
+    end
+
+    local Table = {
+        Active = false,
+        Holder = Holder,
+        Menu = Menu,
+        List = nil,
+        Signal = nil,
+
+        Size = Size,
     }
 
-    for _, location in ipairs(searchLocations) do
-        if location then
-            for _, item in ipairs(location:GetChildren()) do
-        if item:IsA("Tool") then
-                    local cleanName = getCleanName(item)
-                    if cleanName and cleanName == vars.giftingSelectedPlant then
-            local uuid = item:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_UUID"])
-                        local itemType = item:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"])
-
-                        if uuid and itemType == getgenv().HookedItemTypeEnums["Holdable"] and not vars.giftedItems[uuid] then
-                local weightInstance = item:FindFirstChild("Weight")
-                if weightInstance and typeof(weightInstance.Value) == "number" then
-                    local plantWeight = weightInstance.Value
-                    if vars.giftingWeightComparison == "Above" and plantWeight >= vars.giftingWeightThreshold then
-                                    print("[Gift Debug] Found matching plant: " .. item.Name)
-                        return item, uuid
-                    elseif vars.giftingWeightComparison == "Below or Equal" and plantWeight <= vars.giftingWeightThreshold then
-                                    print("[Gift Debug] Found matching plant: " .. item.Name)
-                        return item, uuid
-                    end
-                elseif vars.giftingWeightThreshold == 0 then
-                                print("[Gift Debug] Found matching plant: " .. item.Name)
-                    return item, uuid
-                end
-            end
-        end
-    end
-            end
-        end
+    if List then
+        Table.List = New("UIListLayout", {
+            Parent = Menu,
+        })
     end
 
-    return nil, nil
-end
-
-local function performGiftLoop()
-    while vars.autoGiftEnabled do
-        local targetPlayerName = vars.giftingSelectedPlayer
-        if not targetPlayerName then
-            
-            continue
-        end
-        
-        local myCharacter = vars.LocalPlayer.Character
-        local myHRP = myCharacter and myCharacter:FindFirstChild("HumanoidRootPart")
-        if not myHRP then
-            
-            continue
+    function Table:Open()
+        if CurrentMenu == Table then
+            return
+        elseif CurrentMenu then
+            CurrentMenu:Close()
         end
 
-        local plantTool, uuid = findNextPlant()
-        if not (plantTool and uuid) then
-            
-            continue
+        CurrentMenu = Table
+        Table.Active = true
+
+        if typeof(Offset) == "function" then
+            Menu.Position = UDim2.fromOffset(
+                math.floor(Holder.AbsolutePosition.X + Offset()[1]),
+                math.floor(Holder.AbsolutePosition.Y + Offset()[2])
+            )
+        else
+            Menu.Position = UDim2.fromOffset(
+                math.floor(Holder.AbsolutePosition.X + Offset[1]),
+                math.floor(Holder.AbsolutePosition.Y + Offset[2])
+            )
+        end
+        if typeof(Table.Size) == "function" then
+            Menu.Size = Table.Size()
+        else
+            Menu.Size = ApplyDPIScale(Table.Size)
+        end
+        if typeof(ActiveCallback) == "function" then
+            Library:SafeCallback(ActiveCallback, true)
         end
 
-        local humanoid = myCharacter:FindFirstChildOfClass("Humanoid")
-        if not humanoid then
-            
-            continue
-        end
-        
-        humanoid:UnequipTools()
-        task.wait(vars.giftingDelay)
-        humanoid:EquipTool(plantTool)
-        task.wait(vars.giftingDelay)
+        Menu.Visible = true
 
-        if plantTool.Parent ~= myCharacter then
-            
-            continue
-        end
-        
-        local targetCharacter = workspace:FindFirstChild(targetPlayerName)
-        if not targetCharacter then
-            
-            continue
-        end
-
-        local targetHRP = targetCharacter:FindFirstChild("HumanoidRootPart")
-        if not targetHRP then
-            continue
-        end
-
-        myHRP.Anchored = true
-        myHRP.CFrame = targetHRP.CFrame * CFrame.new(0, 0, -2)
-        myHRP.Anchored = false
-        task.wait(0.5) 
-
-        local giftPrompt = targetHRP:FindFirstChild("ProximityPrompt")
-        if giftPrompt and giftPrompt.Enabled then
-            fireproximityprompt(giftPrompt)
-            vars.giftedItems[uuid] = true
-            task.wait(vars.giftingDelay) 
-        end
-
-        task.wait(vars.giftingDelay)
-    end
-end
-
-vars.playerDropdownGifter = Groupboxes.GiftGroup:AddDropdown("PlayerDropdown", {
-    Text = "Select Player in Server",
-    Values = vars.otherPlayers,
-    Callback = function(name)
-        vars.giftingSelectedPlayer = name
-    end
-})
-
-Groupboxes.GiftGroup:AddDropdown("PlantDropdown", {
-    Text = "Select Plant Name",
-    Searchable = true,
-    Values = vars.plantNamesForGifter,
-    Callback = function(selected)
-        vars.giftingSelectedPlant = selected
-    end
-})
-
-Groupboxes.GiftGroup:AddDropdown("WeightComparison", {
-    Text = "Weight Comparison",
-    Values = {"Above", "Below or Equal"},
-    Default = "Above",
-    Callback = function(val)
-        vars.giftingWeightComparison = val
-    end
-})
-
-Groupboxes.GiftGroup:AddInput("WeightThreshold", {
-    Text = "Weight Threshold (kg)",
-    Default = "0",
-    Numeric = true,
-    Callback = function(val)
-        vars.giftingWeightThreshold = tonumber(val) or 0
-    end
-})
-
-Groupboxes.GiftGroup:AddButton("Gift Plant", function()
-    if not vars.autoGiftEnabled then
-        task.spawn(performGiftLoop)
-    end
-end)
-
-Groupboxes.GiftGroup:AddInput("AutoGiftDelay", {
-    Text = "Auto Gift Delay (s)",
-    Default = "1",
-    Numeric = true,
-    Callback = function(val)
-        vars.giftingDelay = tonumber(val) or 1
-    end
-})
-
-Groupboxes.GiftGroup:AddToggle("AutoGiftToggle", {
-    Text = "Auto Gift",
-    Description = "Disable Anti Scam on delta",
-    Default = false,
-    Callback = function(enabled)
-        pcall(function()
-        vars.autoGiftEnabled = enabled
-            if not enabled then
-                if vars.giftingTask then
-                    task.cancel(vars.giftingTask)
-                    vars.giftingTask = nil
-                end
-                if vars.LocalPlayer.Character and vars.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    vars.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-                end
-            elseif enabled and not vars.giftingTask then
-                vars.giftingTask = task.spawn(performGiftLoop)
+        Table.Signal = Holder:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+            if typeof(Offset) == "function" then
+                Menu.Position = UDim2.fromOffset(
+                    math.floor(Holder.AbsolutePosition.X + Offset()[1]),
+                    math.floor(Holder.AbsolutePosition.Y + Offset()[2])
+                )
+            else
+                Menu.Position = UDim2.fromOffset(
+                    math.floor(Holder.AbsolutePosition.X + Offset[1]),
+                    math.floor(Holder.AbsolutePosition.Y + Offset[2])
+                )
             end
         end)
     end
-})
 
+    function Table:Close()
+        if CurrentMenu ~= Table then
+            return
+        end
+        Menu.Visible = false
 
- SeedTab = Groupboxes.ShopSelectorTabbox:AddTab("Seed")
-GearTab = Groupboxes.ShopSelectorTabbox:AddTab("Gear")
-EggTab = Groupboxes.ShopSelectorTabbox:AddTab("Egg")
-CosmeticsTab = Groupboxes.ShopSelectorTabbox:AddTab("Cosmetics")
-SeedPricesTab = Groupboxes.ShopPricesTabbox:AddTab("Seed")
-GearPricesTab = Groupboxes.ShopPricesTabbox:AddTab("Gear")
-EggPricesTab = Groupboxes.ShopPricesTabbox:AddTab("Egg")
-CosmeticsPricesTab = Groupboxes.ShopPricesTabbox:AddTab("Cosmetics")
-
-for seedKey1, seedInfo in pairs(modules.SeedData) do
-    if typeof(seedInfo) == "table" and seedInfo.Price and seedInfo.Price < 1e17 then
-        local rarity1 = seedInfo.SeedRarity or "Unknown"
-        local displayName1 = string.format("%s [%s]", seedInfo.SeedName or seedKey1, rarity1)
-        table.insert(vars.seedArray1, {
-            SeedKey = seedKey1,
-            SeedDisplayName = displayName1,
-            SeedPrice = seedInfo.Price,
-            SeedRarity = rarity1
-        })
-        vars.displayNameToSeedKey1[displayName1] = seedKey1
+        if Table.Signal then
+            Table.Signal:Disconnect()
+            Table.Signal = nil
+        end
+        Table.Active = false
+        CurrentMenu = nil
+        if typeof(ActiveCallback) == "function" then
+            Library:SafeCallback(ActiveCallback, false)
+        end
     end
-end
 
-table.sort(vars.seedArray1, function(a, b)
-    local aRank = vars.getRarityRank(a.SeedRarity)
-    local bRank = vars.getRarityRank(b.SeedRarity)
-    if aRank == bRank then
-        return a.SeedPrice < b.SeedPrice
-    end
-    return aRank < bRank
-end)
-
-table.insert(vars.buyseedDisplayNames, "All")
-for _, seed in ipairs(vars.seedArray1) do
-    table.insert(vars.buyseedDisplayNames, seed.SeedDisplayName)
-end
-
-
-for gearKey, gearInfo in pairs(modules.GearData) do
-    local rarity = gearInfo.GearRarity or "Unknown"
-    local displayName = string.format("%s [%s]", gearInfo.GearName or gearKey, rarity)
-    table.insert(vars.gearArray, {
-        Name = gearKey,
-        DisplayName = displayName,
-        Price = gearInfo.Price or 0,
-        Rarity = rarity
-    })
-    vars.displayNameToGearKey[displayName] = gearKey
-end
-
-table.sort(vars.gearArray, function(a, b)
-    local aRank = vars.getRarityRank(a.Rarity)
-    local bRank = vars.getRarityRank(b.Rarity)
-    if aRank == bRank then
-        return a.Price < b.Price
-    end
-    return aRank < bRank
-end)
-
-
-table.insert(vars.gearDisplayNames, "All")
-for _, gear in ipairs(vars.gearArray) do
-    table.insert(vars.gearDisplayNames, gear.DisplayName)
-end
-
-
-for eggKey, eggInfo in pairs(modules.PetEggData) do
-    if typeof(eggInfo) == "table" and eggInfo.Price then
-        local rarity = eggInfo.EggRarity or "Unknown"
-        local displayName = string.format("%s [%s]", eggInfo.EggName or eggKey, rarity)
-        table.insert(vars.eggArray, {
-            Name = eggKey,
-            DisplayName = displayName,
-            Price = eggInfo.Price,
-            Rarity = rarity
-        })
-        vars.displayNameToEggKey[displayName] = eggKey
-    end
-end
-
-table.sort(vars.eggArray, function(a, b)
-    local aRank = vars.getRarityRank(a.Rarity)
-    local bRank = vars.getRarityRank(b.Rarity)
-    if aRank == bRank then
-        return a.Price < b.Price
-    end
-    return aRank < bRank
-end)
-
-table.insert(vars.eggDisplayNames, "All")
-for _, egg in ipairs(vars.eggArray) do
-    table.insert(vars.eggDisplayNames, egg.DisplayName)
-end
-
-for _, seed in ipairs(vars.seedArray1) do
-    table.insert(vars.allSeedKeys, seed.SeedKey)
-end
-
-
-SeedTab:AddDropdown("AutoBuySeedSelector_Dropdown", {
-    Values = vars.buyseedDisplayNames,
-    Multi = true,
-    Text = "Select Seeds ",
-    Tooltip = "Select seeds to Auto-Buy (ignored if 'Auto Buy All' is on)",
-    Searchable = true,
-    Callback = function(Values)
-        vars.buyselectedSeedKeys = {}
-        if Values["All"] then
-            for _, seed in ipairs(vars.seedArray1) do
-                table.insert(vars.buyselectedSeedKeys, seed.SeedKey)
-            end
+    function Table:Toggle()
+        if Table.Active then
+            Table:Close()
         else
-            for displayName, selected in pairs(Values) do
-                if selected and displayName ~= "All" then
-                    table.insert(vars.buyselectedSeedKeys, vars.displayNameToSeedKey1[displayName])
-                end
-            end
+            Table:Open()
         end
     end
-})
 
-for _, seed in ipairs(vars.seedArray1) do
-    SeedPricesTab:AddLabel(seed.SeedDisplayName)
-    SeedPricesTab:AddLabel(vars.formatNumberWithCommas(seed.SeedPrice) .. " Sheckles")
+    function Table:SetSize(Size)
+        Table.Size = Size
+        Menu.Size = typeof(Size) == "function" and Size() or Size
+    end
+
+    return Table
 end
 
-vars.autoBuyAllGear = false
-vars.allGearKeys = {}
-for _, gear in ipairs(vars.gearArray) do
-    table.insert(vars.allGearKeys, gear.Name)
-end
+Library:GiveSignal(UserInputService.InputBegan:Connect(function(Input: InputObject)
+    if IsClickInput(Input, true) then
+        local Location = Input.Position
 
-GearTab:AddDropdown("AutoBuyGearSelector_Dropdown", {
-    Values = vars.gearDisplayNames,
-    Multi = true,
-    Text = "Select Gear ",
-    Searchable = true,
-    Tooltip = "Select gear to Auto-Buy (ignored if 'Auto Buy All' is on)",
-    Callback = function(Values)
-        vars.selectedGearKeys = {}
-        if Values["All"] then
-            for _, gear in ipairs(vars.gearArray) do
-                table.insert(vars.selectedGearKeys, gear.Name)
-            end
-        else
-            for displayName, selected in pairs(Values) do
-                if selected and displayName ~= "All" then
-                    table.insert(vars.selectedGearKeys, vars.displayNameToGearKey[displayName])
-                end
-            end
-        end
-    end
-})
-
-for _, gear in ipairs(vars.gearArray) do
-    GearPricesTab:AddLabel(gear.DisplayName)
-    GearPricesTab:AddLabel(vars.formatNumberWithCommas(gear.Price) .. " Sheckles")
-end
-
-vars.autoBuyAllEggs = false
-vars.allEggKeys = {}
-for _, egg in ipairs(vars.eggArray) do
-    table.insert(vars.allEggKeys, egg.Name)
-end
-
-
-EggTab:AddDropdown("AutoBuyEggSelector_Dropdown", {
-    Values = vars.eggDisplayNames,
-    Multi = true,
-    Text = "Select Eggs ",
-    Searchable = true,
-    Tooltip = "Select eggs to Auto-Buy (ignored if 'Auto Buy All' is on)",
-    Callback = function(Values)
-        vars.selectedEggKeys = {}
-        if Values["All"] then
-            for _, egg in ipairs(vars.eggArray) do
-                table.insert(vars.selectedEggKeys, egg.Name)
-            end
-        else
-            for displayName, selected in pairs(Values) do
-                if selected and displayName ~= "All" then
-                    table.insert(vars.selectedEggKeys, vars.displayNameToEggKey[displayName])
-                end
-            end
-        end
-    end
-})
-
-for _, egg in ipairs(vars.eggArray) do
-    EggPricesTab:AddLabel(egg.DisplayName)
-    EggPricesTab:AddLabel(vars.formatNumberWithCommas(egg.Price) .. " Sheckles")
-end
-
-
-
-SeedTab:AddToggle("AutoBuySeed_Toggle", {
-    Text = "Start Auto-Buy",
-    Default = false,
-    Callback = function(state)
-        vars.autoBuySeed = state
-        if state then
-            updateCachedStockTables()
-            task.spawn(LPH_NO_VIRTUALIZE(function()
-                while vars.autoBuySeed do
-                    local keysToBuy
-                    if vars.autoBuyAllSeeds then
-                        keysToBuy = vars.allSeedKeys
-                    else
-                        keysToBuy = vars.buyselectedSeedKeys
-                    end
-                    pcall(buyFromStock, vars.cachedSeedStock, remotes.BuySeedStockRemote, keysToBuy, false)
-                    task.wait(10)  
-                end
-            end))
-        end
-    end
-})
-
-
-GearTab:AddToggle("AutoBuyGear_Toggle", {
-    Text = "Start Auto-Buy",
-    Default = false,
-    Callback = function(state)
-        vars.autoBuyGear = state
-        if state then
-            updateCachedStockTables()
-            task.spawn(LPH_NO_VIRTUALIZE(function()
-                while vars.autoBuyGear do
-                    local keysToBuy
-                    if vars.autoBuyAllGear then
-                        keysToBuy = vars.allGearKeys
-                    else
-                        keysToBuy = vars.selectedGearKeys
-                    end
-                    pcall(buyFromStock, vars.cachedGearStock, remotes.BuyGearStockRemote, keysToBuy, false)
-                    task.wait(10)  
-                end
-            end))
-        end
-    end
-})
-
-
-SeedTab:AddToggle("AutoBuyAllSeeds_Toggle", {
-    Text = "Auto Buy All Seeds",
-    Default = false,
-    Callback = function(state)
-        vars.autoBuyAllSeeds = state
-    end,
-})
-
-GearTab:AddToggle("AutoBuyAllGear_Toggle", {
-    Text = "Auto Buy All Gear",
-    Default = false,
-    Callback = function(state)
-        vars.autoBuyAllGear = state
-    end,
-})
-
-
-EggTab:AddToggle("AutoBuyEgg_Toggle", {
-    Text = "Start Auto-Buy",
-    Default = false,
-    Callback = function(state)
-        vars.autoBuyEgg = state
-        if state then
-            updateCachedStockTables()
-            task.spawn(LPH_NO_VIRTUALIZE(function()
-                while vars.autoBuyEgg do
-                    local keysToBuy
-                    if vars.autoBuyAllEggs then
-                        keysToBuy = vars.allEggKeys
-                    else
-                        keysToBuy = vars.selectedEggKeys
-                    end
-                    buyFromStock(vars.cachedPetEggStock, remotes.BuyPetEggRemote, keysToBuy, true)
-                    task.wait(5)
-                end
-            end))
-        end
-    end
-})
-
-
-EggTab:AddToggle("AutoBuyAll_Eggs", {
-    Text = "Auto Buy All Eggs",
-    Default = false,
-    Callback = function(state)
-        vars.autoBuyAllEggs = state
-    end,
-})
-
-
-running.HatchLoopRunning2 = false
-running.FiredEggs = {}
-
-local data = vars.DataService:GetData()
-
-EggTab:AddToggle("AutoHatchPetEggs_Toggle", {
-    Text = "Auto Hatch Pet Eggs",
-    Default = false,
-    Tooltip = "Automatically hatches pet eggs when ready",
-    Callback = function(Value)
-        if Value and not running.HatchLoopRunning2 then
-            running.HatchLoopRunning2 = true
-            task.spawn(function()
-                while running.HatchLoopRunning2 do
-                    vars.playerData = vars.DataService:GetData()
-
-                    local petToolCount = 0
-                    for _, tool in ipairs(vars.LocalPlayer.Backpack:GetChildren()) do
-                        if tool:IsA("Tool") and tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["Pet"] then
-                            petToolCount = petToolCount + 1
-                        end
-                    end
-
-                    if vars.playerData and vars.playerData.PetsData and vars.playerData.PetsData.MutableStats and vars.playerData.PetsData.MutableStats.MaxPetsInInventory and petToolCount >= tonumber(vars.playerData.PetsData.MutableStats.MaxPetsInInventory) then
-                        Library:Notify({
-                            Title = "Inventory Full",
-                            Description = "You can't open your eggs, you have more than " .. tostring(vars.playerData.PetsData.MutableStats.MaxPetsInInventory) .. " pets!",
-                            Time = 5
-                        })
-                        task.wait(2)
-                        continue
-                    end
-
-                    local didHatch = false
-
-                    for _, farm in ipairs(vars.Workspace:WaitForChild("Farm"):GetChildren()) do
-                        local important = farm:FindFirstChild("Important")
-                        local farmData = important and important:FindFirstChild("Data")
-                        local ownerValue = farmData and farmData:FindFirstChild("Owner")
-                        local savedObjects = farmData and farmData:FindFirstChild("SavedObjects")
-
-                        if ownerValue and ownerValue.Value == vars.LocalPlayer.Name then
-                            local objects = important:FindFirstChild("Objects_Physical")
-                            if objects then
-                                for _, eggObj in ipairs(objects:GetChildren()) do
-                                    if eggObj:GetAttribute("OBJECT_TYPE") == "PetEgg"
-                                        and eggObj:GetAttribute("TimeToHatch") == 0
-                                        and not running.FiredEggs[eggObj] then
-
-                                        local eggUUID = eggObj:GetAttribute("OBJECT_UUID")
-                                        running.FiredEggs[eggObj] = true
-
-                                        pcall(function()
-                                            remotes.HatchRemote:FireServer("HatchPet", eggObj)
-                                        end)
-
-                                        local eggName = eggObj:GetAttribute("EggName") or "Unknown"
-                                        local petName = "Unknown"
-                                        local baseWeight = "?"
-
-                                        if savedObjects then
-                                            for uuid, savedObj in pairs(savedObjects) do
-                                                if uuid == eggUUID and savedObj.ObjectType == "PetEgg" then
-                                                    if savedObj.Data and savedObj.Data.RandomPetData then
-                                                        petName = savedObj.Data.RandomPetData.Name or "Unknown"
-                                                        baseWeight = savedObj.Data.RandomPetData.BaseWeight or "?"
-                                                    end
-                                                    break
-                                                end
-                                            end
-                                        end
-
-                                        Library:Notify({
-                                            Title = "Hatched Egg!",
-                                            Description = "Egg: " .. eggName ..
-                                                          "\nOwner: " .. vars.LocalPlayer.Name ..
-                                                          "\nPet: " .. tostring(petName) ..
-                                                          "\nBaseWeight: " .. tostring(baseWeight),
-                                            Time = 5
-                                        })
-
-                                        didHatch = true
-                                        break
-                                    end
-                                end
-                            end
-                        end
-                        if didHatch then break end
-                    end
-
-                    task.wait(didHatch and 2 or 1)
-                end
-            end)
-        elseif not Value then
-            running.HatchLoopRunning2 = false
-        end
-    end
-})
-
-local statusLabel = EggTab:AddLabel("Status: Waiting...")
-
-EggTab:AddDropdown("EggToPlace_Dropdown", {
-    Text = "Select Eggs to Place",
-    Multi = true,
-    Values = vars.eggDisplayNames,
-    Searchable = true,
-    Callback = function(selectionTable)
-        vars.selectedEggs = {}
-        for eggName, isSelected in pairs(selectionTable) do
-            if isSelected then
-                table.insert(vars.selectedEggs, eggName)
-            end
-        end
-    end
-})
-
-EggTab:AddToggle("AutoPlacePetEgg_Toggle", {
-    Text = "Auto Place Pet Eggs",
-    Default = false,
-    Callback = function(state)
-        running.autoPlaceEnabled = state
-        if not state then
-            local humanoid = vars.LocalPlayer.Character and vars.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-            if humanoid then humanoid:UnequipTools() end
-            if statusLabel then statusLabel:SetText("Status: Waiting...") end
-        end
-    end
-})
-
-local function getPlacedEggPositions()
-    local usedPositions, count, max = {}, 0, 7
-    local farms = vars.Workspace:WaitForChild("Farm"):GetChildren()
-
-    for _, farm in ipairs(farms) do
-        local important = farm:FindFirstChild("Important")
-        local dataBlock = important and important:FindFirstChild("Data")
-        local owner = dataBlock and dataBlock:FindFirstChild("Owner")
-        if owner and owner.Value == vars.LocalPlayer.Name then
-            local objects = important:FindFirstChild("Objects_Physical")
-            if objects then
-                for _, obj in ipairs(objects:GetChildren()) do
-                    if obj:IsA("Model") and obj.Name == "PetEgg" and obj:GetAttribute("OBJECT_TYPE") == "PetEgg" then
-                        count =count+ 1
-                        table.insert(usedPositions, obj.WorldPivot.Position)
-                    end
-                end
-            end
-            local ok, data = pcall(function() return vars.DataService:GetData() end)
-            if ok and data and data.PetsData and data.PetsData.MutableStats then
-                max = data.PetsData.MutableStats.MaxEggsInFarm or 7
-            end
-            break
-        end
-    end
-    return usedPositions, count, max
-end
-
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while task.wait(1) do
-        if not running.autoPlaceEnabled or #vars.selectedEggs == 0 then
-            if statusLabel and statusLabel.Text ~= "Status: Waiting..." then statusLabel:SetText("Status: Waiting...") end
-            continue
-        end
-
-        while running.autoPlaceEnabled and #vars.selectedEggs > 0 do
-            local usedPositions, placedEggs, maxEggs = getPlacedEggPositions()
-            if placedEggs >= maxEggs then
-                if statusLabel.Text ~= "Status: Max Eggs — Waiting..." then statusLabel:SetText("Status: Max Eggs — Waiting...") end
-                break 
-            end
-
-            if statusLabel.Text ~= "Status: Placing..." then statusLabel:SetText("Status: Placing...") end
-
-            local plotNumber
-            for _, farm in ipairs(vars.Workspace:WaitForChild("Farm"):GetChildren()) do
-                local important = farm:FindFirstChild("Important")
-                local dataBlock = important and important:FindFirstChild("Data")
-                if dataBlock and dataBlock:FindFirstChild("Owner").Value == vars.LocalPlayer.Name then
-                    plotNumber = dataBlock:FindFirstChild("Farm_Number").Value
-                    break
-                end
-            end
-
-            if not plotNumber or not plotCFrames[plotNumber] then 
-                task.wait(1)
-                break 
-            end
-
-            local foundTool
-            for _, tool in ipairs(vars.LocalPlayer.Backpack:GetChildren()) do
-                if tool:IsA("Tool") and tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["PetEgg"] then
-                    local eggName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["EggName"]) or tool.Name
-                    for _, selectedEgg in ipairs(vars.selectedEggs) do
-                        if eggName:lower():find(selectedEgg:lower()) then
-                            foundTool = tool
-                            break
-                        end
-                    end
-                    if foundTool then break end
-                end
-            end
-
-            if not foundTool then
-                if statusLabel.Text ~= "Status: No selected eggs in inventory." then statusLabel:SetText("Status: No selected eggs in inventory.") end
-                break
-            end
-
-            local char = vars.LocalPlayer.Character
-            local humanoid = char and char:FindFirstChildOfClass("Humanoid")
-            if not humanoid then break end
-
-            humanoid:EquipTool(foundTool)
-            task.wait(0.5)
-
-            local placementSuccessful = false
-            for _, pos in ipairs(plotCFrames[plotNumber]) do
-                local positionIsUsed = false
-                for _, usedPos in ipairs(usedPositions) do
-                    if (usedPos - pos).Magnitude < 1 then
-                        positionIsUsed = true
-                        break
-                    end
-                end
-                if not positionIsUsed then
-                    for _, globalPos in ipairs(vars.globalUsedPositions) do
-                         if (globalPos - pos).Magnitude < 1 then
-                            positionIsUsed = true
-                            break
-                        end
-                    end
-                end
-
-                if not positionIsUsed then
-                    pcall(function()
-                        remotes.hatchremote:FireServer("CreateEgg", pos)
-                        table.insert(vars.globalUsedPositions, pos)
-                    end)
-                    task.wait(0.8)
-                    if not char:FindFirstChild(foundTool.Name) then
-                        placementSuccessful = true
-                        break
-                    else 
-                        
-                        table.remove(vars.globalUsedPositions, #vars.globalUsedPositions)
-                    end
-                end
-            end
-
-            if not placementSuccessful then
-                humanoid:UnequipTools()
-                if statusLabel.Text ~= "Status: No available plot space." then statusLabel:SetText("Status: No available plot space.") end
-                break
-            end
-            task.wait(0.2)
+        if
+            CurrentMenu
+            and not (
+                Library:MouseIsOverFrame(CurrentMenu.Menu, Location)
+                or Library:MouseIsOverFrame(CurrentMenu.Holder, Location)
+            )
+        then
+            CurrentMenu:Close()
         end
     end
 end))
 
-
-
-local calculatePlantValue = LPH_NO_VIRTUALIZE(function(plant)
-    local Item_String = plant:FindFirstChild("Item_String")
-    local Variant = plant:FindFirstChild("Variant")
-    local Weight = plant:FindFirstChild("Weight")
-    if not (Item_String and Variant and Weight) then
-        return 0
-    end
-    local itemData = modules.ItemModule.Return_Data(Item_String.Value)
-    if not itemData or #itemData < 3 then
-        return 0
-    end
-    local clampedWeight = math.clamp(Weight.Value / itemData[2], 0.95, 1e8)
-    local mutationMultiplier = modules.MutationHandler:CalcValueMulti(plant)
-    local variantMultiplier = modules.ItemModule.Return_Multiplier(Variant.Value)
-    local value = itemData[3] * mutationMultiplier * variantMultiplier * (clampedWeight ^ 2)
-    return math.round(value)
-end)
-
-local function getMutationString(tool)
-    local attrs = tool:GetAttributes()
-    local found = {}
-    for _, mutation in ipairs(vars.favoriterMutations) do
-        if attrs[mutation] == true then
-            table.insert(found, mutation)
-        end
-    end
-    if #found == 0 then
-        return "None"
-    end
-    return table.concat(found, ", ")
-end
-
-local function calculatePetValue(tool)
-    if not tool then return 0 end
-    local PET_UUID = tool:GetAttribute("PET_UUID")
-    if not PET_UUID then return 0 end
-
-    local petData = vars.DataService:GetData().PetsData.PetInventory.Data[PET_UUID]
-    if not petData then return 0 end
-
-    local HatchedFrom = petData.PetData.HatchedFrom
-    if not HatchedFrom or HatchedFrom == "" then return 0 end
-
-    local eggData = modules.PetRegistry.PetEggs[HatchedFrom]
-    if not eggData then return 0 end
-
-    local petInfo = eggData.RarityData.Items[petData.PetType]
-    if not petInfo then return 0 end
-
-    local WeightRange = petInfo.GeneratedPetData.WeightRange
-    if not WeightRange then return 0 end
-
-    local basePrice = modules.PetRegistry.PetList[petData.PetType].SellPrice or 0
-    local weight = petData.PetData.BaseWeight or 0
-    local levelProgress = modules.PetUtilities:GetLevelProgress(petData.PetData.Level or 1)
-
-    local price = math.floor(basePrice * 
-        (math.lerp(0.8, 1.2, modules.NumberUtil.ReverseLerp(WeightRange[1], WeightRange[2], weight))) *
-        math.lerp(0.15, 6, levelProgress)
+--// Tooltip \\--
+local TooltipLabel = New("TextLabel", {
+    BackgroundColor3 = "BackgroundColor",
+    BorderColor3 = "OutlineColor",
+    BorderSizePixel = 1,
+    TextSize = 14,
+    TextWrapped = true,
+    Visible = false,
+    ZIndex = 20,
+    Parent = ScreenGui,
+})
+TooltipLabel:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+    local X, Y = Library:GetTextBounds(
+        TooltipLabel.Text,
+        TooltipLabel.FontFace,
+        TooltipLabel.TextSize,
+        workspace.CurrentCamera.ViewportSize.X - TooltipLabel.AbsolutePosition.X - 4
     )
-    return price, petData, HatchedFrom, eggData, petInfo, weight
-end
 
-local function cacheAllPlantValues()
-    
-    if next(vars.plantValuesCache) and #vars.plantValuesCache > 100 then
-        return
-    end
-    
-    vars.plantValuesCache = {}
-    local char = vars.LocalPlayer.Character
-    if not char then return end  
-    
-    for _, tool in pairs(char:GetChildren()) do
-        if (tool:IsA("Tool") or tool:IsA("Model")) and
-        tool:FindFirstChild("Item_String") and tool:FindFirstChild("Variant") and tool:FindFirstChild("Weight") then
-            vars.plantValuesCache[tool] = calculatePlantValue(tool)
+    TooltipLabel.Size = UDim2.fromOffset(X + 8 * Library.DPIScale, Y + 4 * Library.DPIScale)
+    Library:UpdateDPI(TooltipLabel, {
+        Size = UDim2.fromOffset(X, Y),
+        DPIOffset = {
+            Size = { 8, 4 },
+        },
+    })
+end)
+
+local CurrentHoverInstance
+function Library:AddTooltip(InfoStr: string, DisabledInfoStr: string, HoverInstance: GuiObject)
+    local TooltipTable = {
+        Disabled = false,
+        Hovering = false,
+        Signals = {},
+    }
+
+    local function DoHover()
+        if
+            CurrentHoverInstance == HoverInstance
+            or (CurrentMenu and Library:MouseIsOverFrame(CurrentMenu.Menu, Mouse))
+            or (TooltipTable.Disabled and typeof(DisabledInfoStr) ~= "string")
+            or (not TooltipTable.Disabled and typeof(InfoStr) ~= "string")
+        then
+            return
         end
-    end
-end
+        CurrentHoverInstance = HoverInstance
 
-local function notifyHeldToolInfo(tool)
-    if not tool then return end
-    if tool == vars.lastNotifiedTool then return end
+        TooltipLabel.Text = TooltipTable.Disabled and DisabledInfoStr or InfoStr
+        TooltipLabel.Visible = true
 
-    if vars.currentNotification and typeof(vars.currentNotification.Close) == "function" then
-        vars.currentNotification:Close()
-    end
+        while
+            Library.Toggled
+            and Library:MouseIsOverFrame(HoverInstance, Mouse)
+            and not (CurrentMenu and Library:MouseIsOverFrame(CurrentMenu.Menu, Mouse))
+        do
+            TooltipLabel.Position = UDim2.fromOffset(
+                Mouse.X + (Library.ShowCustomCursor and 8 or 14),
+                Mouse.Y + (Library.ShowCustomCursor and 8 or 12)
+            )
 
-    if tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["Pet"] and vars.showPetPrices then
-        local price, petData, HatchedFrom, eggData, petInfo, weight = calculatePetValue(tool)
-        if price == 0 then return end
-
-        local eggName = HatchedFrom or "Unknown Egg"
-        local rarityName = string.match(eggName, "^(%w+)") or "Unknown"
-        local petType = petData.PetType or "Unknown"
-
-        local description = string.format(
-            "Name: %s\nHatched From: %s\nRarity: %s\nPetType: %s\nWeight: %.2f\nPrice: %s",
-            tool.Name,
-            eggName,
-            rarityName,
-            petType,
-            weight,
-            vars.formatNumberWithCommas(price)
-        )
-
-        vars.currentNotification = Library:Notify({
-            Title = "Held Pet Info",
-            Description = description,
-            Time = 5
-        })
-
-        vars.lastNotifiedTool = tool
-        vars.lastNotifiedValue = price
-
-    elseif vars.showPlantPrices then
-        local val = vars.plantValuesCache[tool]
-        if not val then return end
-
-        local f = tool:FindFirstChild("Item_String") and tool.Item_String.Value or "Unknown"
-        local weight = tool:FindFirstChild("Weight") and tool.Weight.Value or 0
-        local variant = tool:FindFirstChild("Variant") and tool.Variant.Value or "Normal"
-        local mutationStr = getMutationString(tool)
-
-        local description = string.format(
-            "Name: %s\nWeight: %.2f kg\nVariant: %s\nMutation: %s\nPrice: %s",
-            f,
-            weight,
-            variant,
-            mutationStr,
-            vars.formatNumberWithCommas(val)
-        )
-
-        vars.currentNotification = Library:Notify({
-            Title = "Held Plant Info",
-            Description = description,
-            Time = 5
-        })
-
-        vars.lastNotifiedTool = tool
-        vars.lastNotifiedValue = val
-    end
-end
-
-local function setupCharacterListeners(character)
-    cacheAllPlantValues()
-    character.ChildAdded:Connect(function(child)
-        if (child:IsA("Tool") or child:IsA("Model")) and
-        child:FindFirstChild("Item_String") and child:FindFirstChild("Variant") and child:FindFirstChild("Weight") then
-            vars.plantValuesCache[child] = calculatePlantValue(child)
+            RunService.RenderStepped:Wait()
         end
-        if child:IsA("Tool") then
-            child.Equipped:Connect(function()
-                notifyHeldToolInfo(child)
-            end)
-        end
-    end)
-    for _, tool in pairs(character:GetChildren()) do
-        if tool:IsA("Tool") then
-            tool.Equipped:Connect(function()
-                notifyHeldToolInfo(tool)
-            end)
-        end
-    end
-end
 
-vars.LocalPlayer.CharacterAdded:Connect(setupCharacterListeners)
-if vars.LocalPlayer.Character then
-    setupCharacterListeners(vars.LocalPlayer.Character)
-end
-
-
-Groupboxes.LeftGroupbox:AddToggle("ShowPlantPrices_Toggle", {
-    Text = "Show Fruits/Plant Prices",
-    Default = false,
-    Callback = function(state)
-        vars.showPlantPrices = state
-        if state then
-            cacheAllPlantValues()
-            Library:Notify({
-                Title = "Plant Prices",
-                Description = "Will show value when you equip a plant.",
-                Time = 4
-            })
-        end
-    end
-})
-
-Groupboxes.LeftGroupbox:AddToggle("ShowPetPrices_Toggle", {
-    Text = "Show Pet Prices",
-    Default = false,
-    Callback = function(state)
-        vars.showPetPrices = state
-        if state then
-            Library:Notify({
-                Title = "Pet Prices",
-                Description = "Will show value when you equip a pet tool.",
-                Time = 4
-            })
-        end
-    end
-})
-
-
-
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while true do
-        task.wait(5)  
-        if vars.showPlantPrices then
-            pcall(cacheAllPlantValues)  
-        end
-    end
-end))
-
-
-
-local EventTab = Tabs.EventTab:AddLeftGroupbox("Dino", "cat")
-
-local AutoDinoToggle = EventTab:AddToggle("AutoSubmitDino_Toggle", { Text = "Auto Submit Dino Machine", Default = false, Tooltip = "Automatically submits selected pets to Dino Machine", Callback = function(Value) running.autoSubmitDino = Value end })
-
-local PetDropdown = EventTab:AddDropdown("DinoPet_Dropdown", { Text = "Select Pet(s)", Multi = true, Searchable = true, Values = {}, Default = {}, Callback = function(Selected) local petlists = {} for i, v in pairs(Selected) do if v then table.insert(petlists, i) end end running.selectedPets = petlists end })
-
-local PetRegistry = require(vars.ReplicatedStorage.Data.PetRegistry.PetList) local petList = {} for petName, petData in pairs(PetRegistry) do table.insert(petList, { petName, petData.Rarity or 0 }) end
-
-table.sort(petList, function(a, b) return (a[2] or 0) > (b[2] or 0) end)
-
-local petNames = {} for _, pet in ipairs(petList) do table.insert(petNames, string.format("%s [%s]", pet[1], tostring(pet[2]))) end
-
-PetDropdown:SetValues(petNames)
-
-local function GetPlayerData() return modules.DataService:GetData() end
-
-local function equipSelectedPet()
-    local character = vars.LocalPlayer.Character
-    if not vars.Backpack or not character then
-        return false
+        TooltipLabel.Visible = false
+        CurrentHoverInstance = nil
     end
 
-    for _, tool in ipairs(character:GetChildren()) do
-        if tool:IsA("Tool") then
-            tool.Parent = vars.Backpack
-        end
-    end
-
-    local success, data = pcall(GetPlayerData)
-    if not success or not data or not data.PetsData or not data.PetsData.PetInventory or not data.PetsData.PetInventory.Data then
-        return false
-    end
-    local petInventoryData = data.PetsData.PetInventory.Data
-
-    for _, tool in ipairs(vars.Backpack:GetChildren()) do
-        if tool:IsA("Tool") then
-            local petUUID = tool:GetAttribute("PET_UUID")
-            if petUUID then
-                local petData = petInventoryData[petUUID]
-                if petData and petData.PetType then
-                    local toolPetType = petData.PetType
-                    for _, selected in ipairs(running.selectedPets or {}) do
-                        local matchedName = string.match(selected, "^(.-) %[[^%]]+%]$")
-                        if matchedName and matchedName == toolPetType then
-                            vars.LocalPlayer.Character.Humanoid:EquipTool(tool)
-                            task.wait(0.5)
-                            return true
-                        end
-                    end
-                end
+    table.insert(TooltipTable.Signals, HoverInstance.MouseEnter:Connect(DoHover))
+    table.insert(TooltipTable.Signals, HoverInstance.MouseMoved:Connect(DoHover))
+    table.insert(
+        TooltipTable.Signals,
+        HoverInstance.MouseLeave:Connect(function()
+            if CurrentHoverInstance ~= HoverInstance then
+                return
             end
+
+            TooltipLabel.Visible = false
+            CurrentHoverInstance = nil
+        end)
+    )
+
+    function TooltipTable:Destroy()
+        for Index = #TooltipTable.Signals, 1, -1 do
+            local Connection = table.remove(TooltipTable.Signals, Index)
+            Connection:Disconnect()
+        end
+
+        if CurrentHoverInstance == HoverInstance then
+            TooltipLabel.Visible = false
+            CurrentHoverInstance = nil
         end
     end
 
-    return false
+    return TooltipTable
 end
 
-local function fireDinoMachine() local success = pcall(function() vars.ReplicatedStorage.GameEvents.DinoMachineService_RE:FireServer("MachineInteract") end) return success end
-
-local function claimDinoReward() pcall(function() vars.ReplicatedStorage.GameEvents.DinoMachineService_RE:FireServer("ClaimReward") end) end
-
-task.spawn(LPH_NO_VIRTUALIZE(function() while true do task.wait(2)
-
-if running.autoSubmitDino then
-        local success, data = pcall(GetPlayerData)
-        if success and data then
-            local dinoMachine = rawget(data, "DinoMachine")
-            if dinoMachine then
-                local isRunning = dinoMachine.IsRunning
-                local rewardReady = dinoMachine.RewardReady
-                local timeLeft = dinoMachine.TimeLeft or 0
-
-                if rewardReady then
-                    claimDinoReward()
-                elseif not isRunning and timeLeft == 0 then
-                    local equipped = equipSelectedPet()
-                    if equipped then
-                        task.wait(0.5)
-                        fireDinoMachine()
-                    end
-                end
-            end
-        end
-    end
+function Library:OnUnload(Callback)
+    table.insert(Library.UnloadSignals, Callback)
 end
 
-end))
-
-for recipeName, recipeData in pairs(vars.ItemRecipes) do
-    local machineTypes = recipeData.MachineTypes or {}
-    for _, machineType in pairs(machineTypes) do
-        if machineType == "GearEventWorkbench" then
-            table.insert(vars.GearItems, recipeName)
-        elseif machineType == "SeedEventWorkbench" then
-            table.insert(vars.SeedItems, recipeName)
-        elseif machineType == "DinoEventWorkbench" then
-            table.insert(vars.DinoItems, recipeName)
-        end
+function Library:Unload()
+    for Index = #Library.Signals, 1, -1 do
+        local Connection = table.remove(Library.Signals, Index)
+        Connection:Disconnect()
     end
+
+    for _, Callback in pairs(Library.UnloadSignals) do
+        Library:SafeCallback(Callback)
+    end
+
+    Library.Unloaded = true
+    ScreenGui:Destroy()
+    ModalScreenGui:Destroy()
+    getgenv().Library = nil
 end
 
-table.sort(vars.GearItems)
-table.sort(vars.SeedItems)
-table.sort(vars.DinoItems)
+local CheckIcon = Library:GetIcon("check")
+local ArrowIcon = Library:GetIcon("chevron-up")
+local ResizeIcon = Library:GetIcon("move-diagonal-2")
+local KeyIcon = Library:GetIcon("key")
 
-for name in pairs(vars.ItemRecipes) do
-    table.insert(vars.recipeNames, name)
-end
-table.sort(vars.recipeNames)
+local BaseAddons = {}
+do
+    local Funcs = {}
 
-labels.OutputLabel = Groupboxes.InfoGroup:AddLabel({Text = "Outputs:", DoesWrap = true})
-labels.InputsLabel = Groupboxes.InfoGroup:AddLabel({Text = "Inputs:", DoesWrap = true})
-labels.TimeLabel = Groupboxes.InfoGroup:AddLabel({Text = "Time:", DoesWrap = true})
-labels.RobuxLabel = Groupboxes.InfoGroup:AddLabel({Text = "Robux:", DoesWrap = true})
-labels.MachineTypeLabel = Groupboxes.InfoGroup:AddLabel({Text = "MachineTypes:", DoesWrap = true})
+    function Funcs:AddKeyPicker(Idx, Info)
+        Info = Library:Validate(Info, Templates.KeyPicker)
 
-Groupboxes.RecipeGroup:AddDropdown("GearRecipeList_Dropdown", {
-    Values = vars.GearItems,
-    Text = "Gear Recipes",
-    Searchable = true,
-    Callback = function(v)
-        vars.SelectedGearDropdown = { v }
-        vars.SelectedGearRecipe = modules.CraftingModule.ItemRecipes[v]
-        vars.SelectedSeedDropdown = nil
-        vars.SelectedDinoDropdown = nil
-        vars.SelectedDropdown = nil
-        renderRecipeInfo(v)
-    end
-})
+        local ParentObj = self
+        local ToggleLabel = ParentObj.TextLabel
 
-Groupboxes.RecipeGroup:AddDropdown("SeedRecipeList_Dropdown", {
-    Values = vars.SeedItems,
-    Text = "Seed Recipes",
-    Searchable = true,
-    Callback = function(v)
-        vars.SelectedSeedDropdown = { v }
-        vars.SelectedSeedRecipe = modules.CraftingModule.ItemRecipes[v]
-        vars.SelectedGearDropdown = nil
-        vars.SelectedDinoDropdown = nil
-        vars.SelectedDropdown = nil
-        renderRecipeInfo(v)
-    end
-})
+        local KeyPicker = {
+            Text = Info.Text,
+            Value = Info.Default,
+            Toggled = false,
+            Mode = Info.Mode,
+            SyncToggleState = Info.SyncToggleState,
 
-Groupboxes.RecipeGroup:AddDropdown("DinoRecipeList_Dropdown", {
-    Values = vars.DinoItems,
-    Text = "Dino Recipes",
-    Searchable = true,
-    Callback = function(v)
-        vars.SelectedDinoDropdown = { v }
-        vars.SelectedDinoRecipe = modules.CraftingModule.ItemRecipes[v]
-        vars.SelectedGearDropdown = nil
-        vars.SelectedSeedDropdown = nil
-        vars.SelectedDropdown = nil
-        renderRecipeInfo(v)
-    end
-})
+            Callback = Info.Callback,
+            ChangedCallback = Info.ChangedCallback,
+            Changed = Info.Changed,
+            Clicked = Info.Clicked,
 
-Groupboxes.RecipeGroup:AddDropdown("RecipeList_Dropdown", {
-    Values = vars.recipeNames,
-    Text = "All Recipes",
-    Searchable = true,
-    Callback = function(v)
-        vars.SelectedDropdown = { v }
-        vars.SelectedGearDropdown = nil
-        vars.SelectedSeedDropdown = nil
-        vars.SelectedDinoDropdown = nil
-        renderRecipeInfo(v)
-    end
-})
-
-Groupboxes.RecipeGroup:AddToggle("AutoRecipe_Toggle", {
-    Text = "Auto Recipe",
-    Default = false,
-    Callback = function(v) vars.AutoRecipeTrigger = v end
-})
-
-Groupboxes.RecipeGroup:AddToggle("AutoInput_Toggle", {
-    Text = "Auto Input",
-    Default = false,
-    Callback = function(v) vars.AutoInputTrigger = v end
-})
-
-Groupboxes.RecipeGroup:AddToggle("AutoCraft_Toggle", {
-    Text = "Auto Craft",
-    Default = false,
-    Callback = function(v) vars.AutoCraftTrigger = v end
-})
-
-Groupboxes.RecipeGroup:AddToggle("AutoClaim_Toggle", {
-    Text = "Auto Claim",
-    Default = false,
-    Callback = function(v) vars.AutoClaimTrigger = v end
-})
-
-Groupboxes.InfoGroup:AddButton({
-    Text = "Buy Using Robux",
-    Func = function()
-        if vars.SelectedRecipe and vars.SelectedRecipe.PurchaseId and vars.SelectedRecipe.RobuxPrice then
-            game:GetService("MarketplaceService"):PromptPurchase(vars.LocalPlayer, vars.SelectedRecipe.PurchaseId)
-        end
-    end
-})
-
-function renderRecipeInfo(selected)
-    vars.SelectedRecipe = vars.ItemRecipes[selected] or {}
-    local outputs = vars.SelectedRecipe.Outputs or {}
-    local inputs = vars.SelectedRecipe.Inputs or {}
-
-    local outputStr = table.concat((function()
-        local out = {}
-        for k in pairs(outputs) do table.insert(out, k) end
-        return out
-    end)(), ", ")
-
-    local function renderInputs(tbl)
-        local lines = {}
-        local function recurse(t, indent)
-            indent = indent or ""
-            for k, v in pairs(t) do
-                if typeof(v) == "table" then
-                    recurse(v, indent .. "  ")
-                elseif k == "ItemType" or k == "ItemName" then
-                    table.insert(lines, indent .. k .. ": " .. tostring(v))
-                end
-            end
-        end
-        recurse(tbl)
-        return table.concat(lines, "\n")
-    end
-
-    labels.OutputLabel:SetText("Outputs: " .. outputStr)
-    labels.InputsLabel:SetText("Inputs:\n" .. renderInputs(inputs))
-    labels.TimeLabel:SetText("Time: " .. tostring(vars.SelectedRecipe.TimeToCraft or 0) .. "s")
-    labels.RobuxLabel:SetText("Robux: " .. vars.formatNumberWithCommas(vars.SelectedRecipe.RobuxPrice or 0))
-    local mt = vars.SelectedRecipe.MachineTypes
-    labels.MachineTypeLabel:SetText("MachineTypes: " .. (mt and table.concat(mt, ", ") or "N/A"))
-end
-
-
-local function getItemProperties(tool)
-    local uuid = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_UUID"])
-    
-    local finalName = nil
-    local finalType = nil
-
-    
-    local sprayTypeAttributeValue = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["SprayType"])
-    if sprayTypeAttributeValue then
-        finalName = sprayTypeAttributeValue
-        finalType = getgenv().HookedItemTypeEnums["SprayBottle"]
-        return finalName, finalType, uuid
-    end
-
-    
-    finalType = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) or 
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["PotType"])
-
-    
-    if finalType == getgenv().HookedItemTypeEnums["PetEgg"] then
-        
-        finalName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["EggName"]) or
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["Type"])
-    elseif finalType == getgenv().HookedItemTypeEnums["Harvest Tool"] then
-        
-        finalName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["Type"])
-    else
-        
-        finalName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["EggName"]) or
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["CrateType"]) or
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["SprayMutationName"]) or
-                tool:GetAttribute(getgenv().HookedInventoryServiceEnums["Type"])
-    end
-
-    
-    if not finalType and finalName and getgenv().HookedItemTypeEnums[finalName] then
-        finalType = getgenv().HookedItemTypeEnums[finalName]
-    end
-
-    
-    if not finalType then
-        for _, enumVal in pairs(getgenv().HookedItemTypeEnums) do
-            if type(enumVal) == "string" then
-                for _, attrCode in pairs(getgenv().HookedInventoryServiceEnums) do
-                    if attrCode ~= getgenv().HookedInventoryServiceEnums["ITEM_UUID"] and
-                    attrCode ~= getgenv().HookedInventoryServiceEnums["OWNER"] and
-                    attrCode ~= getgenv().HookedInventoryServiceEnums["LinkedPlayerID"] and
-                    attrCode ~= getgenv().HookedInventoryServiceEnums["Rarity"] and
-                    attrCode ~= getgenv().HookedInventoryServiceEnums["Uses"] and
-                    attrCode ~= getgenv().HookedInventoryServiceEnums["Favorite"] then
-
-                        if tool:GetAttribute(attrCode) == enumVal then
-                            finalType = enumVal
-                            break
-                        end
-                    end
-                end
-            end
-            if finalType then break end
-        end
-    end
-
-    return finalName, finalType, uuid
-end
-
-
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while task.wait(3) do
-        if not (vars.AutoRecipeTrigger or vars.AutoInputTrigger) then continue end
-
-        local machines = {
-            {
-                name = "SeedEventWorkbench",
-                selectedKey = vars.SelectedSeedDropdown and vars.SelectedSeedDropdown[1],
-                workbench = remotes.SeedWorkbench,
-                selectedRecipe = vars.SelectedSeedRecipe
-            },
-            {
-                name = "GearEventWorkbench",
-                selectedKey = vars.SelectedGearDropdown and vars.SelectedGearDropdown[1],
-                workbench = remotes.GearWorkbench,
-                selectedRecipe = vars.SelectedGearRecipe
-            },
-            {
-                name = "DinoEventWorkbench",
-                selectedKey = vars.SelectedDinoDropdown and vars.SelectedDinoDropdown[1],
-                workbench = vars.Workspace.Interaction.UpdateItems.DinoEvent:FindFirstChild("DinoCraftingTable"),
-                selectedRecipe = vars.SelectedDinoRecipe
-            }
+            Type = "KeyPicker",
         }
 
-        for _, machine in ipairs(machines) do
-            local selectedKey = machine.selectedKey
-            local selectedRecipe = machine.selectedRecipe
-            if not selectedKey then continue end
+        if KeyPicker.SyncToggleState then
+            Info.Modes = { "Toggle" }
+            Info.Mode = "Toggle"
+        end
 
-            local playerCraftData = modules.PlayerData.CraftingData.GlobalCraftingObjectData
-            local machineKey = machine.name == "SeedEventWorkbench" and "SeedEventWorkbench"
-                            or machine.name == "DinoEventWorkbench" and "DinoEventWorkbench"
-                            or "Workbench-1"
+        local Picker = New("TextButton", {
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            Size = UDim2.fromOffset(18, 18),
+            Text = KeyPicker.Value,
+            TextSize = 14,
+            Parent = ToggleLabel,
+        })
 
-            local machineData = playerCraftData[machineKey]
-            machineData = machineData and machineData.MachineData and machineData.MachineData[machine.name]
-            if not machineData then continue end
+        local KeybindsToggle = {
+            Normal = KeyPicker.Mode ~= "Toggle",
+        }
+        do
+            local Holder = New("TextButton", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 16),
+                Text = "",
+                Visible = not Info.NoUI,
+                Parent = Library.KeybindContainer,
+            })
 
-            local recipeId = machineData.RecipeId
-            local inputsItems = machineData.InputItems or {}
-            local timeRemaining = machineData.TimeRemaining
+            local Label = New("TextLabel", {
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 1),
+                Text = "",
+                TextSize = 14,
+                TextTransparency = 0.5,
+                Parent = Holder,
 
-            if vars.AutoRecipeTrigger and (not recipeId or recipeId == "") then
-                remotes.CraftingRemote:FireServer("SetRecipe", machine.workbench, machine.name, selectedKey)
-                continue
+                DPIExclude = {
+                    Size = true,
+                },
+            })
+
+            local Checkbox = New("Frame", {
+                BackgroundColor3 = "MainColor",
+                Size = UDim2.fromOffset(14, 14),
+                SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                Parent = Holder,
+            })
+            New("UICorner", {
+                CornerRadius = UDim.new(0, Library.CornerRadius / 2),
+                Parent = Checkbox,
+            })
+            New("UIStroke", {
+                Color = "OutlineColor",
+                Parent = Checkbox,
+            })
+
+            local CheckImage = New("ImageLabel", {
+                Image = CheckIcon and CheckIcon.Url or "",
+                ImageColor3 = "FontColor",
+                ImageRectOffset = CheckIcon and CheckIcon.ImageRectOffset or Vector2.zero,
+                ImageRectSize = CheckIcon and CheckIcon.ImageRectSize or Vector2.zero,
+                ImageTransparency = 1,
+                Position = UDim2.fromOffset(2, 2),
+                Size = UDim2.new(1, -4, 1, -4),
+                Parent = Checkbox,
+            })
+
+            function KeybindsToggle:Display(State)
+                Label.TextTransparency = State and 0 or 0.5
+                CheckImage.ImageTransparency = State and 0 or 1
             end
 
-            if not (vars.AutoInputTrigger and selectedRecipe and selectedRecipe.Inputs) then continue end
+            function KeybindsToggle:SetText(Text)
+                local X = Library:GetTextBounds(Text, Label.FontFace, Label.TextSize)
+                Label.Text = Text
+                Label.Size = UDim2.new(0, X, 1, 0)
+            end
 
-            local hasInput = false
-            for _, inputData in pairs(inputsItems) do
-                if inputData and inputData.ItemData and inputData.ItemData.ItemName then
-                    hasInput = true
+            function KeybindsToggle:SetVisibility(Visibility)
+                Holder.Visible = Visibility
+            end
+
+            function KeybindsToggle:SetNormal(Normal)
+                KeybindsToggle.Normal = Normal
+
+                Holder.Active = not Normal
+                Label.Position = Normal and UDim2.fromOffset(0, 0) or UDim2.fromOffset(22 * Library.DPIScale, 0)
+                Checkbox.Visible = not Normal
+            end
+
+            Holder.MouseButton1Click:Connect(function()
+                if KeybindsToggle.Normal then
+                    return
+                end
+
+                KeyPicker.Toggled = not KeyPicker.Toggled
+                KeyPicker:DoClick()
+            end)
+
+            KeybindsToggle.Holder = Holder
+            KeybindsToggle.Label = Label
+            KeybindsToggle.Checkbox = Checkbox
+            KeybindsToggle.Loaded = true
+            table.insert(Library.KeybindToggles, KeybindsToggle)
+        end
+
+        local MenuTable = Library:AddContextMenu(Picker, UDim2.fromOffset(62, 0), function()
+            return { Picker.AbsoluteSize.X + 1.5, 0.5 }
+        end, 1)
+        KeyPicker.Menu = MenuTable
+
+        local ModeButtons = {}
+        for _, Mode in pairs(Info.Modes) do
+            local ModeButton = {}
+
+            local Button = New("TextButton", {
+                BackgroundColor3 = "MainColor",
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 21),
+                Text = Mode,
+                TextSize = 14,
+                TextTransparency = 0.5,
+                Parent = MenuTable.Menu,
+            })
+
+            function ModeButton:Select()
+                for _, Button in pairs(ModeButtons) do
+                    Button:Deselect()
+                end
+
+                KeyPicker.Mode = Mode
+
+                Button.BackgroundTransparency = 0
+                Button.TextTransparency = 0
+
+                MenuTable:Close()
+            end
+
+            function ModeButton:Deselect()
+                KeyPicker.Mode = nil
+
+                Button.BackgroundTransparency = 1
+                Button.TextTransparency = 0.5
+            end
+
+            Button.MouseButton1Click:Connect(function()
+                ModeButton:Select()
+            end)
+
+            if KeyPicker.Mode == Mode then
+                ModeButton:Select()
+            end
+
+            ModeButtons[Mode] = ModeButton
+        end
+
+        function KeyPicker:Display()
+            if Library.Unloaded then
+                return
+            end
+
+            local X, Y =
+                Library:GetTextBounds(KeyPicker.Value, Picker.FontFace, Picker.TextSize, ToggleLabel.AbsoluteSize.X)
+            Picker.Text = KeyPicker.Value
+            Picker.Size = UDim2.fromOffset(X + 9 * Library.DPIScale, Y + 4 * Library.DPIScale)
+        end
+
+        function KeyPicker:Update()
+            KeyPicker:Display()
+
+            if Info.NoUI then
+                return
+            end
+
+            if KeyPicker.Mode == "Toggle" and ParentObj.Type == "Toggle" and ParentObj.Disabled then
+                KeybindsToggle:SetVisibility(false)
+                return
+            end
+
+            local State = KeyPicker:GetState()
+            local ShowToggle = Library.ShowToggleFrameInKeybinds and KeyPicker.Mode == "Toggle"
+
+            if KeybindsToggle.Loaded then
+                if ShowToggle then
+                    KeybindsToggle:SetNormal(false)
+                else
+                    KeybindsToggle:SetNormal(true)
+                end
+
+                KeybindsToggle:SetText(("[%s] %s (%s)"):format(KeyPicker.Value, KeyPicker.Text, KeyPicker.Mode))
+                KeybindsToggle:SetVisibility(true)
+                KeybindsToggle:Display(State)
+            end
+
+            Library:UpdateKeybindFrame()
+        end
+
+        function KeyPicker:GetState()
+            if KeyPicker.Mode == "Always" then
+                return true
+            elseif KeyPicker.Mode == "Hold" then
+                local Key = KeyPicker.Value
+                if Key == "None" then
+                    return false
+                end
+
+                if Key == "MB1" or Key == "MB2" then
+                    return Key == "MB1" and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+                        or Key == "MB2" and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
+                end
+
+                return UserInputService:IsKeyDown(Enum.KeyCode[KeyPicker.Value])
+                    and not UserInputService:GetFocusedTextBox()
+            else
+                return KeyPicker.Toggled
+            end
+        end
+
+        function KeyPicker:OnChanged(Func)
+            KeyPicker.Changed = Func
+        end
+
+        function KeyPicker:OnClick(Func)
+            KeyPicker.Clicked = Func
+        end
+
+        function KeyPicker:DoClick()
+            if ParentObj.Type == "Toggle" and KeyPicker.SyncToggleState then
+                ParentObj:SetValue(KeyPicker.Toggled)
+            end
+
+            Library:SafeCallback(KeyPicker.Callback, KeyPicker.Toggled)
+            Library:SafeCallback(KeyPicker.Changed, KeyPicker.Toggled)
+        end
+
+        function KeyPicker:SetValue(Data)
+            local Key, Mode = Data[1], Data[2]
+
+            KeyPicker.Value = Key
+            if ModeButtons[Mode] then
+                ModeButtons[Mode]:Select()
+            end
+
+            KeyPicker:Update()
+        end
+
+        function KeyPicker:SetText(Text)
+            KeybindsToggle:SetText(Text)
+            KeyPicker:Update()
+        end
+
+        local Picking = false
+        Picker.MouseButton1Click:Connect(function()
+            if Picking then
+                return
+            end
+
+            Picking = true
+
+            Picker.Text = "..."
+            Picker.Size = UDim2.fromOffset(29 * Library.DPIScale, 18 * Library.DPIScale)
+
+            local Input = UserInputService.InputBegan:Wait()
+            local Key = "Unknown"
+
+            if Input.UserInputType == Enum.UserInputType.Keyboard then
+                Key = Input.KeyCode == Enum.KeyCode.Escape and "None" or Input.KeyCode.Name
+            elseif Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                Key = "MB1"
+            elseif Input.UserInputType == Enum.UserInputType.MouseButton2 then
+                Key = "MB2"
+            end
+
+            KeyPicker.Value = Key
+            KeyPicker:Update()
+
+            Library:SafeCallback(
+                KeyPicker.ChangedCallback,
+                Input.KeyCode == Enum.KeyCode.Unknown and Input.UserInputType or Input.KeyCode
+            )
+            Library:SafeCallback(
+                KeyPicker.Changed,
+                Input.KeyCode == Enum.KeyCode.Unknown and Input.UserInputType or Input.KeyCode
+            )
+
+            RunService.RenderStepped:Wait()
+            Picking = false
+        end)
+        Picker.MouseButton2Click:Connect(MenuTable.Toggle)
+
+        Library:GiveSignal(UserInputService.InputBegan:Connect(function(Input: InputObject)
+            if
+                KeyPicker.Mode == "Always"
+                or KeyPicker.Value == "Unknown"
+                or KeyPicker.Value == "None"
+                or Picking
+                or UserInputService:GetFocusedTextBox()
+            then
+                return
+            end
+
+            if KeyPicker.Mode == "Toggle" then
+                local Key = KeyPicker.Value
+
+                if Key == "MB1" or Key == "MB2" then
+                    if
+                        Key == "MB1" and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+                        or Key == "MB2" and UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
+                    then
+                        KeyPicker.Toggled = not KeyPicker.Toggled
+                        KeyPicker:DoClick()
+                    end
+                elseif Input.UserInputType == Enum.UserInputType.Keyboard and Input.KeyCode.Name == Key then
+                    KeyPicker.Toggled = not KeyPicker.Toggled
+                    KeyPicker:DoClick()
+                end
+            end
+
+            KeyPicker:Update()
+        end))
+
+        Library:GiveSignal(UserInputService.InputEnded:Connect(function()
+            if
+                KeyPicker.Value == "Unknown"
+                or KeyPicker.Value == "None"
+                or Picking
+                or UserInputService:GetFocusedTextBox()
+            then
+                return
+            end
+
+            KeyPicker:Update()
+        end))
+
+        KeyPicker:Update()
+
+        if ParentObj.Addons then
+            table.insert(ParentObj.Addons, KeyPicker)
+        end
+
+        Options[Idx] = KeyPicker
+
+        return self
+    end
+
+    local HueSequenceTable = {}
+    for Hue = 0, 1, 0.1 do
+        table.insert(HueSequenceTable, ColorSequenceKeypoint.new(Hue, Color3.fromHSV(Hue, 1, 1)))
+    end
+    function Funcs:AddColorPicker(Idx, Info)
+        Info = Library:Validate(Info, Templates.ColorPicker)
+
+        local ParentObj = self
+        local ToggleLabel = ParentObj.TextLabel
+
+        local ColorPicker = {
+            Value = Info.Default,
+            Transparency = Info.Transparency or 0,
+
+            Callback = Info.Callback,
+            Changed = Info.Changed,
+
+            Type = "ColorPicker",
+        }
+        ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = ColorPicker.Value:ToHSV()
+
+        local Holder = New("TextButton", {
+            BackgroundColor3 = ColorPicker.Value,
+            BorderColor3 = Library:GetDarkerColor(ColorPicker.Value),
+            BorderSizePixel = 1,
+            Size = UDim2.fromOffset(18, 18),
+            Text = "",
+            Parent = ToggleLabel,
+        })
+
+        local HolderTransparency = New("ImageLabel", {
+            Image = "rbxassetid://139785960036434",
+            ImageTransparency = (1 - ColorPicker.Transparency),
+            ScaleType = Enum.ScaleType.Tile,
+            Size = UDim2.fromScale(1, 1),
+            TileSize = UDim2.fromOffset(9, 9),
+            Parent = Holder,
+        })
+
+        --// Color Menu \\--
+        local ColorMenu = Library:AddContextMenu(
+            Holder,
+            UDim.fromOffset(Info.Transparency and 256 or 234, 0),
+            function()
+                return { 0.5, Holder.AbsoluteSize.Y + 1.5 }
+            end,
+            1
+        )
+        ColorMenu.List.Padding = UDim.new(0, 8)
+        ColorPicker.ColorMenu = ColorMenu
+
+        New("UIPadding", {
+            PaddingBottom = UDim.new(0, 6),
+            PaddingLeft = UDim.new(0, 6),
+            PaddingRight = UDim.new(0, 6),
+            PaddingTop = UDim.new(0, 6),
+            Parent = ColorMenu.Menu,
+        })
+
+        if typeof(Info.Title) == "string" then
+            New("TextLabel", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 8),
+                Text = Info.Title,
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = ColorMenu.Menu,
+            })
+        end
+
+        local ColorHolder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 200),
+            Parent = ColorMenu.Menu,
+        })
+        New("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            Padding = UDim.new(0, 6),
+            Parent = ColorHolder,
+        })
+
+        --// Sat Map
+        local SatVipMap = New("ImageButton", {
+            BackgroundColor3 = ColorPicker.Value,
+            Image = "rbxassetid://4155801252",
+            Size = UDim2.fromOffset(200, 200),
+            Parent = ColorHolder,
+        })
+
+        local SatVibCursor = New("Frame", {
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundColor3 = "White",
+            Size = UDim2.fromOffset(6, 6),
+            Parent = SatVipMap,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = SatVibCursor,
+        })
+        New("UIStroke", {
+            Color = "Dark",
+            Parent = SatVibCursor,
+        })
+
+        --// Hue
+        local HueSelector = New("TextButton", {
+            Size = UDim2.fromOffset(16, 200),
+            Text = "",
+            Parent = ColorHolder,
+        })
+        New("UIGradient", {
+            Color = ColorSequence.new(HueSequenceTable),
+            Rotation = 90,
+            Parent = HueSelector,
+        })
+
+        local HueCursor = New("Frame", {
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            BackgroundColor3 = "White",
+            BorderColor3 = "Dark",
+            BorderSizePixel = 1,
+            Position = UDim2.fromScale(0.5, ColorPicker.Hue),
+            Size = UDim2.new(1, 2, 0, 1),
+            Parent = HueSelector,
+        })
+
+        --// Alpha
+        local TransparencySelector, TransparencyColor, TransparencyCursor
+        if Info.Transparency then
+            TransparencySelector = New("ImageButton", {
+                Image = "rbxassetid://139785960036434",
+                ScaleType = Enum.ScaleType.Tile,
+                Size = UDim2.fromOffset(16, 200),
+                TileSize = UDim2.fromOffset(8, 8),
+                Parent = ColorHolder,
+            })
+
+            TransparencyColor = New("Frame", {
+                BackgroundColor3 = ColorPicker.Value,
+                Size = UDim2.fromScale(1, 1),
+                Parent = TransparencySelector,
+            })
+            New("UIGradient", {
+                Rotation = 90,
+                Transparency = NumberSequence.new({
+                    NumberSequenceKeypoint.new(0, 0),
+                    NumberSequenceKeypoint.new(1, 1),
+                }),
+                Parent = TransparencyColor,
+            })
+
+            TransparencyCursor = New("Frame", {
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                BackgroundColor3 = "White",
+                BorderColor3 = "Dark",
+                BorderSizePixel = 1,
+                Position = UDim2.fromScale(0.5, ColorPicker.Transparency),
+                Size = UDim2.new(1, 2, 0, 1),
+                Parent = TransparencySelector,
+            })
+        end
+
+        local InfoHolder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 20),
+            Parent = ColorMenu.Menu,
+        })
+        New("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalFlex = Enum.UIFlexAlignment.Fill,
+            Padding = UDim.new(0, 8),
+            Parent = InfoHolder,
+        })
+
+        local HueBox = New("TextBox", {
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            ClearTextOnFocus = false,
+            Size = UDim2.fromScale(1, 1),
+            Text = "#??????",
+            TextSize = 14,
+            Parent = InfoHolder,
+        })
+
+        local RgbBox = New("TextBox", {
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            ClearTextOnFocus = false,
+            Size = UDim2.fromScale(1, 1),
+            Text = "?, ?, ?",
+            TextSize = 14,
+            Parent = InfoHolder,
+        })
+
+        --// Context Menu \\--
+        local ContextMenu = Library:AddContextMenu(Holder, UDim2.fromOffset(93, 0), function()
+            return { Holder.AbsoluteSize.X + 1.5, 0.5 }
+        end, 1)
+        ColorPicker.ContextMenu = ContextMenu
+        do
+            local function CreateButton(Text, Func)
+                local Button = New("TextButton", {
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 0, 0, 21),
+                    Text = Text,
+                    TextSize = 14,
+                    Parent = ContextMenu.Menu,
+                })
+
+                Button.MouseButton1Click:Connect(function()
+                    Library:SafeCallback(Func)
+                    ContextMenu:Close()
+                end)
+            end
+
+            CreateButton("Copy color", function()
+                Library.CopiedColor = { ColorPicker.Value, ColorPicker.Transparency }
+            end)
+
+            CreateButton("Paste color", function()
+                ColorPicker:SetValueRGB(Library.CopiedColor[1], Library.CopiedColor[2])
+            end)
+
+            if setclipboard then
+                CreateButton("Copy Hex", function()
+                    setclipboard(tostring(ColorPicker.Value:ToHex()))
+                end)
+                CreateButton("Copy RGB", function()
+                    setclipboard(table.concat({
+                        math.floor(ColorPicker.Value.R * 255),
+                        math.floor(ColorPicker.Value.G * 255),
+                        math.floor(ColorPicker.Value.B * 255),
+                    }, ", "))
+                end)
+            end
+        end
+
+        --// End \\--
+
+        function ColorPicker:SetHSVFromRGB(Color)
+            ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color:ToHSV()
+        end
+
+        function ColorPicker:Display()
+            if Library.Unloaded then
+                return
+            end
+
+            ColorPicker.Value = Color3.fromHSV(ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib)
+
+            Holder.BackgroundColor3 = ColorPicker.Value
+            Holder.BorderColor3 = Library:GetDarkerColor(ColorPicker.Value)
+            HolderTransparency.ImageTransparency = (1 - ColorPicker.Transparency)
+
+            SatVipMap.BackgroundColor3 = Color3.fromHSV(ColorPicker.Hue, 1, 1)
+            if TransparencyColor then
+                TransparencyColor.BackgroundColor3 = ColorPicker.Value
+            end
+
+            SatVibCursor.Position = UDim2.fromScale(ColorPicker.Sat, 1 - ColorPicker.Vib)
+            HueCursor.Position = UDim2.fromScale(0.5, ColorPicker.Hue)
+            if TransparencyCursor then
+                TransparencyCursor.Position = UDim2.fromScale(0.5, ColorPicker.Transparency)
+            end
+
+            HueBox.Text = "#" .. ColorPicker.Value:ToHex()
+            RgbBox.Text = table.concat({
+                math.floor(ColorPicker.Value.R * 255),
+                math.floor(ColorPicker.Value.G * 255),
+                math.floor(ColorPicker.Value.B * 255),
+            }, ", ")
+        end
+
+        function ColorPicker:Update()
+            ColorPicker:Display()
+
+            Library:SafeCallback(ColorPicker.Callback, ColorPicker.Value)
+            Library:SafeCallback(ColorPicker.Changed, ColorPicker.Value)
+        end
+
+        function ColorPicker:OnChanged(Func)
+            ColorPicker.Changed = Func
+        end
+
+        function ColorPicker:SetValue(HSV, Transparency)
+            local Color = Color3.fromHSV(HSV[1], HSV[2], HSV[3])
+
+            ColorPicker.Transparency = Info.Transparency and Transparency or 0
+            ColorPicker:SetHSVFromRGB(Color)
+            ColorPicker:Display()
+        end
+
+        function ColorPicker:SetValueRGB(Color, Transparency)
+            ColorPicker.Transparency = Info.Transparency and Transparency or 0
+            ColorPicker:SetHSVFromRGB(Color)
+            ColorPicker:Display()
+        end
+
+        Holder.MouseButton1Click:Connect(ColorMenu.Toggle)
+        Holder.MouseButton2Click:Connect(ContextMenu.Toggle)
+
+        SatVipMap.InputBegan:Connect(function(Input: InputObject)
+            while IsClickInput(Input) do
+                local MinX = SatVipMap.AbsolutePosition.X
+                local MaxX = MinX + SatVipMap.AbsoluteSize.X
+                local LocationX = math.clamp(Mouse.X, MinX, MaxX)
+
+                local MinY = SatVipMap.AbsolutePosition.Y
+                local MaxY = MinY + SatVipMap.AbsoluteSize.Y
+                local LocationY = math.clamp(Mouse.Y, MinY, MaxY)
+
+                local OldSat = ColorPicker.Sat
+                local OldVib = ColorPicker.Vib
+                ColorPicker.Sat = (LocationX - MinX) / (MaxX - MinX)
+                ColorPicker.Vib = 1 - ((LocationY - MinY) / (MaxY - MinY))
+
+                if ColorPicker.Sat ~= OldSat or ColorPicker.Vib ~= OldVib then
+                    ColorPicker:Update()
+                end
+
+                RunService.RenderStepped:Wait()
+            end
+        end)
+        HueSelector.InputBegan:Connect(function(Input: InputObject)
+            while IsClickInput(Input) do
+                local Min = HueSelector.AbsolutePosition.Y
+                local Max = Min + HueSelector.AbsoluteSize.Y
+                local Location = math.clamp(Mouse.Y, Min, Max)
+
+                local OldHue = ColorPicker.Hue
+                ColorPicker.Hue = (Location - Min) / (Max - Min)
+
+                if ColorPicker.Hue ~= OldHue then
+                    ColorPicker:Update()
+                end
+
+                RunService.RenderStepped:Wait()
+            end
+        end)
+        if TransparencySelector then
+            TransparencySelector.InputBegan:Connect(function(Input: InputObject)
+                while IsClickInput(Input) do
+                    local Min = TransparencySelector.AbsolutePosition.Y
+                    local Max = TransparencySelector.AbsolutePosition.Y + TransparencySelector.AbsoluteSize.Y
+                    local Location = math.clamp(Mouse.Y, Min, Max)
+
+                    local OldTransparency = ColorPicker.Transparency
+                    ColorPicker.Transparency = (Location - Min) / (Max - Min)
+
+                    if ColorPicker.Transparency ~= OldTransparency then
+                        ColorPicker:Update()
+                    end
+
+                    RunService.RenderStepped:Wait()
+                end
+            end)
+        end
+
+        HueBox.FocusLost:Connect(function(Enter)
+            if not Enter then
+                return
+            end
+
+            local Success, Color = pcall(Color3.fromHex, HueBox.Text)
+            if Success and typeof(Color) == "Color3" then
+                ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color:ToHSV()
+            end
+
+            ColorPicker:Update()
+        end)
+        RgbBox.FocusLost:Connect(function(Enter)
+            if not Enter then
+                return
+            end
+
+            local R, G, B = RgbBox.Text:match("(%d+),%s*(%d+),%s*(%d+)")
+            if R and G and B then
+                ColorPicker:SetHSVFromRGB(Color3.fromRGB(R, G, B))
+            end
+
+            ColorPicker:Update()
+        end)
+
+        ColorPicker:Display()
+
+        if ParentObj.Addons then
+            table.insert(ParentObj.Addons, ColorPicker)
+        end
+
+        Options[Idx] = ColorPicker
+
+        return self
+    end
+
+    BaseAddons.__index = Funcs
+    BaseAddons.__namecall = function(_, Key, ...)
+        return Funcs[Key](...)
+    end
+end
+
+local BaseGroupbox = {}
+do
+    local Funcs = {}
+
+    function Funcs:AddDivider()
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local Holder = New("Frame", {
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            Size = UDim2.new(1, 0, 0, 2),
+            Parent = Container,
+        })
+
+        Groupbox:Resize()
+
+        table.insert(Groupbox.Elements, {
+            Holder = Holder,
+            Type = "Divider",
+        })
+    end
+
+    function Funcs:AddLabel(...)
+        local Data = {}
+
+        local First = select(1, ...)
+        local Second = select(2, ...)
+
+        if typeof(First) == "table" or typeof(Second) == "table" then
+            local Params = typeof(First) == "table" and First or Second
+
+            Data.Text = Params.Text or ""
+            Data.DoesWrap = Params.DoesWrap or false
+            Data.Size = Params.Size or 14
+            Data.Visible = Params.Visible or true
+            Data.Idx = typeof(Second) == "table" and First or nil
+        else
+            Data.Text = First or ""
+            Data.DoesWrap = Second or false
+            Data.Size = 14
+            Data.Visible = true
+            Data.Idx = select(3, ...) or nil
+        end
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local Label = {
+            Text = Data.Text,
+            DoesWrap = Data.DoesWrap,
+
+            Visible = Data.Visible,
+            Type = "Label",
+        }
+
+        local TextLabel = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 18),
+            Text = Label.Text,
+            TextSize = Data.Size,
+            TextWrapped = Label.DoesWrap,
+            TextXAlignment = Groupbox.IsKeyTab and Enum.TextXAlignment.Center or Enum.TextXAlignment.Left,
+            Parent = Container,
+        })
+
+        function Label:SetVisible(Visible: boolean)
+            Label.Visible = Visible
+
+            TextLabel.Visible = Label.Visible
+            Groupbox:Resize()
+        end
+
+        function Label:SetText(Text: string)
+            Label.Text = Text
+            TextLabel.Text = Text
+
+            if Label.DoesWrap then
+                local _, Y =
+                    Library:GetTextBounds(Label.Text, TextLabel.FontFace, TextLabel.TextSize, TextLabel.AbsoluteSize.X)
+                TextLabel.Size = UDim2.new(1, 0, 0, Y + 4 * Library.DPIScale)
+            end
+
+            Groupbox:Resize()
+        end
+
+        if Label.DoesWrap then
+            local _, Y =
+                Library:GetTextBounds(Label.Text, TextLabel.FontFace, TextLabel.TextSize, TextLabel.AbsoluteSize.X)
+            TextLabel.Size = UDim2.new(1, 0, 0, Y + 4 * Library.DPIScale)
+        else
+            New("UIListLayout", {
+                FillDirection = Enum.FillDirection.Horizontal,
+                HorizontalAlignment = Enum.HorizontalAlignment.Right,
+                Padding = UDim.new(0, 6),
+                Parent = TextLabel,
+            })
+        end
+
+        if Data.DoesWrap then
+            local Last = TextLabel.AbsoluteSize
+
+            TextLabel:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+                if TextLabel.AbsoluteSize == Last then
+                    return
+                end
+
+                local _, Y =
+                    Library:GetTextBounds(Label.Text, TextLabel.FontFace, TextLabel.TextSize, TextLabel.AbsoluteSize.X)
+                TextLabel.Size = UDim2.new(1, 0, 0, Y + 4 * Library.DPIScale)
+
+                Last = TextLabel.AbsoluteSize
+                Groupbox:Resize()
+            end)
+        end
+
+        Groupbox:Resize()
+
+        Label.TextLabel = TextLabel
+        Label.Container = Container
+        if not Data.DoesWrap then
+            setmetatable(Label, BaseAddons)
+        end
+
+        Label.Holder = TextLabel
+        table.insert(Groupbox.Elements, Label)
+
+        if Data.Idx then
+            Labels[Data.Idx] = Label
+        else
+            table.insert(Labels, Label)
+        end
+
+        return Label
+    end
+
+    function Funcs:AddButton(...)
+        local function GetInfo(...)
+            local Info = {}
+
+            local First = select(1, ...)
+            local Second = select(2, ...)
+
+            if typeof(First) == "table" or typeof(Second) == "table" then
+                local Params = typeof(First) == "table" and First or Second
+
+                Info.Text = Params.Text or ""
+                Info.Func = Params.Func or function() end
+                Info.DoubleClick = Params.DoubleClick
+
+                Info.Tooltip = Params.Tooltip
+                Info.DisabledTooltip = Params.DisabledTooltip
+
+                Info.Risky = Params.Risky or false
+                Info.Disabled = Params.Disabled or false
+                Info.Visible = Params.Visible or true
+                Info.Idx = typeof(Second) == "table" and First or nil
+            else
+                Info.Text = First or ""
+                Info.Func = Second or function() end
+                Info.DoubleClick = false
+
+                Info.Tooltip = nil
+                Info.DisabledTooltip = nil
+
+                Info.Risky = false
+                Info.Disabled = false
+                Info.Visible = true
+                Info.Idx = select(3, ...) or nil
+            end
+
+            return Info
+        end
+        local Info = GetInfo(...)
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local Button = {
+            Text = Info.Text,
+            Func = Info.Func,
+            DoubleClick = Info.DoubleClick,
+
+            Tooltip = Info.Tooltip,
+            DisabledTooltip = Info.DisabledTooltip,
+            TooltipTable = nil,
+
+            Risky = Info.Risky,
+            Disabled = Info.Disabled,
+            Visible = Info.Visible,
+
+            Tween = nil,
+            Type = "Button",
+        }
+
+        local Holder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 21),
+            Parent = Container,
+        })
+
+        New("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalFlex = Enum.UIFlexAlignment.Fill,
+            Padding = UDim.new(0, 9),
+            Parent = Holder,
+        })
+
+        local function CreateButton(Button)
+            local Base = New("TextButton", {
+                Active = not Button.Disabled,
+                BackgroundColor3 = Button.Disabled and "BackgroundColor" or "MainColor",
+                Size = UDim2.fromScale(1, 1),
+                Text = Button.Text,
+                TextSize = 14,
+                TextTransparency = 0.4,
+                Visible = Button.Visible,
+                Parent = Holder,
+            })
+
+            local Stroke = New("UIStroke", {
+                Color = "OutlineColor",
+                Transparency = Button.Disabled and 0.5 or 0,
+                Parent = Base,
+            })
+
+            return Base, Stroke
+        end
+
+        local function InitEvents(Button)
+            Button.Base.MouseEnter:Connect(function()
+                if Button.Disabled then
+                    return
+                end
+
+                Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
+                    TextTransparency = 0,
+                })
+                Button.Tween:Play()
+            end)
+            Button.Base.MouseLeave:Connect(function()
+                if Button.Disabled then
+                    return
+                end
+
+                Button.Tween = TweenService:Create(Button.Base, Library.TweenInfo, {
+                    TextTransparency = 0.4,
+                })
+                Button.Tween:Play()
+            end)
+
+            Button.Base.MouseButton1Click:Connect(function()
+                if Button.Disabled or Button.Locked then
+                    return
+                end
+
+                if Button.DoubleClick then
+                    Button.Locked = true
+
+                    Button.Base.Text = "Are you sure?"
+                    Button.Base.TextColor3 = Library.Scheme.AccentColor
+                    Library.Registry[Button.Base].TextColor3 = "AccentColor"
+
+                    local Clicked = WaitForEvent(Button.Base.MouseButton1Click, 0.5)
+
+                    Button.Base.Text = Button.Text
+                    Button.Base.TextColor3 = Button.Risky and Library.Scheme.Red or Library.Scheme.FontColor
+                    Library.Registry[Button.Base].TextColor3 = Button.Risky and "Red" or "FontColor"
+
+                    if Clicked then
+                        Library:SafeCallback(Button.Func)
+                    end
+
+                    RunService.RenderStepped:Wait() --// Mouse Button fires without waiting (i hate roblox)
+                    Button.Locked = false
+                    return
+                end
+
+                Library:SafeCallback(Button.Func)
+            end)
+        end
+
+        Button.Base, Button.Stroke = CreateButton(Button)
+        InitEvents(Button)
+
+        function Button:AddButton(...)
+            local Info = GetInfo(...)
+
+            local SubButton = {
+                Text = Info.Text,
+                Func = Info.Func,
+                DoubleClick = Info.DoubleClick,
+
+                Tooltip = Info.Tooltip,
+                DisabledTooltip = Info.DisabledTooltip,
+                TooltipTable = nil,
+
+                Risky = Info.Risky,
+                Disabled = Info.Disabled,
+                Visible = Info.Visible,
+
+                Tween = nil,
+                Type = "SubButton",
+            }
+
+            Button.SubButton = SubButton
+            SubButton.Base, SubButton.Stroke = CreateButton(SubButton)
+            InitEvents(SubButton)
+
+            function SubButton:UpdateColors()
+                if Library.Unloaded then
+                    return
+                end
+
+                StopTween(SubButton.Tween)
+
+                SubButton.Base.BackgroundColor3 = SubButton.Disabled and Library.Scheme.BackgroundColor
+                    or Library.Scheme.MainColor
+                SubButton.Base.TextTransparency = SubButton.Disabled and 0.8 or 0.4
+                SubButton.Stroke.Transparency = SubButton.Disabled and 0.5 or 0
+
+                Library.Registry[SubButton.Base].BackgroundColor3 = SubButton.Disabled and "BackgroundColor"
+                    or "MainColor"
+            end
+
+            function SubButton:SetDisabled(Disabled: boolean)
+                SubButton.Disabled = Disabled
+
+                if SubButton.TooltipTable then
+                    SubButton.TooltipTable.Disabled = SubButton.Disabled
+                end
+
+                SubButton.Base.Active = not SubButton.Disabled
+                SubButton:UpdateColors()
+            end
+
+            function SubButton:SetVisible(Visible: boolean)
+                SubButton.Visible = Visible
+
+                SubButton.Base.Visible = SubButton.Visible
+                Groupbox:Resize()
+            end
+
+            function SubButton:SetText(Text: string)
+                SubButton.Text = Text
+                SubButton.Base.Text = Text
+            end
+
+            if typeof(SubButton.Tooltip) == "string" or typeof(SubButton.DisabledTooltip) == "string" then
+                SubButton.TooltipTable =
+                    Library:AddTooltip(SubButton.Tooltip, SubButton.DisabledTooltip, SubButton.Base)
+                SubButton.TooltipTable.Disabled = SubButton.Disabled
+            end
+
+            if SubButton.Risky then
+                SubButton.Base.TextColor3 = Library.Scheme.Red
+                Library.Registry[SubButton.Base].TextColor3 = "Red"
+            end
+
+            SubButton:UpdateColors()
+
+            if Info.Idx then
+                Buttons[Info.Idx] = SubButton
+            else
+                table.insert(Buttons, SubButton)
+            end
+
+            return SubButton
+        end
+
+        function Button:UpdateColors()
+            if Library.Unloaded then
+                return
+            end
+
+            StopTween(Button.Tween)
+
+            Button.Base.BackgroundColor3 = Button.Disabled and Library.Scheme.BackgroundColor
+                or Library.Scheme.MainColor
+            Button.Base.TextTransparency = Button.Disabled and 0.8 or 0.4
+            Button.Stroke.Transparency = Button.Disabled and 0.5 or 0
+
+            Library.Registry[Button.Base].BackgroundColor3 = Button.Disabled and "BackgroundColor" or "MainColor"
+        end
+
+        function Button:SetDisabled(Disabled: boolean)
+            Button.Disabled = Disabled
+
+            if Button.TooltipTable then
+                Button.TooltipTable.Disabled = Button.Disabled
+            end
+
+            Button.Base.Active = not Button.Disabled
+            Button:UpdateColors()
+        end
+
+        function Button:SetVisible(Visible: boolean)
+            Button.Visible = Visible
+
+            Holder.Visible = Button.Visible
+            Groupbox:Resize()
+        end
+
+        function Button:SetText(Text: string)
+            Button.Text = Text
+            Button.Base.Text = Text
+        end
+
+        if typeof(Button.Tooltip) == "string" or typeof(Button.DisabledTooltip) == "string" then
+            Button.TooltipTable = Library:AddTooltip(Button.Tooltip, Button.DisabledTooltip, Button.Base)
+            Button.TooltipTable.Disabled = Button.Disabled
+        end
+
+        if Button.Risky then
+            Button.Base.TextColor3 = Library.Scheme.Red
+            Library.Registry[Button.Base].TextColor3 = "Red"
+        end
+
+        Button:UpdateColors()
+        Groupbox:Resize()
+
+        Button.Holder = Holder
+        table.insert(Groupbox.Elements, Button)
+
+        if Info.Idx then
+            Buttons[Info.Idx] = Button
+        else
+            table.insert(Buttons, Button)
+        end
+
+        return Button
+    end
+
+    function Funcs:AddCheckbox(Idx, Info)
+        Info = Library:Validate(Info, Templates.Toggle)
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local Toggle = {
+            Text = Info.Text,
+            Value = Info.Default,
+
+            Tooltip = Info.Tooltip,
+            DisabledTooltip = Info.DisabledTooltip,
+            TooltipTable = nil,
+
+            Callback = Info.Callback,
+            Changed = Info.Changed,
+
+            Risky = Info.Risky,
+            Disabled = Info.Disabled,
+            Visible = Info.Visible,
+            Addons = {},
+
+            Type = "Toggle",
+        }
+
+        local Button = New("TextButton", {
+            Active = not Toggle.Disabled,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 18),
+            Text = "",
+            Visible = Toggle.Visible,
+            Parent = Container,
+        })
+
+        local Label = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Position = UDim2.fromOffset(26, 0),
+            Size = UDim2.new(1, -26, 1, 0),
+            Text = Toggle.Text,
+            TextSize = 14,
+            TextTransparency = 0.4,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = Button,
+        })
+
+        New("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalAlignment = Enum.HorizontalAlignment.Right,
+            Padding = UDim.new(0, 6),
+            Parent = Label,
+        })
+
+        local Checkbox = New("Frame", {
+            BackgroundColor3 = "MainColor",
+            Size = UDim2.fromScale(1, 1),
+            SizeConstraint = Enum.SizeConstraint.RelativeYY,
+            Parent = Button,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(0, Library.CornerRadius / 2),
+            Parent = Checkbox,
+        })
+
+        local CheckboxStroke = New("UIStroke", {
+            Color = "OutlineColor",
+            Parent = Checkbox,
+        })
+
+        local CheckImage = New("ImageLabel", {
+            Image = CheckIcon and CheckIcon.Url or "",
+            ImageColor3 = "FontColor",
+            ImageRectOffset = CheckIcon and CheckIcon.ImageRectOffset or Vector2.zero,
+            ImageRectSize = CheckIcon and CheckIcon.ImageRectSize or Vector2.zero,
+            ImageTransparency = 1,
+            Position = UDim2.fromOffset(2, 2),
+            Size = UDim2.new(1, -4, 1, -4),
+            Parent = Checkbox,
+        })
+
+        function Toggle:UpdateColors()
+            Toggle:Display()
+        end
+
+        function Toggle:Display()
+            if Library.Unloaded then
+                return
+            end
+
+            CheckboxStroke.Transparency = Toggle.Disabled and 0.5 or 0
+
+            if Toggle.Disabled then
+                Label.TextTransparency = 0.8
+                CheckImage.ImageTransparency = Toggle.Value and 0.8 or 1
+
+                Checkbox.BackgroundColor3 = Library.Scheme.BackgroundColor
+                Library.Registry[Checkbox].BackgroundColor3 = "BackgroundColor"
+
+                return
+            end
+
+            TweenService:Create(Label, Library.TweenInfo, {
+                TextTransparency = Toggle.Value and 0 or 0.4,
+            }):Play()
+            TweenService:Create(CheckImage, Library.TweenInfo, {
+                ImageTransparency = Toggle.Value and 0 or 1,
+            }):Play()
+
+            Checkbox.BackgroundColor3 = Library.Scheme.MainColor
+            Library.Registry[Checkbox].BackgroundColor3 = "MainColor"
+        end
+
+        function Toggle:OnChanged(Func)
+            Toggle.Changed = Func
+        end
+
+        function Toggle:SetValue(Value)
+            if Toggle.Disabled then
+                return
+            end
+
+            Toggle.Value = Value
+            Toggle:Display()
+
+            for _, Addon in pairs(Toggle.Addons) do
+                if Addon.Type == "KeyPicker" and Addon.SyncToggleState then
+                    Addon.Toggled = Toggle.Value
+                    Addon:Update()
+                end
+            end
+
+            Library:SafeCallback(Toggle.Callback, Toggle.Value)
+            Library:SafeCallback(Toggle.Changed, Toggle.Value)
+            Library:UpdateDependencyBoxes()
+        end
+
+        function Toggle:SetDisabled(Disabled: boolean)
+            Toggle.Disabled = Disabled
+
+            if Toggle.TooltipTable then
+                Toggle.TooltipTable.Disabled = Toggle.Disabled
+            end
+
+            for _, Addon in pairs(Toggle.Addons) do
+                if Addon.Type == "KeyPicker" and Addon.SyncToggleState then
+                    Addon:Update()
+                end
+            end
+
+            Button.Active = not Toggle.Disabled
+            Toggle:Display()
+        end
+
+        function Toggle:SetVisible(Visible: boolean)
+            Toggle.Visible = Visible
+
+            Button.Visible = Toggle.Visible
+            Groupbox:Resize()
+        end
+
+        function Toggle:SetText(Text: string)
+            Toggle.Text = Text
+            Label.Text = Text
+        end
+
+        Button.MouseButton1Click:Connect(function()
+            if Toggle.Disabled then
+                return
+            end
+
+            Toggle:SetValue(not Toggle.Value)
+        end)
+
+        if typeof(Toggle.Tooltip) == "string" or typeof(Toggle.DisabledTooltip) == "string" then
+            Toggle.TooltipTable = Library:AddTooltip(Toggle.Tooltip, Toggle.DisabledTooltip, Button)
+            Toggle.TooltipTable.Disabled = Toggle.Disabled
+        end
+
+        if Toggle.Risky then
+            Label.TextColor3 = Library.Scheme.Red
+            Library.Registry[Label].TextColor3 = "Red"
+        end
+
+        Toggle:Display()
+        Groupbox:Resize()
+
+        Toggle.TextLabel = Label
+        Toggle.Container = Container
+        setmetatable(Toggle, BaseAddons)
+
+        Toggle.Holder = Button
+        table.insert(Groupbox.Elements, Toggle)
+
+        Toggles[Idx] = Toggle
+
+        return Toggle
+    end
+
+    function Funcs:AddToggle(Idx, Info)
+        if Library.ForceCheckbox then
+            return Funcs.AddCheckbox(self, Idx, Info)
+        end
+
+        Info = Library:Validate(Info, Templates.Toggle)
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local Toggle = {
+            Text = Info.Text,
+            Value = Info.Default,
+
+            Tooltip = Info.Tooltip,
+            DisabledTooltip = Info.DisabledTooltip,
+            TooltipTable = nil,
+
+            Callback = Info.Callback,
+            Changed = Info.Changed,
+
+            Risky = Info.Risky,
+            Disabled = Info.Disabled,
+            Visible = Info.Visible,
+            Addons = {},
+
+            Type = "Toggle",
+        }
+
+        local Button = New("TextButton", {
+            Active = not Toggle.Disabled,
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 18),
+            Text = "",
+            Visible = Toggle.Visible,
+            Parent = Container,
+        })
+
+        local Label = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, -40, 1, 0),
+            Text = Toggle.Text,
+            TextSize = 14,
+            TextTransparency = 0.4,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = Button,
+        })
+
+        New("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalAlignment = Enum.HorizontalAlignment.Right,
+            Padding = UDim.new(0, 6),
+            Parent = Label,
+        })
+
+        local Switch = New("Frame", {
+            AnchorPoint = Vector2.new(1, 0),
+            BackgroundColor3 = "MainColor",
+            Position = UDim2.fromScale(1, 0),
+            Size = UDim2.fromOffset(32, 18),
+            Parent = Button,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = Switch,
+        })
+        New("UIPadding", {
+            PaddingBottom = UDim.new(0, 2),
+            PaddingLeft = UDim.new(0, 2),
+            PaddingRight = UDim.new(0, 2),
+            PaddingTop = UDim.new(0, 2),
+            Parent = Switch,
+        })
+        local SwitchStroke = New("UIStroke", {
+            Color = "OutlineColor",
+            Parent = Switch,
+        })
+
+        local Ball = New("Frame", {
+            BackgroundColor3 = "FontColor",
+            Size = UDim2.fromScale(1, 1),
+            SizeConstraint = Enum.SizeConstraint.RelativeYY,
+            Parent = Switch,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(1, 0),
+            Parent = Ball,
+        })
+
+        function Toggle:UpdateColors()
+            Toggle:Display()
+        end
+
+        function Toggle:Display()
+            if Library.Unloaded then
+                return
+            end
+
+            local Offset = Toggle.Value and 1 or 0
+
+            Switch.BackgroundTransparency = Toggle.Disabled and 0.75 or 0
+            SwitchStroke.Transparency = Toggle.Disabled and 0.75 or 0
+
+            Switch.BackgroundColor3 = Toggle.Value and Library.Scheme.AccentColor or Library.Scheme.MainColor
+            SwitchStroke.Color = Toggle.Value and Library.Scheme.AccentColor or Library.Scheme.OutlineColor
+
+            Library.Registry[Switch].BackgroundColor3 = Toggle.Value and "AccentColor" or "MainColor"
+            Library.Registry[SwitchStroke].Color = Toggle.Value and "AccentColor" or "OutlineColor"
+
+            if Toggle.Disabled then
+                Label.TextTransparency = 0.8
+                Ball.AnchorPoint = Vector2.new(Offset, 0)
+                Ball.Position = UDim2.fromScale(Offset, 0)
+
+                Ball.BackgroundColor3 = Library:GetDarkerColor(Library.Scheme.FontColor)
+                Library.Registry[Ball].BackgroundColor3 = function()
+                    return Library:GetDarkerColor(Library.Scheme.FontColor)
+                end
+
+                return
+            end
+
+            TweenService:Create(Label, Library.TweenInfo, {
+                TextTransparency = Toggle.Value and 0 or 0.4,
+            }):Play()
+            TweenService:Create(Ball, Library.TweenInfo, {
+                AnchorPoint = Vector2.new(Offset, 0),
+                Position = UDim2.fromScale(Offset, 0),
+            }):Play()
+
+            Ball.BackgroundColor3 = Library.Scheme.FontColor
+            Library.Registry[Ball].BackgroundColor3 = "FontColor"
+        end
+
+        function Toggle:OnChanged(Func)
+            Toggle.Changed = Func
+        end
+
+        function Toggle:SetValue(Value)
+            if Toggle.Disabled then
+                return
+            end
+
+            Toggle.Value = Value
+            Toggle:Display()
+
+            for _, Addon in pairs(Toggle.Addons) do
+                if Addon.Type == "KeyPicker" and Addon.SyncToggleState then
+                    Addon.Toggled = Toggle.Value
+                    Addon:Update()
+                end
+            end
+
+            Library:SafeCallback(Toggle.Callback, Toggle.Value)
+            Library:SafeCallback(Toggle.Changed, Toggle.Value)
+            Library:UpdateDependencyBoxes()
+        end
+
+        function Toggle:SetDisabled(Disabled: boolean)
+            Toggle.Disabled = Disabled
+
+            if Toggle.TooltipTable then
+                Toggle.TooltipTable.Disabled = Toggle.Disabled
+            end
+
+            for _, Addon in pairs(Toggle.Addons) do
+                if Addon.Type == "KeyPicker" and Addon.SyncToggleState then
+                    Addon:Update()
+                end
+            end
+
+            Button.Active = not Toggle.Disabled
+            Toggle:Display()
+        end
+
+        function Toggle:SetVisible(Visible: boolean)
+            Toggle.Visible = Visible
+
+            Button.Visible = Toggle.Visible
+            Groupbox:Resize()
+        end
+
+        function Toggle:SetText(Text: string)
+            Toggle.Text = Text
+            Label.Text = Text
+        end
+
+        Button.MouseButton1Click:Connect(function()
+            if Toggle.Disabled then
+                return
+            end
+
+            Toggle:SetValue(not Toggle.Value)
+        end)
+
+        if typeof(Toggle.Tooltip) == "string" or typeof(Toggle.DisabledTooltip) == "string" then
+            Toggle.TooltipTable = Library:AddTooltip(Toggle.Tooltip, Toggle.DisabledTooltip, Button)
+            Toggle.TooltipTable.Disabled = Toggle.Disabled
+        end
+
+        if Toggle.Risky then
+            Label.TextColor3 = Library.Scheme.Red
+            Library.Registry[Label].TextColor3 = "Red"
+        end
+
+        Toggle:Display()
+        Groupbox:Resize()
+
+        Toggle.TextLabel = Label
+        Toggle.Container = Container
+        setmetatable(Toggle, BaseAddons)
+
+        Toggle.Holder = Button
+        table.insert(Groupbox.Elements, Toggle)
+
+        Toggles[Idx] = Toggle
+
+        return Toggle
+    end
+
+    function Funcs:AddInput(Idx, Info)
+        Info = Library:Validate(Info, Templates.Input)
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local Input = {
+            Text = Info.Text,
+            Value = Info.Default,
+            Finished = Info.Finished,
+            Numeric = Info.Numeric,
+            ClearTextOnFocus = Info.ClearTextOnFocus,
+            Placeholder = Info.Placeholder,
+            AllowEmpty = Info.AllowEmpty,
+            EmptyReset = Info.EmptyReset,
+
+            Tooltip = Info.Tooltip,
+            DisabledTooltip = Info.DisabledTooltip,
+            TooltipTable = nil,
+
+            Callback = Info.Callback,
+            Changed = Info.Changed,
+
+            Disabled = Info.Disabled,
+            Visible = Info.Visible,
+
+            Type = "Input",
+        }
+
+        local Holder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 39),
+            Visible = Input.Visible,
+            Parent = Container,
+        })
+
+        local Label = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 14),
+            Text = Input.Text,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = Holder,
+        })
+
+        local Box = New("TextBox", {
+            AnchorPoint = Vector2.new(0, 1),
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            ClearTextOnFocus = not Input.Disabled and Input.ClearTextOnFocus,
+            PlaceholderText = Input.Placeholder,
+            Position = UDim2.fromScale(0, 1),
+            Size = UDim2.new(1, 0, 0, 21),
+            Text = Input.Value,
+            TextEditable = not Input.Disabled,
+            TextScaled = true,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = Holder,
+        })
+
+        New("UIPadding", {
+            PaddingBottom = UDim.new(0, 3),
+            PaddingLeft = UDim.new(0, 8),
+            PaddingRight = UDim.new(0, 8),
+            PaddingTop = UDim.new(0, 4),
+            Parent = Box,
+        })
+
+        function Input:UpdateColors()
+            if Library.Unloaded then
+                return
+            end
+
+            Label.TextTransparency = Input.Disabled and 0.8 or 0
+            Box.TextTransparency = Input.Disabled and 0.8 or 0
+        end
+
+        function Input:OnChanged(Func)
+            Input.Changed = Func
+        end
+
+        function Input:SetValue(Text)
+            if not Input.AllowEmpty and Trim(Text) == "" then
+                Text = Input.EmptyReset
+            end
+
+            if Info.MaxLength and #Text > Info.MaxLength then
+                Text = Text:sub(1, Info.MaxLength)
+            end
+
+            if Input.Numeric then
+                if #Text > 0 and not tonumber(Text) then
+                    Text = Input.Value
+                end
+            end
+
+            Input.Value = Text
+            Box.Text = Text
+
+            if not Input.Disabled then
+                Library:SafeCallback(Input.Callback, Input.Value)
+                Library:SafeCallback(Input.Changed, Input.Value)
+            end
+        end
+
+        function Input:SetDisabled(Disabled: boolean)
+            Input.Disabled = Disabled
+
+            if Input.TooltipTable then
+                Input.TooltipTable.Disabled = Input.Disabled
+            end
+
+            Box.ClearTextOnFocus = not Input.Disabled and Input.ClearTextOnFocus
+            Box.TextEditable = not Input.Disabled
+            Input:UpdateColors()
+        end
+
+        function Input:SetVisible(Visible: boolean)
+            Input.Visible = Visible
+
+            Holder.Visible = Input.Visible
+            Groupbox:Resize()
+        end
+
+        function Input:SetText(Text: string)
+            Input.Text = Text
+            Label.Text = Text
+        end
+
+        if Input.Finished then
+            Box.FocusLost:Connect(function(Enter)
+                if not Enter then
+                    return
+                end
+
+                Input:SetValue(Box.Text)
+            end)
+        else
+            Box:GetPropertyChangedSignal("Text"):Connect(function()
+                Input:SetValue(Box.Text)
+            end)
+        end
+
+        if typeof(Input.Tooltip) == "string" or typeof(Input.DisabledTooltip) == "string" then
+            Input.TooltipTable = Library:AddTooltip(Input.Tooltip, Input.DisabledTooltip, Box)
+            Input.TooltipTable.Disabled = Input.Disabled
+        end
+
+        Groupbox:Resize()
+
+        Input.Holder = Holder
+        table.insert(Groupbox.Elements, Input)
+
+        Options[Idx] = Input
+
+        return Input
+    end
+
+    function Funcs:AddSlider(Idx, Info)
+        Info = Library:Validate(Info, Templates.Slider)
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local Dragging = false
+        local Slider = {
+            Text = Info.Text,
+            Value = Info.Default,
+            Min = Info.Min,
+            Max = Info.Max,
+
+            Prefix = Info.Prefix,
+            Suffix = Info.Suffix,
+
+            Tooltip = Info.Tooltip,
+            DisabledTooltip = Info.DisabledTooltip,
+            TooltipTable = nil,
+
+            Callback = Info.Callback,
+            Changed = Info.Changed,
+
+            Disabled = Info.Disabled,
+            Visible = Info.Visible,
+
+            Type = "Slider",
+        }
+
+        local Holder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, Info.Compact and 13 or 31),
+            Visible = Slider.Visible,
+            Parent = Container,
+        })
+
+        local SliderLabel
+        if not Info.Compact then
+            SliderLabel = New("TextLabel", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 14),
+                Text = Slider.Text,
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = Holder,
+            })
+        end
+
+        local Bar = New("TextButton", {
+            Active = not Slider.Disabled,
+            AnchorPoint = Vector2.new(0, 1),
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            Position = UDim2.fromScale(0, 1),
+            Size = UDim2.new(1, 0, 0, 13),
+            Text = "",
+            Parent = Holder,
+        })
+
+        local DisplayLabel = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Size = UDim2.fromScale(1, 1),
+            Text = "",
+            TextSize = 14,
+            ZIndex = 2,
+            Parent = Bar,
+        })
+        New("UIStroke", {
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+            Color = "Dark",
+            LineJoinMode = Enum.LineJoinMode.Miter,
+            Parent = DisplayLabel,
+        })
+
+        local Fill = New("Frame", {
+            BackgroundColor3 = "AccentColor",
+            Size = UDim2.fromScale(0.5, 1),
+            Parent = Bar,
+
+            DPIExclude = {
+                Size = true,
+            },
+        })
+
+        function Slider:UpdateColors()
+            if Library.Unloaded then
+                return
+            end
+
+            if SliderLabel then
+                SliderLabel.TextTransparency = Slider.Disabled and 0.8 or 0
+            end
+            DisplayLabel.TextTransparency = Slider.Disabled and 0.8 or 0
+
+            Fill.BackgroundColor3 = Slider.Disabled and Library.Scheme.OutlineColor or Library.Scheme.AccentColor
+            Library.Registry[Fill].BackgroundColor3 = Slider.Disabled and "OutlineColor" or "AccentColor"
+        end
+
+        function Slider:Display()
+            if Library.Unloaded then
+                return
+            end
+
+            if Info.Compact then
+                DisplayLabel.Text = string.format("%s: %s%s%s", Slider.Text, Slider.Prefix, Slider.Value, Slider.Suffix)
+            elseif Info.HideMax then
+                DisplayLabel.Text = string.format("%s%s%s", Slider.Prefix, Slider.Value, Slider.Suffix)
+            else
+                DisplayLabel.Text = string.format(
+                    "%s%s%s/%s%s%s",
+                    Slider.Prefix,
+                    Slider.Value,
+                    Slider.Suffix,
+                    Slider.Prefix,
+                    Slider.Max,
+                    Slider.Suffix
+                )
+            end
+
+            local X = (Slider.Value - Slider.Min) / (Slider.Max - Slider.Min)
+            Fill.Size = UDim2.fromScale(X, 1)
+        end
+
+        function Slider:OnChanged(Func)
+            Slider.Changed = Func
+        end
+
+        function Slider:SetMax(Value)
+            assert(Value > Slider.Min, "Max value cannot be less than the current min value.")
+
+            Slider.Value = math.clamp(Slider.Value, Slider.Min, Value)
+            Slider.Max = Value
+            Slider:Display()
+        end
+
+        function Slider:SetMin(Value)
+            assert(Value < Slider.Max, "Min value cannot be greater than the current max value.")
+
+            Slider.Value = math.clamp(Slider.Value, Value, Slider.Max)
+            Slider.Min = Value
+            Slider:Display()
+        end
+
+        function Slider:SetValue(Str)
+            if Slider.Disabled then
+                return
+            end
+
+            local Num = tonumber(Str)
+            if not Num then
+                return
+            end
+
+            Num = math.clamp(Num, Slider.Min, Slider.Max)
+
+            Slider.Value = Num
+            Slider:Display()
+
+            Library:SafeCallback(Slider.Callback, Slider.Value)
+            Library:SafeCallback(Slider.Changed, Slider.Value)
+        end
+
+        function Slider:SetDisabled(Disabled: boolean)
+            Slider.Disabled = Disabled
+
+            if Slider.TooltipTable then
+                Slider.TooltipTable.Disabled = Slider.Disabled
+            end
+
+            Bar.Active = not Slider.Disabled
+            Slider:UpdateColors()
+        end
+
+        function Slider:SetVisible(Visible: boolean)
+            Slider.Visible = Visible
+
+            Holder.Visible = Slider.Visible
+            Groupbox:Resize()
+        end
+
+        function Slider:SetText(Text: string)
+            Slider.Text = Text
+            if SliderLabel then
+                SliderLabel.Text = Text
+                return
+            end
+            Slider:Display()
+        end
+
+        function Slider:SetPrefix(Prefix: string)
+            Slider.Prefix = Prefix
+            Slider:Display()
+        end
+
+        function Slider:SetSuffix(Suffix: string)
+            Slider.Suffix = Suffix
+            Slider:Display()
+        end
+
+        Bar.InputBegan:Connect(function(Input: InputObject)
+            if not IsClickInput(Input) or Slider.Disabled then
+                return
+            end
+
+            for _, Side in pairs(Library.ActiveTab.Sides) do
+                Side.ScrollingEnabled = false
+            end
+
+            while IsClickInput(Input) do
+                local Location = Mouse.X
+                local Scale = math.clamp((Location - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
+
+                local OldValue = Slider.Value
+                Slider.Value = Round(Slider.Min + ((Slider.Max - Slider.Min) * Scale), Info.Rounding)
+
+                Slider:Display()
+                if Slider.Value ~= OldValue then
+                    Library:SafeCallback(Slider.Callback, Slider.Value)
+                    Library:SafeCallback(Slider.Changed, Slider.Value)
+                end
+
+                RunService.RenderStepped:Wait()
+            end
+
+            for _, Side in pairs(Library.ActiveTab.Sides) do
+                Side.ScrollingEnabled = true
+            end
+        end)
+
+        if typeof(Slider.Tooltip) == "string" or typeof(Slider.DisabledTooltip) == "string" then
+            Slider.TooltipTable = Library:AddTooltip(Slider.Tooltip, Slider.DisabledTooltip, Bar)
+            Slider.TooltipTable.Disabled = Slider.Disabled
+        end
+
+        Slider:UpdateColors()
+        Slider:Display()
+        Groupbox:Resize()
+
+        Slider.Holder = Holder
+        table.insert(Groupbox.Elements, Slider)
+
+        Options[Idx] = Slider
+
+        return Slider
+    end
+
+    function Funcs:AddDropdown(Idx, Info)
+        Info = Library:Validate(Info, Templates.Dropdown)
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        if Info.SpecialType == "Player" then
+            Info.Values = GetPlayers(Info.ExcludeLocalPlayer)
+            Info.AllowNull = true
+        elseif Info.SpecialType == "Team" then
+            Info.Values = GetTeams()
+            Info.AllowNull = true
+        end
+        local Dropdown = {
+            Text = typeof(Info.Text) == "string" and Info.Text or nil,
+            Value = Info.Multi and {} or nil,
+            Values = Info.Values,
+            DisabledValues = Info.DisabledValues,
+
+            SpecialType = Info.SpecialType,
+            ExcludeLocalPlayer = Info.ExcludeLocalPlayer,
+
+            Tooltip = Info.Tooltip,
+            DisabledTooltip = Info.DisabledTooltip,
+            TooltipTable = nil,
+
+            Callback = Info.Callback,
+            Changed = Info.Changed,
+
+            Disabled = Info.Disabled,
+            Visible = Info.Visible,
+
+            Type = "Dropdown",
+        }
+
+        local Holder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, Dropdown.Text and 39 or 21),
+            Visible = Dropdown.Visible,
+            Parent = Container,
+        })
+
+        local Label = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 14),
+            Text = Dropdown.Text,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Visible = not not Info.Text,
+            Parent = Holder,
+        })
+
+        local Display = New("TextButton", {
+            Active = not Dropdown.Disabled,
+            AnchorPoint = Vector2.new(0, 1),
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            Position = UDim.fromScale(0, 1),
+            Size = UDim2.new(1, 0, 0, 21),
+            Text = "---",
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Parent = Holder,
+        })
+
+        New("UIPadding", {
+            PaddingLeft = UDim.new(0, 8),
+            PaddingRight = UDim.new(0, 4),
+            Parent = Display,
+        })
+
+        local ArrowImage = New("ImageLabel", {
+            AnchorPoint = Vector2.new(1, 0.5),
+            Image = ArrowIcon and ArrowIcon.Url or "",
+            ImageColor3 = "FontColor",
+            ImageRectOffset = ArrowIcon and ArrowIcon.ImageRectOffset or Vector2.zero,
+            ImageRectSize = ArrowIcon and ArrowIcon.ImageRectSize or Vector2.zero,
+            ImageTransparency = 0.5,
+            Position = UDim.fromScale(1, 0.5),
+            Size = UDim2.fromOffset(16, 16),
+            Parent = Display,
+        })
+
+        local SearchBox
+        if Info.Searchable then
+            SearchBox = New("TextBox", {
+                BackgroundTransparency = 1,
+                PlaceholderText = "Search...",
+                Position = UDim2.fromOffset(-8, 0),
+                Size = UDim2.new(1, -12, 1, 0),
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Visible = false,
+                Parent = Display,
+            })
+            New("UIPadding", {
+                PaddingLeft = UDim.new(0, 8),
+                Parent = SearchBox,
+            })
+        end
+
+        local MenuTable = Library:AddContextMenu(
+            Display,
+            function()
+                return UDim2.fromOffset(Display.AbsoluteSize.X, 0)
+            end,
+            function()
+                return { 0.5, Display.AbsoluteSize.Y + 1.5 }
+            end,
+            2,
+            function(Active: boolean)
+                Display.TextTransparency = (Active and SearchBox) and 1 or 0
+                ArrowImage.ImageTransparency = Active and 0 or 0.5
+                ArrowImage.Rotation = Active and 180 or 0
+                if SearchBox then
+                    SearchBox.Text = ""
+                    SearchBox.Visible = Active
+                end
+            end
+        )
+        Dropdown.Menu = MenuTable
+        Library:UpdateDPI(MenuTable.Menu, {
+            Position = false,
+            Size = false,
+        })
+
+        function Dropdown:RecalculateListSize(Count)
+            local Y = math.clamp(
+                (Count or GetTableSize(Dropdown.Values)) * (21 * Library.DPIScale),
+                0,
+                Info.MaxVisibleDropdownItems * (21 * Library.DPIScale)
+            )
+
+            MenuTable:SetSize(function()
+                return UDim2.fromOffset(Display.AbsoluteSize.X, Y)
+            end)
+        end
+
+        function Dropdown:UpdateColors()
+            if Library.Unloaded then
+                return
+            end
+
+            Label.TextTransparency = Dropdown.Disabled and 0.8 or 0
+            Display.TextTransparency = Dropdown.Disabled and 0.8 or 0
+            ArrowImage.ImageTransparency = Dropdown.Disabled and 0.8 or MenuTable.Active and 0 or 0.5
+        end
+
+        function Dropdown:Display()
+            if Library.Unloaded then
+                return
+            end
+
+            local Str = ""
+
+            if Info.Multi then
+                for _, Value in pairs(Dropdown.Values) do
+                    if Dropdown.Value[Value] then
+                        Str = Str
+                            .. (Info.FormatDisplayValue and tostring(Info.FormatDisplayValue(Value)) or tostring(Value))
+                            .. ", "
+                    end
+                end
+
+                Str = Str:sub(1, #Str - 2)
+            else
+                Str = Dropdown.Value and tostring(Dropdown.Value) or ""
+                if Str ~= "" and Info.FormatDisplayValue then
+                    Str = tostring(Info.FormatDisplayValue(Str))
+                end
+            end
+
+            if #Str > 25 then
+                Str = Str:sub(1, 22) .. "..."
+            end
+
+            Display.Text = (Str == "" and "---" or Str)
+        end
+
+        function Dropdown:OnChanged(Func)
+            Dropdown.Changed = Func
+        end
+
+        function Dropdown:GetActiveValues()
+            if Info.Multi then
+                local Table = {}
+
+                for Value, _ in pairs(Dropdown.Value) do
+                    table.insert(Table, Value)
+                end
+
+                return Table
+            end
+
+            return Dropdown.Value and 1 or 0
+        end
+
+        local Buttons = {}
+        function Dropdown:BuildDropdownList()
+            local Values = Dropdown.Values
+            local DisabledValues = Dropdown.DisabledValues
+
+            for Button, _ in pairs(Buttons) do
+                Button:Destroy()
+            end
+            table.clear(Buttons)
+
+            local Count = 0
+            for _, Value in pairs(Values) do
+                if SearchBox and not tostring(Value):lower():match(SearchBox.Text:lower()) then
+                    continue
+                end
+
+                Count += 1
+                local IsDisabled = table.find(DisabledValues, Value)
+                local Table = {}
+
+                local Button = New("TextButton", {
+                    BackgroundColor3 = "MainColor",
+                    BackgroundTransparency = 1,
+                    LayoutOrder = IsDisabled and 1 or 0,
+                    Size = UDim2.new(1, 0, 0, 21),
+                    Text = tostring(Value),
+                    TextSize = 14,
+                    TextTransparency = 0.5,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = MenuTable.Menu,
+                })
+                New("UIPadding", {
+                    PaddingLeft = UDim.new(0, 7),
+                    PaddingRight = UDim.new(0, 7),
+                    Parent = Button,
+                })
+
+                local Selected
+                if Info.Multi then
+                    Selected = Dropdown.Value[Value]
+                else
+                    Selected = Dropdown.Value == Value
+                end
+
+                function Table:UpdateButton()
+                    if Info.Multi then
+                        Selected = Dropdown.Value[Value]
+                    else
+                        Selected = Dropdown.Value == Value
+                    end
+
+                    Button.BackgroundTransparency = Selected and 0 or 1
+                    Button.TextTransparency = IsDisabled and 0.8 or Selected and 0 or 0.5
+                end
+
+                if not IsDisabled then
+                    Button.MouseButton1Click:Connect(function()
+                        local Try = not Selected
+
+                        if not (Dropdown:GetActiveValues() == 1 and not Try and not Info.AllowNull) then
+                            Selected = Try
+                            if Info.Multi then
+                                Dropdown.Value[Value] = Selected and true or nil
+                            else
+                                Dropdown.Value = Selected and Value or nil
+                            end
+
+                            for _, OtherButton in pairs(Buttons) do
+                                OtherButton:UpdateButton()
+                            end
+                        end
+
+                        Table:UpdateButton()
+                        Dropdown:Display()
+
+                        Library:SafeCallback(Dropdown.Callback, Dropdown.Value)
+                        Library:SafeCallback(Dropdown.Changed, Dropdown.Value)
+						Library:UpdateDependencyBoxes()
+                    end)
+                end
+
+                Table:UpdateButton()
+                Dropdown:Display()
+
+                Buttons[Button] = Table
+            end
+
+            Dropdown:RecalculateListSize(Count)
+        end
+
+        function Dropdown:SetValue(Value)
+            if Info.Multi then
+                local Table = {}
+
+                for Val, Active in pairs(Value or {}) do
+                    if Active and table.find(Dropdown.Values, Val) then
+                        Table[Val] = true
+                    end
+                end
+
+                Dropdown.Value = Table
+            else
+                if table.find(Dropdown.Values, Value) then
+                    Dropdown.Value = Value
+                elseif not Value then
+                    Dropdown.Value = nil
+                end
+            end
+
+            Dropdown:Display()
+            for _, Button in pairs(Buttons) do
+                Button:UpdateButton()
+            end
+
+            if not Dropdown.Disabled then
+                Library:SafeCallback(Dropdown.Callback, Dropdown.Value)
+                Library:SafeCallback(Dropdown.Changed, Dropdown.Value)
+				Library:UpdateDependencyBoxes()
+            end
+        end
+
+        function Dropdown:SetValues(Values)
+            Dropdown.Values = Values
+            Dropdown:BuildDropdownList()
+        end
+
+        function Dropdown:AddValues(Values)
+            if typeof(Values) == "table" then
+                for _, val in pairs(Values) do
+                    table.insert(Dropdown.Values, val)
+                end
+            elseif typeof(Values) == "string" then
+                table.insert(Dropdown.Values, Values)
+            else
+                return
+            end
+
+            Dropdown:BuildDropdownList()
+        end
+
+        function Dropdown:SetDisabledValues(DisabledValues)
+            Dropdown.DisabledValues = DisabledValues
+            Dropdown:BuildDropdownList()
+        end
+
+        function Dropdown:AddDisabledValues(DisabledValues)
+            if typeof(DisabledValues) == "table" then
+                for _, val in pairs(DisabledValues) do
+                    table.insert(Dropdown.DisabledValues, val)
+                end
+            elseif typeof(DisabledValues) == "string" then
+                table.insert(Dropdown.DisabledValues, DisabledValues)
+            else
+                return
+            end
+
+            Dropdown:BuildDropdownList()
+        end
+
+        function Dropdown:SetDisabled(Disabled: boolean)
+            Dropdown.Disabled = Disabled
+
+            if Dropdown.TooltipTable then
+                Dropdown.TooltipTable.Disabled = Dropdown.Disabled
+            end
+
+            MenuTable:Close()
+            Display.Active = not Dropdown.Disabled
+            Dropdown:UpdateColors()
+        end
+
+        function Dropdown:SetVisible(Visible: boolean)
+            Dropdown.Visible = Visible
+
+            Holder.Visible = Dropdown.Visible
+            Groupbox:Resize()
+        end
+
+        function Dropdown:SetText(Text: string)
+            Dropdown.Text = Text
+            Holder.Size = UDim2.new(1, 0, 0, (Text and 39 or 21) * Library.DPIScale)
+
+            Label.Text = Text and Text or ""
+            Label.Visible = not not Text
+        end
+
+        Display.MouseButton1Click:Connect(function()
+            if Dropdown.Disabled then
+                return
+            end
+
+            MenuTable:Toggle()
+        end)
+
+        if SearchBox then
+            SearchBox:GetPropertyChangedSignal("Text"):Connect(Dropdown.BuildDropdownList)
+        end
+
+        local Defaults = {}
+        if typeof(Info.Default) == "string" then
+            local Index = table.find(Dropdown.Values, Info.Default)
+            if Index then
+                table.insert(Defaults, Index)
+            end
+        elseif typeof(Info.Default) == "table" then
+            for _, Value in next, Info.Default do
+                local Index = table.find(Dropdown.Values, Value)
+                if Index then
+                    table.insert(Defaults, Index)
+                end
+            end
+        elseif Dropdown.Values[Info.Default] ~= nil then
+            table.insert(Defaults, Info.Default)
+        end
+        if next(Defaults) then
+            for i = 1, #Defaults do
+                local Index = Defaults[i]
+                if Info.Multi then
+                    Dropdown.Value[Dropdown.Values[Index]] = true
+                else
+                    Dropdown.Value = Dropdown.Values[Index]
+                end
+
+                if not Info.Multi then
                     break
                 end
             end
-            if hasInput or (timeRemaining and timeRemaining ~= "") then continue end
+        end
 
-            local backpack = vars.LocalPlayer:WaitForChild("Backpack")
-            local humanoid = vars.LocalPlayer.Character and vars.LocalPlayer.Character:FindFirstChild("Humanoid")
-            if not humanoid then continue end
+        if typeof(Dropdown.Tooltip) == "string" or typeof(Dropdown.DisabledTooltip) == "string" then
+            Dropdown.TooltipTable = Library:AddTooltip(Dropdown.Tooltip, Dropdown.DisabledTooltip, Display)
+            Dropdown.TooltipTable.Disabled = Dropdown.Disabled
+        end
 
-            for slotIndex, input in ipairs(selectedRecipe.Inputs) do
-                local itemName = input.ItemData and input.ItemData.ItemName
-                local itemType = input.ItemType or "Holdable"
-                local enum = getgenv().ItemTypeToEnumKey[itemType]
-                local placed = false
+        Dropdown:UpdateColors()
+        Dropdown:Display()
+        Dropdown:BuildDropdownList()
+        Groupbox:Resize()
 
-                for _, tool in ipairs(backpack:GetChildren()) do
-                    if not tool:IsA("Tool") or placed then continue end
+        Dropdown.Holder = Holder
+        table.insert(Groupbox.Elements, Dropdown)
 
-                    local toolName, toolTypeEnum, uuid = getItemProperties(tool)
-                    local nameMatch = false
-                    local typeMatch = toolTypeEnum == enum
+        Options[Idx] = Dropdown
 
-                    if toolName == itemName then
-                        nameMatch = true
-                    elseif itemType == "PetEgg" and tool:GetAttribute(getgenv().HookedInventoryServiceEnums["EggName"]) == itemName then
-                        nameMatch = true
-                    elseif itemType == "Harvest Tool" then
-                        local toolItemName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"])
-                        if toolItemName == itemName or (tool.Name:find("Harvest") and itemName == "Harvest Tool") or tool.Name == itemName then
-                            nameMatch = true
+        return Dropdown
+    end
+
+    function Funcs:AddDependencyBox()
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local DepboxContainer
+        local DepboxList
+
+        do
+            DepboxContainer = New("Frame", {
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 1),
+                Visible = false,
+                Parent = Container,
+            })
+
+            DepboxList = New("UIListLayout", {
+                Padding = UDim.new(0, 8),
+                Parent = DepboxContainer,
+            })
+        end
+
+        local Depbox = {
+            Visible = false,
+            Dependencies = {},
+
+            Holder = DepboxContainer,
+            Container = DepboxContainer,
+
+            Elements = {},
+            DependencyBoxes = {},
+        }
+
+        function Depbox:Resize()
+            DepboxContainer.Size = UDim2.new(1, 0, 0, DepboxList.AbsoluteContentSize.Y * Library.DPIScale)
+            Groupbox:Resize()
+        end
+
+        function Depbox:Update(CancelSearch)
+            for _, Dependency in pairs(Depbox.Dependencies) do
+                local Element = Dependency[1]
+                local Value = Dependency[2]
+                
+                if Element.Type == "Toggle" and Element.Value ~= Value then
+                    DepboxContainer.Visible = false
+                    Depbox.Visible = false
+                    return
+                elseif Element.Type == "Dropdown" then
+                    if typeof(Element.Value) == "table" then
+                        if not Element.Value[Value] then
+                            DepboxContainer.Visible = false
+                            Depbox.Visible = false
+                            return
                         end
-                    end
-
-                    if nameMatch and typeMatch then
-                        humanoid:EquipTool(tool)
-                        task.wait(0.5)
-                        remotes.CraftingRemote:FireServer("InputItem", machine.workbench, machine.name, tostring(slotIndex), {
-                            ItemType = itemType,
-                            ItemData = { UUID = uuid:match("^{.*}$") and uuid or "{" .. uuid .. "}" }
-                        })
-                        placed = true
-                        task.wait(0.3)
-                    end
-                end
-            end
-        end
-    end
-end))
-
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while task.wait() do
-        if vars.AutoCraftTrigger then
-            local selectedName
-            local craftType
-            
-            if vars.SelectedSeedDropdown and vars.SelectedSeedDropdown[1] then
-                selectedName = vars.SelectedSeedDropdown[1]
-                craftType = "Seed"
-            elseif vars.SelectedGearDropdown and vars.SelectedGearDropdown[1] then
-                selectedName = vars.SelectedGearDropdown[1]
-                craftType = "Gear"
-            elseif vars.SelectedDinoDropdown and vars.SelectedDinoDropdown[1] then
-                selectedName = vars.SelectedDinoDropdown[1]
-                craftType = "Dino"
-            elseif vars.SelectedDropdown and vars.SelectedDropdown[1] then
-                selectedName = vars.SelectedDropdown[1]
-                if table.find(vars.SeedItems, selectedName) then
-                    craftType = "Seed"
-                elseif table.find(vars.GearItems, selectedName) then
-                    craftType = "Gear"
-                elseif table.find(vars.DinoItems, selectedName) then
-                    craftType = "Dino"
-                end
-            end
-
-            if selectedName and craftType then
-                pcall(function()
-                    if craftType == "Seed" then
-                        remotes.CraftingRemote:FireServer("Craft", remotes.SeedWorkbench, "SeedEventWorkbench")
-                    elseif craftType == "Gear" then
-                        remotes.CraftingRemote:FireServer("Craft", remotes.GearWorkbench, "GearEventWorkbench")
-                    elseif craftType == "Dino" then
-                        remotes.CraftingRemote:FireServer("Craft", vars.Workspace.Interaction.UpdateItems.DinoEvent:FindFirstChild("DinoCraftingTable"), "DinoEventWorkbench")
-                    end
-                end)
-            end
-        end
-
-        if vars.AutoClaimTrigger then
-            pcall(function()
-                remotes.CraftingRemote:FireServer("Claim", remotes.SeedWorkbench, "SeedEventWorkbench", 1)
-                remotes.CraftingRemote:FireServer("Claim", remotes.GearWorkbench, "GearEventWorkbench", 1)
-                remotes.CraftingRemote:FireServer("Claim", vars.Workspace.Interaction.UpdateItems.DinoEvent:FindFirstChild("DinoCraftingTable"), "DinoEventWorkbench", 1)
-            end)
-        end
-    end
-end))
-
-
-local function getPlantRank(r) return vars.plantRarityRank[r] or 99 end
-
-local function formatNumberWithCommas(num)
-    local formatted = tostring(num)
-    while true do
-        formatted, k = formatted:gsub("^(-?%d+)(%d%d%d)", "%1,%2")
-        if k == 0 then break end
-    end
-    return formatted
-end
-
---[[
-local CPV = LPH_NO_VIRTUALIZE(function(model)
-    if not model or not model:IsA("Model") then
-        return 0
-    end
-
-    local Variant = model:FindFirstChild("Variant")
-    local Weight = model:FindFirstChild("Weight")
-    if not Variant or not Weight then
-        return 0
-    end
-
-    
-    local originalName = model.Name
-    
-    if string.find(originalName, " / ") then
-        originalName = string.match(originalName, "^([^/]+)")
-        if originalName then
-            originalName = string.gsub(originalName, "%s+$", "") 
-        end
-    end
-
-    local itemData = modules.Item_Module_upvr.Return_Data(originalName)
-    if not itemData or #itemData < 3 then
-        return 0
-    end
-
-    local baseWeight = itemData[2]
-    local baseValue = itemData[3]
-    local weightValue = Weight.Value
-    local variantValue = Variant.Value
-    
-    if not baseWeight or not baseValue or not weightValue or not variantValue then
-        return 0
-    end
-
-    local clamped = math.clamp(weightValue / baseWeight, 0.95, 1e8)
-    local mutationMultiplier = modules.MutationHandler_upvr:CalcValueMulti(model)
-    local variantMultiplier = modules.Item_Module_upvr.Return_Multiplier(variantValue)
-
-    local final = baseValue * mutationMultiplier * variantMultiplier * (clamped ^ 2)
-    final = math.round(final)
-
-    
-    local priceStr = "$" .. formatNumberWithCommas(final)
-    local weightStr = string.format("%.2f KG", weightValue)
-    model.Name = string.format("%s / %s / %s", originalName, weightStr, priceStr)
-
-    return final
-end) 
---]]
-
-for key, data in pairs(modules.SeedData) do 
-    if typeof(data) == "table" then
-        local name = data.SeedName or key
-        local rarity = data.SeedRarity or "Unknown"
-        local display = string.format("%s [%s]", name, rarity)
-        table.insert(vars.allPlantableSeeds, {
-            ID = key,
-            Label = display,
-            Rarity = rarity
-        })
-        vars.plantSeedNameLookup[display] = key
-    end
-end
-
-table.sort(vars.allPlantableSeeds, function(a, b)
-    local ra, rb = getPlantRank(a.Rarity), getPlantRank(b.Rarity)
-    if ra == rb then
-        return tostring(a.ID) < tostring(b.ID)
-    else
-        return ra < rb
-    end
-end)
-
-for _, s in ipairs(vars.allPlantableSeeds) do
-    table.insert(vars.shownPlantableSeedNames, s.Label)
-end
-table.insert(vars.shownPlantableSeedNames, 1, "All")
-
-
-
-
-local PetList = require(vars.ReplicatedStorage.Data.PetRegistry.PetList)
-local petNames = {}
-
-for petName in pairs(PetList) do
-    table.insert(petNames, petName)
-end
-
-table.sort(petNames)
-
-local SelectedPetNames = {}
-local PetDropdown = Groupboxes.AutoSellPetGroupbox:AddDropdown("PetTypeDropdown", {
-    Values = petNames,
-    Multi = true,
-    Searchable = true,
-    Text = "Select Pets to Auto-Sell",
-    Tooltip = "Selected pet types will be automatically sold",
-    Callback = function(Value)
-        SelectedPetNames = {}
-        for name, selected in pairs(Value) do
-            if selected then
-                table.insert(SelectedPetNames, name)
-            end
-        end
-    end
-})
-
-Groupboxes.AutoSellPetGroupbox:AddDropdown("PetSellWeightComparison_Dropdown", {
-    Values = {"Above", "Below or Equal"},
-    Multi = false,
-    Text = "Weight Comparison",
-    Default = "Above",
-    Searchable = true,
-    Callback = function(v)
-        vars.selectedPetSellWeightComparison = v
-    end
-})
-
-Groupboxes.AutoSellPetGroupbox:AddInput("PetSellWeight_Input", {
-    Text = "Weight Threshold",
-    Default = "0",
-    Numeric = true,
-    Callback = function(value)
-        vars.petSellWeightThreshold = tonumber(value) or 0
-    end
-})
-
-local ToggleAutoPetSell = Groupboxes.AutoSellPetGroupbox:AddToggle("AutoPetSell_Toggle", {
-    Text = "Auto Sell Pets",
-    Default = false,
-    Tooltip = "Automatically sells selected pets from your inventory based on filters",
-    Callback = function(Value)
-        vars.autoPetSellEnabled = Value
-    end
-})
-
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while true do
-        task.wait(1)
-
-        if vars.autoPetSellEnabled and next(SelectedPetNames) then
-            local character = vars.LocalPlayer.Character
-            if not character then
-                task.wait(1)
-                continue
-            end
-            
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            local backpack = vars.LocalPlayer:WaitForChild("Backpack")
-
-            if humanoid then
-                local toolsToSell = {}
-                for _, tool in ipairs(backpack:GetChildren()) do
-                    if tool:IsA("Tool") and tool:GetAttribute("PET_UUID") then
-                        table.insert(toolsToSell, tool)
-                    end
-                end
-                for _, tool in ipairs(character:GetChildren()) do
-                    if tool:IsA("Tool") and tool:GetAttribute("PET_UUID") then
-                        table.insert(toolsToSell, tool)
-                    end
-                end
-
-                for _, tool in ipairs(toolsToSell) do
-                    for _, selectedPetName in ipairs(SelectedPetNames) do
-                        if tool.Name:find(selectedPetName) then
-                            local _, _, _, _, _, weight = calculatePetValue(tool)
-                            local weightPass = false
-                            if weight then
-                                if vars.selectedPetSellWeightComparison == "Above" and weight >= vars.petSellWeightThreshold then
-                                    weightPass = true
-                                elseif vars.selectedPetSellWeightComparison == "Below or Equal" and weight <= vars.petSellWeightThreshold then
-                                    weightPass = true
-                                end
-                            else 
-                                weightPass = true 
-                            end
-
-                            if weightPass then
-                            if tool.Parent == backpack then
-                                humanoid:EquipTool(tool)
-                                task.wait(0.2)
-                            end
-                            
-                            if tool.Parent == character then
-                                remotes.SellPet:FireServer(tool)
-                                task.wait(0.2)
-                                end
-                            end
-                            break 
-                        end
-                    end
-                end
-            end
-        end
-    end
-end))
-
-Groupboxes.AutoSellGroupbox:AddDropdown("PickYourSeedsToPlant_Dropdown", { 
-    Values = vars.shownPlantableSeedNames, 
-    Multi = true,
-    Text = "Choose Seeds to Plant",
-    Searchable = true,
-    Tooltip = "Select seeds from your backpack to auto-plant (must be in backpack or equipped).",
-    Callback = function(picked)
-        vars.chosenPlantSeeds = {}
-        if picked["All"] then
-            
-            for _, s in ipairs(vars.allPlantableSeeds) do
-                table.insert(vars.chosenPlantSeeds, s.ID)
-            end
-        else
-            
-            for name, isSelected in pairs(picked) do
-                if isSelected and name ~= "All" then
-                    table.insert(vars.chosenPlantSeeds, vars.plantSeedNameLookup[name])
-                end
-            end
-        end
-    end
-})
-
-local function getLegCenter()
-    local char = vars.LocalPlayer.Character or vars.LocalPlayer.CharacterAdded:Wait()
-    local leg = char:FindFirstChild("Left Leg") or char:FindFirstChild("LeftLowerLeg")
-    return leg and leg.Position
-end
-
-local function validPlantPosition()
-    local pos = getLegCenter()
-    if not pos then return false end
-    
-    local castOrigin = pos + Vector3.new(0, 3, 0)
-    local castDown = Vector3.new(0, -100, 0)
-    
-    local params = RaycastParams.new()
-    params.FilterDescendantsInstances = {vars.Workspace.Farm}
-    params.FilterType = Enum.RaycastFilterType.Whitelist
-    params.IgnoreWater = true
-    
-    local currentPos = castOrigin
-    while true do
-        local result = vars.Workspace:Raycast(currentPos, castDown, params)
-        if not result then break end
-        
-        if result.Instance and result.Instance.Name == "Can_Plant" then
-            return true, result.Position
-        end
-        
-        currentPos = result.Position - Vector3.new(0, 0.1, 0)
-    end
-    
-    return false
-end
-
-local function findAndEquipToolToPlant() 
-    local char = vars.LocalPlayer.Character
-    local backpack = vars.LocalPlayer:WaitForChild("Backpack")
-
-    if char then
-        for _, item in ipairs(char:GetChildren()) do
-            if item:IsA("Tool") and item:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["Seed"] then
-                
-                local seedName = item:GetAttribute("Seed") or 
-                                item:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or
-                                item:GetAttribute(getgenv().HookedInventoryServiceEnums["Type"]) or
-                                item.Name
-                
-                if table.find(vars.chosenPlantSeeds, seedName) then
-                    return item
-                end
-            end
-        end
-        
-        for _, item in ipairs(backpack:GetChildren()) do
-            if item:IsA("Tool") and item:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["Seed"] then
-                
-                local seedName = item:GetAttribute("Seed") or 
-                                item:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or
-                                item:GetAttribute(getgenv().HookedInventoryServiceEnums["Type"]) or
-                                item.Name
-                
-                if table.find(vars.chosenPlantSeeds, seedName) then
-                    item.Parent = char
-                    task.wait(0.1)
-                    return item
-                end
-            end
-        end
-    end
-    return nil
-end
-
-local function attemptPlant()
-    local tool = findAndEquipToolToPlant()
-    if not tool then return end
-
-    local valid, targetPos = validPlantPosition()
-    if valid and targetPos and tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) then
-        remotes.PlantRemote:FireServer(targetPos, tool:GetAttribute("Seed"))
-        Library:Notify({
-            Title = "Auto Plant", 
-            Description = "Planted 1 " .. (tool.Name or "seed") .. "!", 
-            Time = 2
-        })
-    end
-end
-
-
-
-
-
-local ToggleAutoSell = Groupboxes.AutoSellGroupbox:AddToggle("AutoSell_Toggle", {
-    Text = "Auto Sell when full backpack space",
-    Default = false,
-    Tooltip = "Teleports to sell location and returns after 1 second",
-    Callback = function(Value)
-    end
-})
-
-ToggleAutoSell:OnChanged(function(Value) 
-    vars.autoSellEnabled = Value
-    if not Value and vars.LocalPlayer.Character and vars.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        vars.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-    end
-end)
-
-local ToggleAutoSellDelay = Groupboxes.AutoSellGroupbox:AddToggle("AutoSellDelay_Toggle", {
-    Text = "Auto Sell Every X Seconds",
-    Default = false,
-    Tooltip = "Continuously sells your inventory every X seconds.",
-    Callback = function(Value)
-        vars.autoSellDelayEnabled = Value
-        if not Value and vars.LocalPlayer.Character and vars.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            vars.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-        end
-    end
-})
-
-local AutoSellDelayInput = Groupboxes.AutoSellGroupbox:AddInput("AutoSellDelay_Input", {
-    Text = "Sell Delay (seconds)",
-    Default = "300",
-    Tooltip = "Time in seconds between automatic sells.",
-    Numeric = true,
-    Callback = function(Value)
-        vars.autoSellDelay = tonumber(Value) or 300
-    end
-})
-
-
-Groupboxes.AutoSellGroupbox:AddToggle("AutoGrow_Toggle", { 
-    Text = "Auto Plant",
-    Default = false,
-    Tooltip = "Continuously plants seeds if you're on valid plot",
-    Callback = function(on)
-        running.autoPlantLoopEnabled = on
-        if on and not running.autoPlantLoopThread then
-            running.autoPlantLoopThread = task.spawn(function()
-                while running.autoPlantLoopEnabled do
-                    attemptPlant()
-                    task.wait(0.1) 
-                end
-                running.autoPlantLoopThread = nil
-            end)
-        elseif not on then 
-            running.autoPlantLoopEnabled = false 
-        end
-    end
-})
-
-
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    local lastSellTime = 0
-    while true do
-        task.wait(2)  
-
-        local backpack = vars.LocalPlayer:WaitForChild("Backpack") 
-        local character = vars.LocalPlayer.Character or vars.LocalPlayer.CharacterAdded:Wait()
-        local rootPart = character and character:FindFirstChild("HumanoidRootPart") 
-
-        local performSell = false
-
-        if vars.autoSellEnabled then
-            local holdableItemCount = 0
-            for _, item in ipairs(backpack:GetChildren()) do
-                if item:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["Holdable"] then
-                    holdableItemCount = holdableItemCount + 1
-                end
-            end
-            if holdableItemCount >= 200 then
-                performSell = true
-            end
-        end
-
-        if vars.autoSellDelayEnabled and not performSell then
-            local currentSellInterval = vars.autoSellDelay or 300
-            if currentSellInterval and currentSellInterval > 0 then
-                local currentTime = tick()
-                if currentTime - lastSellTime >= currentSellInterval then
-                    performSell = true
-                    lastSellTime = currentTime
-                end
-            end
-        end
-
-        if performSell and rootPart then
-            local oldCFrame = rootPart.CFrame
-            local sellCFrame = CFrame.new(62, 3, 0)
-
-            rootPart.Anchored = true
-            rootPart.CFrame = sellCFrame
-            task.wait(0.1)
-            rootPart.Anchored = false
-            
-            for i = 1, 7 do
-                remotes.sellRemote:FireServer()
-                task.wait(0.1)
-            end
-
-            task.wait(1.0)
-
-            rootPart.Anchored = true
-            rootPart.CFrame = oldCFrame
-            task.wait(0.1)
-            rootPart.Anchored = false
-        end
-    end
-end))
-
-for _, m in pairs(vars.favoriterMutations) do
-    if typeof(m) == "table" then
-        m._AddFX = nil
-        m._RemoveFX = nil
-    end
-end
-
-local function favoriterGetRarityRank(r)
-    return vars.favoriterRarityOrder[r] or 999
-end
-
-for key, info in pairs(modules.SeedData) do
-    if typeof(info) == "table" and info.Price then
-        local favRarity = info.SeedRarity or "Unknown"
-        local favDisplayName = string.format("%s [%s]", info.SeedName or key, favRarity)
-        table.insert(vars.favoriterSeedArray, {
-            FavKey = key,
-            FavDisplayName = favDisplayName,
-            FavPrice = info.Price,
-            FavRarity = favRarity
-        })
-        vars.favoriterSeedNameToKey[favDisplayName] = key
-    end
-end
-
-table.sort(vars.favoriterSeedArray, function(a, b)
-    local aRank = favoriterGetRarityRank(a.FavRarity)
-    local bRank = favoriterGetRarityRank(b.FavRarity)
-    if aRank == bRank then return a.FavPrice < b.FavPrice end
-    return aRank < bRank
-end)
-
-for _, v in ipairs(vars.favoriterSeedArray) do
-    table.insert(vars.favoriterSeedDisplayNames, v.FavDisplayName)
-end
-
-for _, mutation in pairs(vars.favoriterMutations) do
-    if typeof(mutation) == "table" and mutation.Name then
-        table.insert(vars.favoriterMutationNames, mutation.Name)
-    end
-end
-table.sort(vars.favoriterMutationNames)
-
-Groupboxes.FavoriterGroupbox:AddDropdown("Favoriter_SeedSelector_Dropdown", {
-    Values = vars.favoriterSeedDisplayNames,
-    Multi = true,
-    Text = "Plant Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.favoriterSelectedSeedKeys = {}
-        if values["All"] then
-            for _, v in ipairs(vars.favoriterSeedArray) do
-                table.insert(vars.favoriterSelectedSeedKeys, v.FavKey)
-            end
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    table.insert(vars.favoriterSelectedSeedKeys, vars.favoriterSeedNameToKey[name])
-                end
-            end
-        end
-    end
-})
-
-Groupboxes.FavoriterGroupbox:AddDropdown("Favoriter_MutationSelector_Dropdown", {
-    Values = vars.favoriterMutationNames,
-    Multi = true,
-    Text = "Mutation Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.favoriterSelectedMutations = {}
-        if values["All"] then
-            vars.favoriterSelectedMutations["All"] = true
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    vars.favoriterSelectedMutations[name] = true
-                end
-            end
-        end
-    end
-})
-
-Groupboxes.FavoriterGroupbox:AddDropdown("Favoriter_VariantSelector_Dropdown", {
-    Values = vars.VariantsFavoriter,
-    Multi = true,
-    Default = {},
-    Searchable = true,
-    Text = "Variant Filter",
-    Tooltip = "Select one or more plant variants to filter",
-    Callback = function(values)
-        vars.favoriterSelectedVariants = {}
-        for _, variant in ipairs(values) do
-            vars.favoriterSelectedVariants[variant] = true
-        end
-    end
-})
-
-Groupboxes.FavoriterGroupbox:AddDropdown("Favoriter_ModeSelector_Dropdown", {
-    Values = {"Favorite", "Unfavorite"},
-    Multi = false,
-    Default = "Favorite",
-    Searchable = true,
-    Text = "Mode",
-    Tooltip = "Choose whether to favorite or unfavorite plants",
-    Callback = function(value)
-        vars.favoriterMode = value
-    end
-})
-
-local function favoriterPassesToolCheck(tool)
-    local seedName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"])
-    if not seedName or not table.find(vars.favoriterSelectedSeedKeys, seedName) then return false end
-
-    if vars.favoriterSelectedVariants and next(vars.favoriterSelectedVariants) then
-        local v = tool:FindFirstChild("Variant")
-        if not (v and vars.favoriterSelectedVariants[v.Value]) then return false end
-    end
-
-    if vars.favoriterSelectedMutations["All"] then
-        return true
-    elseif vars.favoriterSelectedMutations["None"] then
-        for mut in pairs(vars.favoriterSelectedMutations) do
-            if mut ~= "None" and mut ~= "All" and tool:GetAttribute(mut) then return false end
-        end
-    elseif next(vars.favoriterSelectedMutations) then
-        local found = false
-        for mut in pairs(vars.favoriterSelectedMutations) do
-            if mut ~= "All" and tool:GetAttribute(mut) then found = true break end
-        end
-        if not found then return false end
-    end
-
-    return true
-end
-
-local function favoriterRun()
-    if not remotes.favoriteremote then return end
-
-    for _, tool in ipairs(vars.Backpack:GetChildren()) do
-        if not vars.favoritingEnabled then break end
-        if tool:IsA("Tool") and favoriterPassesToolCheck(tool) then
-            local attr = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["Favorite"])
-            if (vars.favoriterMode == "Favorite" and attr ~= true) or (vars.favoriterMode == "Unfavorite" and attr == true) then
-                pcall(function()
-                    remotes.favoriteremote:FireServer(tool)
-                    task.wait(0.01)
-                end)
-            end
-        end
-    end
-end
-
-Groupboxes.FavoriterGroupbox:AddToggle("Favoriter_Auto_Toggle", {
-    Text = "Auto Favorite/Unfavorite Plants",
-    Default = false,
-    Callback = function(state)
-        vars.favoritingEnabled = state
-        if state then
-            task.spawn(function()
-                while vars.favoritingEnabled do
-                    favoriterRun()
-                    task.wait(0.5)
-                end
-            end)
-        end
-    end
-})
-
-
-for _, m in pairs(vars.mutations) do
-    if typeof(m) == "table" then
-        m._AddFX = nil
-        m._RemoveFX = nil
-    end
-end
-
-
-for key, info in pairs(modules.SeedData) do
-    if typeof(info) == "table" and info.Price then
-        local rarity = info.SeedRarity or "Unknown"
-        local displayName = string.format("%s [%s]", info.SeedName or key, rarity)
-        table.insert(vars.seedArray10, {Key = key, DisplayName = displayName, Price = info.Price, Rarity = rarity})
-        vars.seedDisplayNameToKey10[displayName] = key
-    end
-end
-
-table.sort(vars.seedArray10, function(a, b)
-            local aRank, bRank = vars.getRarityRank(a.Rarity), vars.getRarityRank(b.Rarity)
-    if aRank == bRank then
-        return a.Price < b.Price
-    end
-    return aRank < bRank
-end)
-
-for _, v in ipairs(vars.seedArray10) do
-    table.insert(vars.seedDisplayNames10, v.DisplayName)
-end
-
-for _, mutation in pairs(vars.mutations) do
-    if typeof(mutation) == "table" and mutation.Name then
-        table.insert(vars.mutationNames, mutation.Name)
-    end
-end
-table.sort(vars.mutationNames)
-
-Groupboxes.CollectorGroupbox:AddDropdown("SelectAutoCollectFruits_Dropdown", {
-    Values = vars.seedDisplayNames10,
-    Multi = true,
-    Text = "Plant Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedSeedKeys10 = {}
-        if values["All"] then
-            for _, v in ipairs(vars.seedArray10) do
-                table.insert(vars.selectedSeedKeys10, v.Key)
-            end
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    table.insert(vars.selectedSeedKeys10, vars.seedDisplayNameToKey10[name])
-                end
-            end
-        end
-    end
-})
-
-Groupboxes.CollectorGroupbox:AddDropdown("SelectAutoCollectMutations_Dropdown", {
-    Values = vars.mutationNames,
-    Multi = true,
-    Text = "Mutation Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedMutations10 = {}
-        if values["All"] then
-            vars.selectedMutations10["All"] = true
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    vars.selectedMutations10[name] = true
-                end
-            end
-        end
-    end
-})
-
-Groupboxes.CollectorGroupbox:AddDropdown("AutoCollectSelectedVariants_Dropdown", {
-    Values = vars.variantOptions10,
-    Multi = true,
-    Text = "Variant Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedVariants10 = {}
-        if values["All"] then
-            for _, v in ipairs(vars.variantOptions10) do
-                if v ~= "All" then
-                    vars.selectedVariants10[v] = true
-                end
-            end
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    vars.selectedVariants10[name] = true
-                end
-            end
-        end
-    end
-})
-
-
-
-Groupboxes.CollectorGroupbox:AddDropdown("AutoCollectWeightComparison_Dropdown", {
-    Values = {"Above", "Below or Equal"},
-    Multi = false,
-    Text = "Weight Comparison",
-    Default = "Above",
-    Searchable = true,
-    Callback = function(v)
-        vars.selectedWeightComparison10 = v
-    end
-})
-
-Groupboxes.CollectorGroupbox:AddInput("AutoCollectDelay_Input", {
-    Text = "Collect Delay",
-    Default = "0.1",
-    Numeric = true,
-    Tooltip = "",
-    Callback = function(value)
-        local num = tonumber(value)
-        if num and num >= 0 then
-            running.autoCollectDelay = num
-        else
-            running.autoCollectDelay = 0.1
-        end
-    end
-})
-
-
-
-labels.YapLabel = Groupboxes.CollectorGroupbox:AddLabel({
-    Text = "The weight threshold needs a number only",
-    DoesWrap = true
-})
-
-Groupboxes.CollectorGroupbox:AddInput("AutoCollectWeight_Input", {
-    Text = "Weight Threshold",
-    Default = "0",
-    Numeric = true,
-    Callback = function(value)
-        vars.weightThreshold10 = tonumber(value) or 0
-    end
-})
-
-local function countHoldableItems()
-    local count = 0
-    local backpack = vars.LocalPlayer:FindFirstChildOfClass("Backpack") or (vars.LocalPlayer.Character and vars.LocalPlayer.Character:FindFirstChildOfClass("Backpack"))
-    if backpack then
-        for _, item in ipairs(backpack:GetChildren()) do
-            if item:GetAttribute(getgenv().HookedInventoryServiceEnums["ITEM_TYPE"]) == getgenv().HookedItemTypeEnums["Holdable"] then
-                count = count + 1
-            end
-        end
-    end
-    return count
-end
-
-local function passesCheck(model)
-    if not table.find(vars.selectedSeedKeys10, model.Name) then return false end
-
-    if next(vars.selectedVariants10) then
-        local variant = model:FindFirstChild("Variant")
-        if not (variant and vars.selectedVariants10[variant.Value]) then
-            return false
-        end
-    end
-
-    if vars.selectedMutations10["All"] then
-    elseif vars.selectedMutations10["None"] then
-        local hasAnySelectedMutation = false
-        for mutName, _ in pairs(vars.selectedMutations10) do
-            if mutName ~= "None" and mutName ~= "All" and model:GetAttribute(mutName) then
-                hasAnySelectedMutation = true
-                break
-            end
-        end
-        if hasAnySelectedMutation then return false end
-    elseif next(vars.selectedMutations10) then
-        local found = false
-        for mutName, _ in pairs(vars.selectedMutations10) do
-            if mutName ~= "All" and mutName ~= "None" and model:GetAttribute(mutName) then
-                found = true
-                break
-            end
-        end
-        if not found then return false end
-    end
-
-    local weight = model:FindFirstChild("Weight")
-    if weight then
-        if vars.selectedWeightComparison10 == "Above" then
-            if not (weight.Value >= vars.weightThreshold10) then return false end
-        elseif vars.selectedWeightComparison10 == "Below or Equal" then
-            if not (weight.Value <= vars.weightThreshold10) then return false end
-        end
-    else
-        return false
-    end
-
-    return true
-end
-
-local runCollector = LPH_NO_VIRTUALIZE(function()
-    if not (vars.LocalPlayer and vars.Workspace and remotes.bytenet) then return end
-
-    local myPlot
-    for _, plot in ipairs(vars.Workspace.Farm:GetChildren()) do
-        local data = plot:FindFirstChild("Important") and plot.Important:FindFirstChild("Data")
-        local owner = data and data:FindFirstChild("Owner")
-        if owner and owner.Value == vars.LocalPlayer.Name then
-            myPlot = plot
-            break
-        end
-    end
-    if not myPlot then return end
-
-    local plants = myPlot.Important:FindFirstChild("Plants_Physical")
-    if not plants then return end
-
-    for _, plant in ipairs(plants:GetChildren()) do
-        if not running.collecting then break end
-
-        local holdableItemCount = countHoldableItems()
-        if holdableItemCount >= 200 then
-            print("Backpack is full (200+ holdable items). Pausing auto-collection.")
-            repeat
-                task.wait(0.01)
-                holdableItemCount = countHoldableItems()
-            until holdableItemCount < 200
-            print("Backpack has space. Resuming auto-collection.")
-        end
-
-        local function try(model)
-            if not model:IsA("Model") then return end
-            if passesCheck(model) then
-                pcall(function()
-                    remotes.bytenet:FireServer(buffer.fromstring("\001\001\000\001"), {model})
-                end)
-            end
-        end
-
-        if plant:IsA("Model") then
-            try(plant)
-        end
-
-        local fruitsFolder = plant:FindFirstChild("Fruits")
-        if fruitsFolder and fruitsFolder:IsA("Folder") then
-            for _, fruit in ipairs(fruitsFolder:GetChildren()) do
-                try(fruit)
-            end
-        end
-
-        task.wait(running.autoCollectDelay)
-    end
-end)
-
-
-
-Groupboxes.CollectorGroupbox:AddToggle("AutoCollect_Toggle", {
-    Text = "Auto Collect Plants",
-    Default = false,
-    Callback = function(state)
-        running.collecting = state
-
-        if running.collectingTask then
-            task.cancel(running.collectingTask)
-            running.collectingTask = nil
-        end
-
-        if state then
-            running.collectingTask = task.spawn(LPH_NO_VIRTUALIZE(function()
-                while running.collecting do
-                    pcall(runCollector)
-                    
-                end
-            end))
-        end
-    end
-})
-
-
-vars.deleteSeedArray = {}
-vars.deleteSeedDisplayNameToKey = {}
-vars.deleteSeedDisplayNames = {"All"}
-vars.deleteMutationNames = {"All", "None"}
-vars.selectedDeleteSeedKeys = {}
-vars.selectedDeleteMutations = {}
-vars.selectedDeleteVariants = {}
-vars.deleteVariantOptions = {"All", "Normal", "Gold", "Rainbow"}
-vars.selectedDeleteWeightComparison = "Above"
-vars.deleteWeightThreshold = 0
-
-for _, m in pairs(vars.mutations) do
-    if typeof(m) == "table" then
-        m._AddFX = nil
-        m._RemoveFX = nil
-    end
-end
-
-for key, info in pairs(modules.SeedData) do
-    if typeof(info) == "table" and info.Price then
-        local rarity = info.SeedRarity or "Unknown"
-        local displayName = string.format("%s [%s]", info.SeedName or key, rarity)
-        table.insert(vars.deleteSeedArray, {Key = key, DisplayName = displayName, Price = info.Price, Rarity = rarity})
-        vars.deleteSeedDisplayNameToKey[displayName] = key
-    end
-end
-
-table.sort(vars.deleteSeedArray, function(a, b)
-    local aRank = vars.getRarityRank(a.Rarity)
-    local bRank = vars.getRarityRank(b.Rarity)
-    if aRank == bRank then
-        return a.Price < b.Price
-    end
-    return aRank < bRank
-end)
-
-for _, v in ipairs(vars.deleteSeedArray) do
-    table.insert(vars.deleteSeedDisplayNames, v.DisplayName)
-end
-
-for _, mutation in pairs(vars.mutations) do
-    if typeof(mutation) == "table" and mutation.Name then
-        table.insert(vars.deleteMutationNames, mutation.Name)
-    end
-end
-
-table.sort(vars.deleteMutationNames)
-
-Groupboxes.DeleterGroupbox:AddDropdown("SelectAutoDeleteFruits_Dropdown", {
-    Values = vars.deleteSeedDisplayNames,
-    Multi = true,
-    Text = "Plant Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedDeleteSeedKeys = {}
-        if values["All"] then
-            for _, v in ipairs(vars.deleteSeedArray) do
-                table.insert(vars.selectedDeleteSeedKeys, v.Key)
-            end
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    table.insert(vars.selectedDeleteSeedKeys, vars.deleteSeedDisplayNameToKey[name])
-                end
-            end
-        end
-    end
-})
-
-Groupboxes.DeleterGroupbox:AddDropdown("SelectAutoDeleteMutations_Dropdown", {
-    Values = vars.deleteMutationNames,
-    Multi = true,
-    Text = "Mutation Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedDeleteMutations = {}
-        if values["All"] then
-            vars.selectedDeleteMutations["All"] = true
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    vars.selectedDeleteMutations[name] = true
-                end
-            end
-        end
-    end
-})
-
-Groupboxes.DeleterGroupbox:AddDropdown("AutoDeleteSelectedVariants_Dropdown", {
-    Values = vars.deleteVariantOptions,
-    Multi = true,
-    Text = "Variant Filter",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedDeleteVariants = {}
-        if values["All"] then
-            for _, v in ipairs(vars.deleteVariantOptions) do
-                if v ~= "All" then
-                    vars.selectedDeleteVariants[v] = true
-                end
-            end
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    vars.selectedDeleteVariants[name] = true
-                end
-            end
-        end
-    end
-})
-
-Groupboxes.DeleterGroupbox:AddDropdown("AutoDeleteWeightComparison_Dropdown", {
-    Values = {"Above", "Below or Equal"},
-    Multi = false,
-    Text = "Weight Comparison",
-    Default = "Above",
-    Searchable = true,
-    Callback = function(v)
-        vars.selectedDeleteWeightComparison = v
-    end
-})
-
-Groupboxes.DeleterGroupbox:AddInput("AutoDeleteFruitsDelay_Input", {
-    Text = "Delete Delay",
-    Default = "0.1",
-    Numeric = true,
-    Callback = function(value)
-        local num = tonumber(value)
-        running.autoDeleteFruitsDelay = (num and num >= 0) and num or 0.1
-    end
-})
-
-Groupboxes.DeleterGroupbox:AddLabel({
-    Text = "The weight threshold needs a number only",
-    DoesWrap = true
-})
-
-Groupboxes.DeleterGroupbox:AddInput("AutoDeleteWeight_Input", {
-    Text = "Weight Threshold",
-    Default = "0",
-    Numeric = true,
-    Callback = function(value)
-        vars.deleteWeightThreshold = tonumber(value) or 0
-    end
-})
-
-local function equipShovel()
-    local char = vars.LocalPlayer.Character
-    if not char then return end
-
-    for _, tool in ipairs(char:GetChildren()) do
-        if tool:IsA("Tool") then
-            local toolName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or tool.Name
-            if toolName and toolName:find("Shovel") then
-                return
-            end
-        end
-    end
-
-    for _, tool in ipairs(char:GetChildren()) do
-        if tool:IsA("Tool") then
-            tool.Parent = vars.Backpack
-            task.wait(0.05)
-        end
-    end
-
-    for _, tool in ipairs(vars.Backpack:GetChildren()) do
-        if tool:IsA("Tool") then
-            local toolName = tool:GetAttribute(getgenv().HookedInventoryServiceEnums["ItemName"]) or tool.Name
-            if toolName and toolName:find("Shovel") then
-                tool.Parent = char
-                task.wait(0.1)
-                return
-            end
-        end
-    end
-end
-
-local function passesCheck(model)
-    local favoriteEnum = getgenv().HookedInventoryServiceEnums and getgenv().HookedInventoryServiceEnums["Favorite"]
-    if (favoriteEnum and model:GetAttribute(favoriteEnum) == true) or model:GetAttribute("Favorited") == true then
-        return false
-    end
-    if not (vars.CollectionService:HasTag(model, "Harvestable") and vars.CollectionService:HasTag(model, "Growable")) then return false end
-    if not table.find(vars.selectedDeleteSeedKeys, model.Name) then return false end
-
-    if next(vars.selectedDeleteVariants) then
-        local variant = model:FindFirstChild("Variant")
-        if not (variant and vars.selectedDeleteVariants[variant.Value]) then return false end
-    end
-
-    if vars.selectedDeleteMutations["All"] then
-    elseif vars.selectedDeleteMutations["None"] then
-        for mutName in pairs(vars.selectedDeleteMutations) do
-            if mutName ~= "None" and mutName ~= "All" and model:GetAttribute(mutName) then
-                return false
-            end
-        end
-    elseif next(vars.selectedDeleteMutations) then
-        local found = false
-        for mutName in pairs(vars.selectedDeleteMutations) do
-            if mutName ~= "All" and mutName ~= "None" and model:GetAttribute(mutName) then
-                found = true
-                break
-            end
-        end
-        if not found then return false end
-    end
-
-    local weight = model:FindFirstChild("Weight")
-    if weight then
-        local w = weight.Value
-        local threshold = vars.deleteWeightThreshold
-        if vars.selectedDeleteWeightComparison == "Above" and not (w >= threshold) then return false end
-        if vars.selectedDeleteWeightComparison == "Below or Equal" and not (w <= threshold) then return false end
-    else
-        return false
-    end
-
-    return true
-end
-
-
-
-
-local runDeleter = LPH_NO_VIRTUALIZE(function()
-    if not (vars.LocalPlayer and vars.Workspace and remotes.Remove_Item) then return end
-    local myPlot
-    for _, plot in ipairs(vars.Workspace.Farm:GetChildren()) do
-        local data = plot:FindFirstChild("Important") and plot.Important:FindFirstChild("Data")
-        local owner = data and data:FindFirstChild("Owner")
-        if owner and owner.Value == vars.LocalPlayer.Name then
-            myPlot = plot
-            break
-        end
-    end
-    if not myPlot then return end
-    local plants = myPlot.Important:FindFirstChild("Plants_Physical")
-    if not plants then return end
-    
-    local shovelEquipped = false
-    for _, plant in ipairs(plants:GetChildren()) do
-        if not running.deleting then break end
-        local fruitsFolder = plant:FindFirstChild("Fruits")
-        if fruitsFolder and fruitsFolder:IsA("Folder") then
-            for _, fruit in ipairs(fruitsFolder:GetChildren()) do
-                if fruit:IsA("Model") and passesCheck(fruit) then
-                    if not shovelEquipped then
-                        equipShovel()
-                        shovelEquipped = true
-                        task.wait(0.1)
-                    end
-                    local target = fruit.PrimaryPart or fruit:FindFirstChildWhichIsA("BasePart", true)
-                    if target then
-                        pcall(function()
-                            remotes.Remove_Item:FireServer(target)
-                        end)
                     else
-                        Library:Notify({
-                            Title = "Auto Shovel Error",
-                            Description = "Auto Shovel bugged rejoin",
-                            Time = 5
-                        })
+                        if Element.Value ~= Value then
+                            DepboxContainer.Visible = false
+                            Depbox.Visible = false
+                            return
+                        end
+                    end
+                end
+            end
+
+            Depbox.Visible = true
+            DepboxContainer.Visible = true
+            if not Library.Searching then
+                Depbox:Resize()
+            elseif not CancelSearch then
+                Library:UpdateSearch(Library.SearchText)
+            end
+        end
+
+        function Depbox:SetupDependencies(Dependencies)
+            for _, Dependency in pairs(Dependencies) do
+                assert(typeof(Dependency) == "table", "Dependency should be a table.")
+                assert(Dependency[1] ~= nil, "Dependency is missing element.")
+                assert(Dependency[2] ~= nil, "Dependency is missing expected value.")
+            end
+
+            Depbox.Dependencies = Dependencies
+            Depbox:Update()
+        end
+
+        DepboxContainer:GetPropertyChangedSignal("Visible"):Connect(function()
+            Depbox:Resize()
+        end)
+
+        setmetatable(Depbox, BaseGroupbox)
+
+        table.insert(Groupbox.DependencyBoxes, Depbox)
+        table.insert(Library.DependencyBoxes, Depbox)
+
+        return Depbox
+    end
+
+    function Funcs:AddDependencyGroupbox()
+        local Groupbox = self
+        local Tab = Groupbox.Tab
+        local BoxHolder = Groupbox.BoxHolder
+
+        local Background = Library:MakeOutline(BoxHolder, Library.CornerRadius)
+        Background.Size = UDim2.fromScale(1, 0)
+        Background.Visible = false
+        Library:UpdateDPI(Background, {
+            Size = false,
+        })
+
+        local DepGroupboxContainer
+        local DepGroupboxList
+
+        do
+            DepGroupboxContainer = New("Frame", {
+                BackgroundColor3 = "BackgroundColor",
+                Position = UDim2.fromOffset(2, 2),
+                Size = UDim2.new(1, -4, 1, -4),
+                Parent = Background,
+            })
+            New("UICorner", {
+                CornerRadius = UDim.new(0, Library.CornerRadius - 1),
+                Parent = DepGroupboxContainer,
+            })
+
+            DepGroupboxList = New("UIListLayout", {
+                Padding = UDim.new(0, 8),
+                Parent = DepGroupboxContainer,
+            })
+            New("UIPadding", {
+                PaddingBottom = UDim.new(0, 7),
+                PaddingLeft = UDim.new(0, 7),
+                PaddingRight = UDim.new(0, 7),
+                PaddingTop = UDim.new(0, 7),
+                Parent = DepGroupboxContainer,
+            })
+        end
+
+        local DepGroupbox = {
+            Visible = false,
+            Dependencies = {},
+
+            BoxHolder = BoxHolder,
+            Holder = Background,
+            Container = DepGroupboxContainer,
+
+            Tab = Tab,
+            Elements = {},
+            DependencyBoxes = {},
+        }
+
+        function DepGroupbox:Resize()
+            Background.Size = UDim2.new(1, 0, 0, DepGroupboxList.AbsoluteContentSize.Y + 18 * Library.DPIScale)
+        end
+
+        function DepGroupbox:Update(CancelSearch)
+            for _, Dependency in pairs(DepGroupbox.Dependencies) do
+                local Element = Dependency[1]
+                local Value = Dependency[2]
+
+                if Element.Type == "Toggle" and Element.Value ~= Value then
+                    Background.Visible = false
+                    DepGroupbox.Visible = false
+                    return
+                elseif Element.Type == "Dropdown" then
+                    if typeof(Element.Value) == "table" then
+                        if not Element.Value[Value] then
+                            Background.Visible = false
+                            DepGroupbox.Visible = false
+                            return
+                        end
+                    else
+                        if Element.Value ~= Value then
+                            Background.Visible = false
+                            DepGroupbox.Visible = false
+                            return
+                        end
+                    end
+                end
+            end
+
+            DepGroupbox.Visible = true
+            if not Library.Searching then
+                Background.Visible = true
+                DepGroupbox:Resize()
+            elseif not CancelSearch then
+                Library:UpdateSearch(Library.SearchText)
+            end
+        end
+
+        function DepGroupbox:SetupDependencies(Dependencies)
+            for _, Dependency in pairs(Dependencies) do
+                assert(typeof(Dependency) == "table", "Dependency should be a table.")
+                assert(Dependency[1] ~= nil, "Dependency is missing element.")
+                assert(Dependency[2] ~= nil, "Dependency is missing expected value.")
+            end
+
+            DepGroupbox.Dependencies = Dependencies
+            DepGroupbox:Update()
+        end
+
+        setmetatable(DepGroupbox, BaseGroupbox)
+
+        table.insert(Tab.DependencyGroupboxes, DepGroupbox)
+        table.insert(Library.DependencyBoxes, DepGroupbox)
+
+        return DepGroupbox
+    end
+
+    BaseGroupbox.__index = Funcs
+    BaseGroupbox.__namecall = function(_, Key, ...)
+        return Funcs[Key](...)
+    end
+end
+
+function Library:SetFont(FontFace)
+    if typeof(FontFace) == "EnumItem" then
+        FontFace = Font.fromEnum(FontFace)
+    end
+
+    Library.Scheme.Font = FontFace
+    Library:UpdateColorsUsingRegistry()
+end
+
+function Library:SetNotifySide(Side: string)
+    Library.NotifySide = Side
+
+    if Side:lower() == "left" then
+        NotificationArea.AnchorPoint = Vector2.new(0, 0)
+        NotificationArea.Position = UDim2.fromOffset(6, 6)
+        NotificationList.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    else
+        NotificationArea.AnchorPoint = Vector2.new(1, 0)
+        NotificationArea.Position = UDim2.new(1, -6, 0, 6)
+        NotificationList.HorizontalAlignment = Enum.HorizontalAlignment.Right
+    end
+end
+
+function Library:Notify(...)
+    local Data = {}
+    local Info = select(1, ...)
+
+    if typeof(Info) == "table" then
+        Data.Title = tostring(Info.Title)
+        Data.Description = tostring(Info.Description)
+        Data.Time = Info.Time or 5
+        Data.SoundId = Info.SoundId
+        Data.Steps = Info.Steps
+        Data.Persist = Info.Persist
+    else
+        Data.Description = tostring(Info)
+        Data.Time = select(2, ...) or 5
+        Data.SoundId = select(3, ...)
+    end
+    Data.Destroyed = false
+
+    local DeletedInstance = false
+    local DeleteConnection = nil
+    if typeof(Data.Time) == "Instance" then
+        DeleteConnection = Data.Time.Destroying:Connect(function()
+            DeletedInstance = true
+
+            DeleteConnection:Disconnect()
+            DeleteConnection = nil
+        end)
+    end
+
+    local FakeBackground = New("Frame", {
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BackgroundTransparency = 1,
+        Size = UDim2.fromScale(1, 0),
+        Visible = false,
+        Parent = NotificationArea,
+
+        DPIExclude = {
+            Size = true,
+        },
+    })
+
+    local Background = Library:MakeOutline(FakeBackground, Library.CornerRadius, 5)
+    Background.AutomaticSize = Enum.AutomaticSize.Y
+    Background.Position = Library.NotifySide:lower() == "left" and UDim2.new(-1, -6, 0, -2) or UDim2.new(1, 6, 0, -2)
+    Background.Size = UDim2.fromScale(1, 0)
+    Library:UpdateDPI(Background, {
+        Position = false,
+        Size = false,
+    })
+
+    local Holder = New("Frame", {
+        BackgroundColor3 = "MainColor",
+        Position = UDim2.fromOffset(2, 2),
+        Size = UDim2.new(1, -4, 1, -4),
+        Parent = Background,
+    })
+    New("UICorner", {
+        CornerRadius = UDim.new(0, Library.CornerRadius - 1),
+        Parent = Holder,
+    })
+    New("UIListLayout", {
+        Padding = UDim.new(0, 4),
+        Parent = Holder,
+    })
+    New("UIPadding", {
+        PaddingBottom = UDim.new(0, 8),
+        PaddingLeft = UDim.new(0, 8),
+        PaddingRight = UDim.new(0, 8),
+        PaddingTop = UDim.new(0, 8),
+        Parent = Holder,
+    })
+
+    local Title
+    local Desc
+    local TitleX = 0
+    local DescX = 0
+
+    local TimerFill
+
+    if Data.Title then
+        Title = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Text = Data.Title,
+            TextSize = 15,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextWrapped = true,
+            Parent = Holder,
+
+            DPIExclude = {
+                Size = true,
+            },
+        })
+    end
+
+    if Data.Description then
+        Desc = New("TextLabel", {
+            BackgroundTransparency = 1,
+            Text = Data.Description,
+            TextSize = 14,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            TextWrapped = true,
+            Parent = Holder,
+
+            DPIExclude = {
+                Size = true,
+            },
+        })
+    end
+
+    function Data:Resize()
+        if Title then
+            local X, Y = Library:GetTextBounds(
+                Title.Text,
+                Title.FontFace,
+                Title.TextSize,
+                NotificationArea.AbsoluteSize.X - (24 * Library.DPIScale)
+            )
+            Title.Size = UDim2.fromOffset(math.ceil(X), Y)
+            TitleX = X
+        end
+
+        if Desc then
+            local X, Y = Library:GetTextBounds(
+                Desc.Text,
+                Desc.FontFace,
+                Desc.TextSize,
+                NotificationArea.AbsoluteSize.X - (24 * Library.DPIScale)
+            )
+            Desc.Size = UDim2.fromOffset(math.ceil(X), Y)
+            DescX = X
+        end
+
+        FakeBackground.Size = UDim2.fromOffset((TitleX > DescX and TitleX or DescX) + (24 * Library.DPIScale), 0)
+    end
+
+    function Data:ChangeTitle(NewText)
+        if Title then
+            Data.Title = tostring(NewText)
+            Title.Text = Data.Title
+            Data:Resize()
+        end
+    end
+
+    function Data:ChangeDescription(NewText)
+        if Desc then
+            Data.Description = tostring(NewText)
+            Desc.Text = Data.Description
+            Data:Resize()
+        end
+    end
+
+    function Data:ChangeStep(NewStep)
+        if TimerFill and Data.Steps then
+            NewStep = math.clamp(NewStep or 0, 0, Data.Steps)
+            TimerFill.Size = UDim2.fromScale(NewStep / Data.Steps, 1)
+        end
+    end
+
+    function Data:Destroy()
+        Data.Destroyed = true
+        if DeleteConnection then
+            DeleteConnection:Disconnect()
+        end
+
+        TweenService
+            :Create(Background, Library.NotifyTweenInfo, {
+                Position = Library.NotifySide:lower() == "left" and UDim2.new(-1, -6, 0, -2) or UDim2.new(1, 6, 0, -2),
+            })
+            :Play()
+        task.delay(Library.NotifyTweenInfo.Time, function()
+            Library.Notifications[FakeBackground] = nil
+            FakeBackground:Destroy()
+        end)
+    end
+
+    Data:Resize()
+
+    local TimerHolder = New("Frame", {
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 7),
+        Visible = (Data.Persist ~= true and typeof(Data.Time) ~= "Instance") or typeof(Data.Steps) == "number",
+        Parent = Holder,
+    })
+    local TimerBar = New("Frame", {
+        BackgroundColor3 = "BackgroundColor",
+        BorderColor3 = "OutlineColor",
+        BorderSizePixel = 1,
+        Position = UDim2.fromOffset(0, 3),
+        Size = UDim2.new(1, 0, 0, 2),
+        Parent = TimerHolder,
+    })
+    TimerFill = New("Frame", {
+        BackgroundColor3 = "AccentColor",
+        Size = UDim2.fromScale(1, 1),
+        Parent = TimerBar,
+    })
+
+    if typeof(Data.Time) == "Instance" then
+        TimerFill.Size = UDim2.fromScale(0, 1)
+    end
+    if Data.SoundId then
+        New("Sound", {
+            SoundId = "rbxassetid://" .. tostring(Data.SoundId):gsub("rbxassetid://", ""),
+            Volume = 3,
+            PlayOnRemove = true,
+            Parent = SoundService,
+        }):Destroy()
+    end
+
+    Library.Notifications[FakeBackground] = Data
+
+    FakeBackground.Visible = true
+    TweenService:Create(Background, Library.NotifyTweenInfo, {
+        Position = UDim2.fromOffset(-2, -2),
+    }):Play()
+
+    task.delay(Library.NotifyTweenInfo.Time, function()
+        if Data.Persist then
+            return
+        elseif typeof(Data.Time) == "Instance" then
+            repeat
+                task.wait()
+            until DeletedInstance or Data.Destroyed
+        else
+            TweenService
+                :Create(TimerFill, TweenInfo.new(Data.Time, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {
+                    Size = UDim2.fromScale(0, 1),
+                })
+                :Play()
+            task.wait(Data.Time)
+        end
+
+        if not Data.Destroyed then
+            Data:Destroy()
+        end
+    end)
+
+    return Data
+end
+
+function Library:CreateWindow(WindowInfo)
+    WindowInfo = Library:Validate(WindowInfo, Templates.Window)
+    local ViewportSize: Vector2 = workspace.CurrentCamera.ViewportSize
+    if RunService:IsStudio() and ViewportSize.X <= 5 and ViewportSize.Y <= 5 then
+        repeat
+            ViewportSize = workspace.CurrentCamera.ViewportSize
+            task.wait()
+        until ViewportSize.X > 5 and ViewportSize.Y > 5
+    end
+
+    local MaxX = ViewportSize.X - 64
+    local MaxY = ViewportSize.Y - 64
+
+    Library.MinSize = Vector2.new(math.min(Library.MinSize.X, MaxX), math.min(Library.MinSize.Y, MaxY))
+    WindowInfo.Size = UDim2.fromOffset(
+        math.clamp(WindowInfo.Size.X.Offset, Library.MinSize.X, MaxX),
+        math.clamp(WindowInfo.Size.Y.Offset, Library.MinSize.Y, MaxY)
+    )
+    if typeof(WindowInfo.Font) == "EnumItem" then
+        WindowInfo.Font = Font.fromEnum(WindowInfo.Font)
+    end
+
+    Library.CornerRadius = WindowInfo.CornerRadius
+    Library:SetNotifySide(WindowInfo.NotifySide)
+    Library.ShowCustomCursor = WindowInfo.ShowCustomCursor
+    Library.Scheme.Font = WindowInfo.Font
+    Library.ToggleKeybind = WindowInfo.ToggleKeybind
+
+    local MainFrame
+    local SearchBox
+    local ResizeButton
+    local Tabs
+    local Container
+    do
+        Library.KeybindFrame, Library.KeybindContainer = Library:AddDraggableMenu("Keybinds")
+        Library.KeybindFrame.AnchorPoint = Vector2.new(0, 0.5)
+        Library.KeybindFrame.Position = UDim2.new(0, 6, 0.5, 0)
+        Library.KeybindFrame.Visible = false
+        Library:UpdateDPI(Library.KeybindFrame, {
+            Position = false,
+            Size = false,
+        })
+
+        MainFrame = New("Frame", {
+            BackgroundColor3 = function()
+                return Library:GetBetterColor(Library.Scheme.BackgroundColor, -1)
+            end,
+            Name = "Main",
+            Position = WindowInfo.Position,
+            Size = WindowInfo.Size,
+            Visible = false,
+            Parent = ScreenGui,
+
+            DPIExclude = {
+                Position = true,
+            },
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1),
+            Parent = MainFrame,
+        })
+        do
+            local Lines = {
+                {
+                    Position = UDim2.fromOffset(0, 48),
+                    Size = UDim2.new(1, 0, 0, 1),
+                },
+                {
+                    Position = UDim2.fromScale(0.3, 0),
+                    Size = UDim2.new(0, 1, 1, -21),
+                },
+                {
+                    AnchorPoint = Vector2.new(0, 1),
+                    Position = UDim2.new(0, 0, 1, -20),
+                    Size = UDim2.new(1, 0, 0, 1),
+                },
+            }
+            for _, Info in pairs(Lines) do
+                Library:MakeLine(MainFrame, Info)
+            end
+            Library:MakeOutline(MainFrame, WindowInfo.CornerRadius, 0)
+        end
+
+        if WindowInfo.Center then
+            MainFrame.Position = UDim2.new(0.5, -MainFrame.Size.X.Offset / 2, 0.5, -MainFrame.Size.Y.Offset / 2)
+        end
+
+        --// Top Bar \\-
+        local TopBar = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 0, 48),
+            Parent = MainFrame,
+        })
+        Library:MakeDraggable(MainFrame, TopBar, false, true)
+
+        --// Title
+        local TitleHolder = New("Frame", {
+            BackgroundTransparency = 1,
+            Size = UDim2.fromScale(0.3, 1),
+            Parent = TopBar,
+        })
+        New("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            VerticalAlignment = Enum.VerticalAlignment.Center,
+            Padding = UDim.new(0, 6),
+            Parent = TitleHolder,
+        })
+
+        if WindowInfo.Icon then
+            New("ImageLabel", {
+                Image = tonumber(WindowInfo.Icon) and "rbxassetid://" .. WindowInfo.Icon or WindowInfo.Icon,
+                Size = WindowInfo.IconSize,
+                Parent = TitleHolder,
+            })
+        end
+
+        local X = Library:GetTextBounds(
+            WindowInfo.Title,
+            Library.Scheme.Font,
+            20,
+            TitleHolder.AbsoluteSize.X - (WindowInfo.Icon and WindowInfo.IconSize.X.Offset + 6 or 0) - 12
+        )
+        New("TextLabel", {
+            BackgroundTransparency = 1,
+            Size = UDim2.new(0, X, 1, 0),
+            Text = WindowInfo.Title,
+            TextSize = 20,
+            Parent = TitleHolder,
+        })
+
+        --// Search Box
+        SearchBox = New("TextBox", {
+            AnchorPoint = Vector2.new(0, 0.5),
+            BackgroundColor3 = "MainColor",
+            PlaceholderText = "Search",
+            Position = UDim2.new(0.3, 8, 0.5, 0),
+            Size = UDim2.new(0.7, -57, 1, -16),
+            TextScaled = true,
+            Parent = TopBar,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(0, WindowInfo.CornerRadius),
+            Parent = SearchBox,
+        })
+        New("UIPadding", {
+            PaddingBottom = UDim.new(0, 8),
+            PaddingLeft = UDim.new(0, 8),
+            PaddingRight = UDim.new(0, 8),
+            PaddingTop = UDim.new(0, 8),
+            Parent = SearchBox,
+        })
+        New("UIStroke", {
+            Color = "OutlineColor",
+            Parent = SearchBox,
+        })
+
+        local SearchIcon = Library:GetIcon("search")
+        if SearchIcon then
+            New("ImageLabel", {
+                Image = SearchIcon.Url,
+                ImageColor3 = "FontColor",
+                ImageRectOffset = SearchIcon.ImageRectOffset,
+                ImageRectSize = SearchIcon.ImageRectSize,
+                ImageTransparency = 0.5,
+                Size = UDim2.fromScale(1, 1),
+                SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                Parent = SearchBox,
+            })
+        end
+
+        local MoveIcon = Library:GetIcon("move")
+        if MoveIcon then
+            New("ImageLabel", {
+                AnchorPoint = Vector2.new(1, 0.5),
+                Image = MoveIcon.Url,
+                ImageColor3 = "OutlineColor",
+                ImageRectOffset = MoveIcon.ImageRectOffset,
+                ImageRectSize = MoveIcon.ImageRectSize,
+                Position = UDim2.new(1, -10, 0.5, 0),
+                Size = UDim2.fromOffset(28, 28),
+                SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                Parent = TopBar,
+            })
+        end
+
+        --// Bottom Bar \\--
+        local BottomBar = New("Frame", {
+            AnchorPoint = Vector2.new(0, 1),
+            BackgroundColor3 = function()
+                return Library:GetBetterColor(Library.Scheme.BackgroundColor, 4)
+            end,
+            Position = UDim2.fromScale(0, 1),
+            Size = UDim2.new(1, 0, 0, 20),
+            Parent = MainFrame,
+        })
+        do
+            local Cover = Library:MakeCover(BottomBar, "Top")
+            Library:AddToRegistry(Cover, {
+                BackgroundColor3 = function()
+                    return Library:GetBetterColor(Library.Scheme.BackgroundColor, 4)
+                end,
+            })
+        end
+        New("UICorner", {
+            CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1),
+            Parent = BottomBar,
+        })
+
+        --// Footer
+        New("TextLabel", {
+            BackgroundTransparency = 1,
+            Size = UDim2.fromScale(1, 1),
+            Text = WindowInfo.Footer,
+            TextSize = 14,
+            TextTransparency = 0.5,
+            Parent = BottomBar,
+        })
+
+        --// Resize Button
+        if WindowInfo.Resizable then
+            ResizeButton = New("TextButton", {
+                AnchorPoint = Vector2.new(1, 0),
+                BackgroundTransparency = 1,
+                Position = UDim2.fromScale(1, 0),
+                Size = UDim2.fromScale(1, 1),
+                SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                Text = "",
+                Parent = BottomBar,
+            })
+
+            Library:MakeResizable(MainFrame, ResizeButton, function()
+                for _, Tab in pairs(Library.Tabs) do
+                    Tab:Resize(true)
+                end
+            end)
+        end
+
+        New("ImageLabel", {
+            Image = ResizeIcon and ResizeIcon.Url or "",
+            ImageColor3 = "FontColor",
+            ImageRectOffset = ResizeIcon and ResizeIcon.ImageRectOffset or Vector2.zero,
+            ImageRectSize = ResizeIcon and ResizeIcon.ImageRectSize or Vector2.zero,
+            ImageTransparency = 0.5,
+            Position = UDim2.fromOffset(2, 2),
+            Size = UDim2.new(1, -4, 1, -4),
+            Parent = ResizeButton,
+        })
+
+        --// Tabs \\--
+        Tabs = New("ScrollingFrame", {
+            AutomaticCanvasSize = Enum.AutomaticSize.Y,
+            BackgroundColor3 = "BackgroundColor",
+            CanvasSize = UDim2.fromScale(0, 0),
+            Position = UDim2.fromOffset(0, 49),
+            ScrollBarThickness = 0,
+            Size = UDim2.new(0.3, 0, 1, -70),
+            Parent = MainFrame,
+        })
+
+        New("UIListLayout", {
+            Parent = Tabs,
+        })
+
+        --// Container \\--
+        Container = New("Frame", {
+            AnchorPoint = Vector2.new(1, 0),
+            BackgroundColor3 = function()
+                return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
+            end,
+            Name = "Container",
+            Position = UDim2.new(1, 0, 0, 49),
+            Size = UDim2.new(0.7, -1, 1, -70),
+            Parent = MainFrame,
+        })
+
+        New("UIPadding", {
+            PaddingBottom = UDim.new(0, 0),
+            PaddingLeft = UDim.new(0, 6),
+            PaddingRight = UDim.new(0, 6),
+            PaddingTop = UDim.new(0, 0),
+            Parent = Container,
+        })
+    end
+
+    --// Window Table \\--
+    local Window = {}
+
+    function Window:AddTab(Name: string, Icon)
+        local TabButton: TextButton
+        local TabLabel
+        local TabIcon
+
+        local TabContainer
+        local TabLeft
+        local TabRight
+
+        local WarningBox
+        local WarningTitle
+        local WarningText
+        local WarningStroke
+
+        Icon = Library:GetIcon(Icon)
+        do
+            TabButton = New("TextButton", {
+                BackgroundColor3 = "MainColor",
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 40),
+                Text = "",
+                Parent = Tabs,
+            })
+
+            New("UIPadding", {
+                PaddingBottom = UDim.new(0, 11),
+                PaddingLeft = UDim.new(0, 12),
+                PaddingRight = UDim.new(0, 12),
+                PaddingTop = UDim.new(0, 11),
+                Parent = TabButton,
+            })
+
+            TabLabel = New("TextLabel", {
+                BackgroundTransparency = 1,
+                Position = UDim2.fromOffset(30, 0),
+                Size = UDim2.new(1, -30, 1, 0),
+                Text = Name,
+                TextSize = 16,
+                TextTransparency = 0.5,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = TabButton,
+            })
+
+            if Icon then
+                TabIcon = New("ImageLabel", {
+                    Image = Icon.Url,
+                    ImageColor3 = "AccentColor",
+                    ImageRectOffset = Icon.ImageRectOffset,
+                    ImageRectSize = Icon.ImageRectSize,
+                    ImageTransparency = 0.5,
+                    Size = UDim2.fromScale(1, 1),
+                    SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                    Parent = TabButton,
+                })
+            end
+
+            --// Tab Container \\--
+            TabContainer = New("Frame", {
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 1),
+                Visible = false,
+                Parent = Container,
+            })
+
+            TabLeft = New("ScrollingFrame", {
+                AutomaticCanvasSize = Enum.AutomaticSize.Y,
+                BackgroundTransparency = 1,
+                CanvasSize = UDim2.fromScale(0, 0),
+                ScrollBarThickness = 0,
+                Parent = TabContainer,
+            })
+            New("UIListLayout", {
+                Padding = UDim.new(0, 6),
+                Parent = TabLeft,
+            })
+            do
+                New("Frame", {
+                    BackgroundTransparency = 1,
+                    LayoutOrder = -1,
+                    Parent = TabLeft,
+                })
+                New("Frame", {
+                    BackgroundTransparency = 1,
+                    LayoutOrder = 1,
+                    Parent = TabLeft,
+                })
+
+                TabLeft.Size = UDim2.new(0, math.floor(TabContainer.AbsoluteSize.X / 2) - 3, 1, 0)
+                Library:UpdateDPI(TabLeft, { Size = TabLeft.Size })
+            end
+
+            TabRight = New("ScrollingFrame", {
+                AnchorPoint = Vector2.new(1, 0),
+                AutomaticCanvasSize = Enum.AutomaticSize.Y,
+                BackgroundTransparency = 1,
+                CanvasSize = UDim2.fromScale(0, 0),
+                Position = UDim2.fromScale(1, 0),
+                ScrollBarThickness = 0,
+                Parent = TabContainer,
+            })
+            New("UIListLayout", {
+                Padding = UDim.new(0, 6),
+                Parent = TabRight,
+            })
+            do
+                New("Frame", {
+                    BackgroundTransparency = 1,
+                    LayoutOrder = -1,
+                    Parent = TabRight,
+                })
+                New("Frame", {
+                    BackgroundTransparency = 1,
+                    LayoutOrder = 1,
+                    Parent = TabRight,
+                })
+
+                TabRight.Size = UDim2.new(0, math.floor(TabContainer.AbsoluteSize.X / 2) - 3, 1, 0)
+                Library:UpdateDPI(TabRight, { Size = TabRight.Size })
+            end
+
+            WarningBox = New("Frame", {
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundColor3 = Color3.fromRGB(127, 0, 0),
+                BorderColor3 = Color3.fromRGB(255, 50, 50),
+                BorderMode = Enum.BorderMode.Inset,
+                BorderSizePixel = 1,
+                Position = UDim2.fromOffset(0, 6),
+                Size = UDim2.fromScale(1, 0),
+                Visible = false,
+                Parent = TabContainer,
+            })
+            New("UIPadding", {
+                PaddingBottom = UDim.new(0, 4),
+                PaddingLeft = UDim.new(0, 6),
+                PaddingRight = UDim.new(0, 6),
+                PaddingTop = UDim.new(0, 4),
+                Parent = WarningBox,
+            })
+
+            WarningTitle = New("TextLabel", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 14),
+                Text = "",
+                TextColor3 = Color3.fromRGB(255, 50, 50),
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = WarningBox,
+            })
+            WarningStroke = New("UIStroke", {
+                ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+                Color = Color3.fromRGB(169, 0, 0),
+                LineJoinMode = Enum.LineJoinMode.Miter,
+                Parent = WarningTitle,
+            })
+
+            WarningText = New("TextLabel", {
+                BackgroundTransparency = 1,
+                Position = UDim2.fromOffset(0, 16),
+                Size = UDim2.fromScale(1, 0),
+                Text = "",
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                TextWrapped = true,
+                Parent = WarningBox,
+            })
+            New("UIStroke", {
+                ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
+                Color = "Dark",
+                LineJoinMode = Enum.LineJoinMode.Miter,
+                Parent = WarningText,
+            })
+        end
+
+        --// Tab Table \\--
+        local Tab = {
+            Groupboxes = {},
+            Tabboxes = {},
+            DependencyGroupboxes = {},
+            Sides = {
+                TabLeft,
+                TabRight,
+            },
+        }
+
+        function Tab:UpdateWarningBox(Info)
+            if typeof(Info.Visible) == "boolean" then
+                WarningBox.Visible = Info.Visible
+                Tab:Resize()
+            end
+
+            if typeof(Info.Title) == "string" then
+                WarningTitle.Text = Info.Title
+            end
+
+            if typeof(Info.Text) == "string" then
+                local _, Y = Library:GetTextBounds(
+                    Info.Text,
+                    Library.Scheme.Font,
+                    WarningText.TextSize,
+                    WarningText.AbsoluteSize.X
+                )
+
+                WarningText.Size = UDim2.new(1, 0, 0, Y)
+                WarningText.Text = Info.Text
+                Library:UpdateDPI(WarningText, { Size = WarningText.Size })
+                Tab:Resize()
+            end
+
+            WarningBox.BackgroundColor3 = Info.IsNormal == true and Library.Scheme.BackgroundColor
+                or Color3.fromRGB(127, 0, 0)
+            WarningBox.BorderColor3 = Info.IsNormal == true and Library.Scheme.OutlineColor
+                or Color3.fromRGB(255, 50, 50)
+            WarningTitle.TextColor3 = Info.IsNormal == true and Library.Scheme.FontColor or Color3.fromRGB(255, 50, 50)
+            WarningStroke.Color = Info.IsNormal == true and Library.Scheme.OutlineColor or Color3.fromRGB(169, 0, 0)
+
+            if not Library.Registry[WarningBox] then
+                Library:AddToRegistry(WarningBox, {})
+            end
+            if not Library.Registry[WarningTitle] then
+                Library:AddToRegistry(WarningTitle, {})
+            end
+            if not Library.Registry[WarningStroke] then
+                Library:AddToRegistry(WarningStroke, {})
+            end
+
+            Library.Registry[WarningBox].BackgroundColor3 = function()
+                return Info.IsNormal == true and Library.Scheme.BackgroundColor or Color3.fromRGB(127, 0, 0)
+            end
+
+            Library.Registry[WarningBox].BorderColor3 = function()
+                return Info.IsNormal == true and Library.Scheme.OutlineColor or Color3.fromRGB(255, 50, 50)
+            end
+
+            Library.Registry[WarningTitle].TextColor3 = function()
+                return Info.IsNormal == true and Library.Scheme.FontColor or Color3.fromRGB(255, 50, 50)
+            end
+
+            Library.Registry[WarningStroke].Color = function()
+                return Info.IsNormal == true and Library.Scheme.OutlineColor or Color3.fromRGB(169, 0, 0)
+            end
+        end
+
+        function Tab:Resize(ResizeWarningBox: boolean?)
+            if ResizeWarningBox then
+                local _, Y = Library:GetTextBounds(
+                    WarningText.Text,
+                    Library.Scheme.Font,
+                    WarningText.TextSize,
+                    WarningText.AbsoluteSize.X
+                )
+
+                WarningText.Size = UDim2.new(1, 0, 0, Y)
+                Library:UpdateDPI(WarningText, { Size = WarningText.Size })
+            end
+
+            local Offset = WarningBox.Visible and WarningBox.AbsoluteSize.Y + 6 or 0
+            for _, Side in pairs(Tab.Sides) do
+                Side.Position = UDim2.new(Side.Position.X.Scale, 0, 0, Offset)
+                Side.Size = UDim2.new(0, math.floor(TabContainer.AbsoluteSize.X / 2) - 3, 1, -Offset)
+                Library:UpdateDPI(Side, {
+                    Position = Side.Position,
+                    Size = Side.Size,
+                })
+            end
+        end
+
+        function Tab:AddGroupbox(Info)
+            local BoxHolder = New("Frame", {
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 0),
+                Parent = Info.Side == 1 and TabLeft or TabRight,
+            })
+            New("UIListLayout", {
+                Padding = UDim.new(0, 6),
+                Parent = BoxHolder,
+            })
+
+            local Background = Library:MakeOutline(BoxHolder, WindowInfo.CornerRadius)
+            Background.Size = UDim2.fromScale(1, 0)
+            Library:UpdateDPI(Background, {
+                Size = false,
+            })
+
+            local GroupboxHolder
+            local GroupboxLabel
+
+            local GroupboxContainer
+            local GroupboxList
+
+            do
+                GroupboxHolder = New("Frame", {
+                    BackgroundColor3 = "BackgroundColor",
+                    Position = UDim2.fromOffset(2, 2),
+                    Size = UDim2.new(1, -4, 1, -4),
+                    Parent = Background,
+                })
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1),
+                    Parent = GroupboxHolder,
+                })
+                Library:MakeLine(GroupboxHolder, {
+                    Position = UDim2.fromOffset(0, 34),
+                    Size = UDim2.new(1, 0, 0, 1),
+                })
+
+                local BoxIcon = Library:GetIcon(Info.IconName)
+                if BoxIcon then
+                    New("ImageLabel", {
+                        Image = BoxIcon.Url,
+                        ImageColor3 = "AccentColor",
+                        ImageRectOffset = BoxIcon.ImageRectOffset,
+                        ImageRectSize = BoxIcon.ImageRectSize,
+                        Position = UDim2.fromOffset(6, 6),
+                        Size = UDim2.fromOffset(22, 22),
+                        Parent = GroupboxHolder,
+                    })
+                end
+
+                GroupboxLabel = New("TextLabel", {
+                    BackgroundTransparency = 1,
+                    Position = UDim2.fromOffset(BoxIcon and 24 or 0, 0),
+                    Size = UDim2.new(1, 0, 0, 34),
+                    Text = Info.Name,
+                    TextSize = 15,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = GroupboxHolder,
+                })
+                New("UIPadding", {
+                    PaddingLeft = UDim.new(0, 12),
+                    PaddingRight = UDim.new(0, 12),
+                    Parent = GroupboxLabel,
+                })
+
+                local Arrow = New("ImageLabel", {
+                    AnchorPoint = Vector2.new(1, 0.5),
+                    Image = ArrowIcon and ArrowIcon.Url or "",
+                    ImageColor3 = "FontColor",
+                    ImageRectOffset = ArrowIcon and ArrowIcon.ImageRectOffset or Vector2.zero,
+                    ImageRectSize = ArrowIcon and ArrowIcon.ImageRectSize or Vector2.zero,
+                    Position = UDim2.new(1, -12, 0, 17),
+                    Size = UDim2.fromOffset(16, 16),
+                    Parent = GroupboxHolder,
+                })
+
+                local HeaderButton = New("TextButton", {
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 0, 0, 34),
+                    Text = "",
+                    ZIndex = 2,
+                    Parent = GroupboxHolder,
+                })
+
+                GroupboxContainer = New("Frame", {
+                    BackgroundTransparency = 1,
+                    Position = UDim2.fromOffset(0, 35),
+                    Size = UDim2.new(1, 0, 1, -35),
+                    Parent = GroupboxHolder,
+                })
+
+                GroupboxList = New("UIListLayout", {
+                    Padding = UDim.new(0, 8),
+                    Parent = GroupboxContainer,
+                })
+                New("UIPadding", {
+                    PaddingBottom = UDim.new(0, 7),
+                    PaddingLeft = UDim.new(0, 7),
+                    PaddingRight = UDim.new(0, 7),
+                    PaddingTop = UDim.new(0, 7),
+                    Parent = GroupboxContainer,
+                })
+            end
+
+            local Groupbox = {
+                BoxHolder = BoxHolder,
+                Holder = Background,
+                Container = GroupboxContainer,
+
+                Tab = Tab,
+                DependencyBoxes = {},
+                Elements = {},
+                IsCollapsed = true,
+            }
+
+            GroupboxContainer.Visible = not Groupbox.IsCollapsed
+            Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
+
+            HeaderButton.MouseButton1Click:Connect(function()
+                Groupbox.IsCollapsed = not Groupbox.IsCollapsed
+                GroupboxContainer.Visible = not Groupbox.IsCollapsed
+                Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
+                Groupbox:Resize()
+            end)
+
+            function Groupbox:Resize()
+                if Groupbox.IsCollapsed then
+                    Background.Size = UDim2.new(1, 0, 0, 38 * Library.DPIScale)
+                else
+                    Background.Size = UDim2.new(
+                        1,
+                        0,
+                        0,
+                        GroupboxList.AbsoluteContentSize.Y + 53 * Library.DPIScale
+                    )
+                end
+            end
+
+            setmetatable(Groupbox, BaseGroupbox)
+
+            Groupbox:Resize()
+            Tab.Groupboxes[Info.Name] = Groupbox
+
+            return Groupbox
+        end
+
+        function Tab:AddLeftGroupbox(Name, IconName)
+            return Tab:AddGroupbox({ Side = 1, Name = Name, IconName = IconName })
+        end
+
+        function Tab:AddRightGroupbox(Name, IconName)
+            return Tab:AddGroupbox({ Side = 2, Name = Name, IconName = IconName })
+        end
+
+        function Tab:AddTabbox(Info)
+            local BoxHolder = New("Frame", {
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundTransparency = 1,
+                Size = UDim2.fromScale(1, 0),
+                Parent = Info.Side == 1 and TabLeft or TabRight,
+            })
+            New("UIListLayout", {
+                Padding = UDim.new(0, 6),
+                Parent = BoxHolder,
+            })
+
+            local Background = Library:MakeOutline(BoxHolder, WindowInfo.CornerRadius)
+            Background.Size = UDim2.fromScale(1, 0)
+            Library:UpdateDPI(Background, {
+                Size = false,
+            })
+
+            local TabboxHolder
+            local TabboxButtons
+
+            do
+                TabboxHolder = New("Frame", {
+                    BackgroundColor3 = "BackgroundColor",
+                    Position = UDim2.fromOffset(2, 2),
+                    Size = UDim2.new(1, -4, 1, -4),
+                    Parent = Background,
+                })
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1),
+                    Parent = TabboxHolder,
+                })
+
+                TabboxButtons = New("Frame", {
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 0, 0, 34),
+                    Parent = TabboxHolder,
+                })
+                New("UIListLayout", {
+                    FillDirection = Enum.FillDirection.Horizontal,
+                    HorizontalFlex = Enum.UIFlexAlignment.Fill,
+                    Parent = TabboxButtons,
+                })
+            end
+
+            local Tabbox = {
+                ActiveTab = nil,
+
+                BoxHolder = BoxHolder,
+                Holder = Background,
+                Tabs = {},
+            }
+
+            function Tabbox:AddTab(Name)
+                local Button = New("TextButton", {
+                    BackgroundColor3 = "MainColor",
+                    BackgroundTransparency = 0,
+                    Size = UDim2.fromOffset(0, 34),
+                    Text = Name,
+                    TextSize = 15,
+                    TextTransparency = 0.5,
+                    Parent = TabboxButtons,
+                })
+
+                local Line = Library:MakeLine(Button, {
+                    AnchorPoint = Vector2.new(0, 1),
+                    Position = UDim2.new(0, 0, 1, 1),
+                    Size = UDim2.new(1, 0, 0, 1),
+                })
+
+                local Container = New("Frame", {
+                    BackgroundTransparency = 1,
+                    Position = UDim2.fromOffset(0, 35),
+                    Size = UDim2.new(1, 0, 1, -35),
+                    Visible = false,
+                    Parent = TabboxHolder,
+                })
+                local List = New("UIListLayout", {
+                    Padding = UDim.new(0, 8),
+                    Parent = Container,
+                })
+                New("UIPadding", {
+                    PaddingBottom = UDim.new(0, 7),
+                    PaddingLeft = UDim.new(0, 7),
+                    PaddingRight = UDim.new(0, 7),
+                    PaddingTop = UDim.new(0, 7),
+                    Parent = Container,
+                })
+
+                local Tab = {
+                    ButtonHolder = Button,
+                    Container = Container,
+
+                    Tab = Tab,
+                    Elements = {},
+                    DependencyBoxes = {},
+                }
+
+                function Tab:Show()
+                    if Tabbox.ActiveTab then
+                        Tabbox.ActiveTab:Hide()
+                    end
+
+                    Button.BackgroundTransparency = 1
+                    Button.TextTransparency = 0
+                    Line.Visible = false
+
+                    Container.Visible = true
+
+                    Tabbox.ActiveTab = Tab
+                    Tab:Resize()
+                end
+
+                function Tab:Hide()
+                    Button.BackgroundTransparency = 0
+                    Button.TextTransparency = 0.5
+                    Line.Visible = true
+                    Container.Visible = false
+
+                    Tabbox.ActiveTab = nil
+                end
+
+                function Tab:Resize()
+                    if Tabbox.ActiveTab ~= Tab then
                         return
                     end
+                    Background.Size = UDim2.new(1, 0, 0, List.AbsoluteContentSize.Y + 53 * Library.DPIScale)
                 end
-            end
-        end
-        task.wait(running.autoDeleteFruitsDelay or 0.1)
-    end
-end)
 
-Groupboxes.DeleterGroupbox:AddToggle("AutoDeleteFruits_Toggle", {
-    Text = "Auto Delete Fruits",
-    Default = false,
-    Callback = function(state)
-        running.deleting = state
-        if running.deletingTask then
-            task.cancel(running.deletingTask)
-            running.deletingTask = nil
-        end
-        if state then
-            running.deletingTask = task.spawn(LPH_NO_VIRTUALIZE(function()
-                while running.deleting do
-                    pcall(runDeleter)
+                --// Execution \\--
+                if not Tabbox.ActiveTab then
+                    Tab:Show()
                 end
-            end))
-        end
-    end
-})
 
-labels.QuestStatusLabel = Groupboxes.AutoSellGroupbox:AddLabel({
-    Text = "Quest Status: Idle",
-    DoesWrap = true
-})
+                Button.MouseButton1Click:Connect(Tab.Show)
 
-Groupboxes.AutoSellGroupbox:AddToggle("AutoQuest_Toggle", {
-    Text = "Auto Quest (Harvest + Plant All)",
-    Default = false,
-    Callback = function(state)
-        running.autoQuestRunning = state
+                setmetatable(Tab, BaseGroupbox)
 
-        if state then
-            task.spawn(function()
-                while running.autoQuestRunning do
-                    local data = modules.DataService:GetData()
-                    if not data or not data.DinoQuests then
-                        labels.QuestStatusLabel:SetText("Quest Status: No Quest Data")
-                        task.wait(2)
-                        continue
-                    end
+                Tabbox.Tabs[Name] = Tab
 
-                    local questFound = false
-                    local statusLines = {}
-
-                    for containerKey, containerId in pairs(data.DinoQuests.Containers) do
-                        local containerInfo = modules.QuestsController:GetContainerFromId(containerId)
-                        if containerInfo and not containerInfo.Redeemed then
-                            for _, quest in ipairs(containerInfo.Quests or {}) do
-                                if quest.Completed or quest.Progress >= quest.Target then
-                                    table.insert(statusLines, string.format("✅ %s %d/%d", quest.Type, quest.Progress, quest.Target))
-                                else
-                                    questFound = true
-                                    table.insert(statusLines, string.format("⏳ %s %d/%d", quest.Type, quest.Progress, quest.Target))
-
-                                    local targetName = quest.Arguments and quest.Arguments[1]
-                                    if not targetName then continue end
-
-                                    local function tryPlantLoop(seedName, questId, targetAmount)
-                                        local char = vars.LocalPlayer.Character
-                                        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
-                                        local backpack = vars.LocalPlayer:FindFirstChildOfClass("Backpack")
-                                        if not (char and humanoid and backpack) then
-                                            return
-                                        end
-
-                                        local equipped = false
-                                        for _, tool in ipairs(backpack:GetChildren()) do
-                                            if tool:GetAttribute("Seed") == seedName then
-                                                humanoid:UnequipTools()
-                                                tool.Parent = char
-                                                task.wait(0.3)
-                                                local heldTool = char:FindFirstChildOfClass("Tool")
-                                                if heldTool and heldTool:GetAttribute("Seed") == seedName then
-                                                    equipped = true
-                                                end
-                                                break
-                                            end
-                                        end
-
-                                        if not equipped then return end
-
-                                        local plantedProgress = 0
-                                        while plantedProgress < targetAmount and running.autoQuestRunning do
-                                            local planted = false
-                                            for _, plot in ipairs(vars.Workspace.Farm:GetChildren()) do
-                                                local important = plot:FindFirstChild("Important")
-                                                local owner = important and important:FindFirstChild("Data") and important.Data:FindFirstChild("Owner")
-                                                if owner and owner.Value == vars.LocalPlayer.Name then
-                                                    local canPlant = important:FindFirstChild("Plant_Locations") and important.Plant_Locations:FindFirstChild("Can_Plant")
-                                                    if canPlant then
-                                                        remotes.PlantRemote:FireServer(canPlant.Position, seedName)
-                                                        planted = true
-                                                    end
-                                                end
-                                            end
-
-                                            if not planted then break end
-
-                                            task.wait(0.5)
-
-                                            local refreshedData = modules.DataService:GetData()
-                                            local refreshedContainer = modules.QuestsController:GetContainerFromId(containerId)
-                                            if refreshedContainer then
-                                                for _, q in ipairs(refreshedContainer.Quests or {}) do
-                                                    if q.Id == questId then
-                                                        plantedProgress = q.Progress
-                                                        break
-                                                    end
-                                                end
-                                            end
-                                        end
-                                    end
-
-                                    if quest.Type == "Harvest" then
-                                        local foundSomething = false
-                                        for _, plot in ipairs(vars.Workspace.Farm:GetChildren()) do
-                                            local important = plot:FindFirstChild("Important")
-                                            local owner = important and important:FindFirstChild("Data") and important.Data:FindFirstChild("Owner")
-                                            if owner and owner.Value == vars.LocalPlayer.Name then
-                                                local plants = important:FindFirstChild("Plants_Physical")
-                                                if plants then
-                                                    for _, plant in ipairs(plants:GetChildren()) do
-                                                        local fruits = plant:FindFirstChild("Fruits")
-                                                        if fruits then
-                                                            for _, fruit in ipairs(fruits:GetChildren()) do
-                                                                if fruit:IsA("Model") and fruit.Name == targetName then
-                                                                    remotes.bytenet:FireServer(buffer.fromstring("\001\001\000\001"), {fruit})
-                                                                    foundSomething = true
-                                                                end
-                                                            end
-                                                        end
-                                                        if plant:IsA("Model") and plant.Name == targetName then
-                                                            remotes.bytenet:FireServer(buffer.fromstring("\001\001\000\001"), {plant})
-                                                            foundSomething = true
-                                                        end
-                                                    end
-                                                end
-                                            end
-                                        end
-                                        if not foundSomething then
-                                            tryPlantLoop(targetName, quest.Id, quest.Target)
-                                        end
-
-                                    elseif quest.Type == "Plant" then
-                                        tryPlantLoop(targetName, quest.Id, quest.Target)
-                                    end
-                                end
-                            end
-                        end
-                    end
-
-                    if questFound then
-                        labels.QuestStatusLabel:SetText("Quest Status:\n" .. table.concat(statusLines, "\n"))
-                    else
-                        labels.QuestStatusLabel:SetText("Quest Status: No Active Quest")
-                    end
-
-                    task.wait(2)
-                end
-                labels.QuestStatusLabel:SetText("Quest Status: Idle")
-            end)
-        else
-            labels.QuestStatusLabel:SetText("Quest Status: Idle")
-        end
-    end
-})
-
-
-local function runSprinklerDeleter()
-    if not running.autoShovelSprinklers or not vars.selectedSprinklerTypes or #vars.selectedSprinklerTypes == 0 then return end
-
-    local myPlot
-    for _, plot in ipairs(vars.Workspace.Farm:GetChildren()) do
-        local data = plot:FindFirstChild("Important") and plot.Important:FindFirstChild("Data")
-        local owner = data and data:FindFirstChild("Owner")
-        if owner and owner.Value == vars.LocalPlayer.Name then
-            myPlot = plot
-            break
-        end
-    end
-    if not myPlot then return end
-
-    local objects = myPlot.Important:FindFirstChild("Objects_Physical")
-    if not objects then return end
-
-    local shovelEquipped = false
-
-    for _, obj in ipairs(objects:GetChildren()) do
-        if not running.autoShovelSprinklers then break end
-
-        local objectType = obj:GetAttribute("OBJECT_TYPE")
-        if objectType and typeof(objectType) == "string" and table.find(vars.selectedSprinklerTypes, objectType) then
-            if not shovelEquipped then
-                equipShovel()
-                task.wait(0.2)
-                shovelEquipped = true
+                return Tab
             end
-            obj.Name = "No6"
-            pcall(function()
-                remotes.DeleteObject:FireServer(obj)
-            end)
-            task.wait(0.2)
-        end
-    end
-end
 
-vars.sprinklerTypes = {}
-if modules.ObjectModels then
-    for _, model in ipairs(modules.ObjectModels:GetChildren()) do
-        if model:IsA("Model") and model.Name:find("Sprinkler") then
-            if not table.find(vars.sprinklerTypes, model.Name) then
-                table.insert(vars.sprinklerTypes, model.Name)
-            end
-        end
-    end
-end
-table.sort(vars.sprinklerTypes)
-
-vars.selectedSprinklerTypes = {}
-Groupboxes.DeleterGroupbox:AddDropdown("SprinklerToDelete_Dropdown", {
-    Text = "Select Sprinklers to Shovel",
-    Multi = true,
-    Values = vars.sprinklerTypes,
-    Searchable = true,
-    Callback = function(selectedItems)
-        vars.selectedSprinklerTypes = {}
-        for name, selected in pairs(selectedItems) do
-            if selected then
-                table.insert(vars.selectedSprinklerTypes, name)
-            end
-        end
-    end
-})
-
-Groupboxes.DeleterGroupbox:AddToggle("AutoShovelSprinklers_Toggle", {
-    Text = "Auto Shovel Selected Sprinklers",
-    Default = false,
-    Callback = function(state)
-        running.autoShovelSprinklers = state
-        if state then
-            task.spawn(function()
-                while running.autoShovelSprinklers do
-                    runSprinklerDeleter()
-                    task.wait(5)
-                end
-            end)
-        end
-    end
-})
-
-
-running.plantESP = false
-vars.processedPlants = {}
-
-local function inspectAllPlants()
-    for _, farmPlot in ipairs(vars.Workspace.Farm:GetChildren()) do
-        local important = farmPlot:FindFirstChild("Important")
-        if not important then continue end
-
-        local plants = important:FindFirstChild("Plants_Physical")
-        if not plants then continue end
-
-        for _, plant in ipairs(plants:GetChildren()) do
-            local targets = {}
-            local fruits = plant:FindFirstChild("Fruits")
-            if fruits and fruits:IsA("Folder") then
-                targets = fruits:GetChildren()
+            if Info.Name then
+                Tab.Tabboxes[Info.Name] = Tabbox
             else
-                table.insert(targets, plant)
+                table.insert(Tab.Tabboxes, Tabbox)
             end
 
-            for _, target in ipairs(targets) do
-                if not vars.processedPlants[target] then
-                    if target:GetAttribute("Inspected") ~= true then
-                        target:SetAttribute("Inspected", true)
-                    end
-                    vars.processedPlants[target] = true
-                end
+            return Tabbox
+        end
+
+        function Tab:AddLeftTabbox(Name)
+            return Tab:AddTabbox({ Side = 1, Name = Name })
+        end
+
+        function Tab:AddRightTabbox(Name)
+            return Tab:AddTabbox({ Side = 2, Name = Name })
+        end
+
+        function Tab:Hover(Hovering)
+            if Library.ActiveTab == Tab then
+                return
             end
-        end
-    end
-end
 
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while true do
-        if running.plantESP then
-            pcall(inspectAllPlants)
-        end
-        task.wait(0.2)
-    end
-end))
-
-
-Groupboxes.PlantValueTab:AddToggle("PlantESP_Toggle", {
-    Text = "Plant ESP",
-    Default = false,
-    Tooltip = "Shows Value And Weight",
-    Callback = function(state)
-        running.plantESP = state
-        if not state then
-            vars.processedPlants = {}
-        end
-    end
-})
-
-local HighlightToggle = Groupboxes.CollectorGroupbox:AddToggle("HighlightPollinated_Toggle", {
-    Text = "Highlight Pollinated",
-    Default = false,
-    Tooltip = "Visually highlight Pollinated fruits"
-})
-
-
-local espContainer = Instance.new("Folder")
-espContainer.Name = "PlantESPHighlights"
-espContainer.Parent = vars.Workspace
-
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while task.wait(2) do  
-        if not vars.LocalPlayer then continue end
-
-        if not vars.Workspace.Farm then continue end
-
-        local myPlot = nil
-        for _, plot_iter in ipairs(vars.Workspace.Farm:GetChildren()) do
-            local imp = plot_iter:FindFirstChild("Important")
-            local data = imp and imp:FindFirstChild("Data")
-            local owner = data and data:FindFirstChild("Owner")
-            if owner and owner.Value == vars.LocalPlayer.Name then
-                myPlot = plot_iter
-                break
+            TweenService:Create(TabLabel, Library.TweenInfo, {
+                TextTransparency = Hovering and 0.25 or 0.5,
+            }):Play()
+            if TabIcon then
+                TweenService:Create(TabIcon, Library.TweenInfo, {
+                    ImageTransparency = Hovering and 0.25 or 0.5,
+                }):Play()
             end
         end
 
-        if not myPlot then continue end
-
-        local plantsPhysical = myPlot:FindFirstChild("Important") and myPlot.Important:FindFirstChild("Plants_Physical")
-        if not plantsPhysical then continue end
-
-        for _, plant_iter in ipairs(plantsPhysical:GetChildren()) do
-            local fruits = plant_iter:FindFirstChild("Fruits")
-            if fruits then
-                for _, fruit_iter in ipairs(fruits:GetChildren()) do
-                    if fruit_iter:IsA("Model") then
-                        local highlightId = "Highlight_" .. fruit_iter:GetDebugId()
-                        local existingHighlight = espContainer:FindFirstChild(highlightId)
-                        local isPollinated = fruit_iter:GetAttribute("Pollinated")
-
-                        if HighlightToggle.Value and isPollinated then
-                            local targetColor = Color3.fromRGB(255, 255, 100)
-                            if not existingHighlight then
-                                local h = Instance.new("Highlight")
-                                h.Name = highlightId
-                                h.Adornee = fruit_iter
-                                h.FillColor = targetColor
-                                h.OutlineColor = Color3.new(1, 1, 1)
-                                h.FillTransparency = 0.25
-                                h.OutlineTransparency = 0
-                                h.Parent = espContainer 
-                            elseif existingHighlight.FillColor ~= targetColor then
-                                existingHighlight.FillColor = targetColor
-                            end
-                        elseif existingHighlight then
-                            existingHighlight:Destroy()
-                        end
-                    end
-                end
-            end
-        end
-    end
-end))
-
-for _, mutationData in pairs(vars.mutations) do
-    if type(mutationData) == "table" then
-        mutationData._RemoveFX = nil
-        mutationData._AddFX = nil
-    end
-end
-
-local InfoLabel = Groupboxes.MutationGroupbox:AddLabel({
-    Text = "Select a mutation to view details.",
-    DoesWrap = true
-})
-
-Groupboxes.MutationGroupbox:AddDropdown("MutationInfo_Dropdown", {
-    Values = vars.mutationNames,
-    Text = "Mutations",
-    Multi = false,
-    Searchable = true,
-    Callback = function(selected)
-        local data = vars.mutations[selected]
-
-        if data and type(data) == "table" then
-            local description = "Mutation: " .. selected .. "\n"
-
-            if data.ValueMulti then
-                description = description .. "ValueMulti: " .. tostring(data.ValueMulti) .. "\n"
+        function Tab:Show()
+            if Library.ActiveTab then
+                Library.ActiveTab:Hide()
             end
 
-            if data.Description then
-                description = description .. "Description: " .. tostring(data.Description) .. "\n"
+            TweenService:Create(TabButton, Library.TweenInfo, {
+                BackgroundTransparency = 0,
+            }):Play()
+            TweenService:Create(TabLabel, Library.TweenInfo, {
+                TextTransparency = 0,
+            }):Play()
+            if TabIcon then
+                TweenService:Create(TabIcon, Library.TweenInfo, {
+                    ImageTransparency = 0,
+                }):Play()
             end
+            TabContainer.Visible = true
 
-            if data.Rarity then
-                description = description .. "Rarity: " .. tostring(data.Rarity) .. "\n"
+            Library.ActiveTab = Tab
+        end
+
+        function Tab:Hide()
+            TweenService:Create(TabButton, Library.TweenInfo, {
+                BackgroundTransparency = 1,
+            }):Play()
+            TweenService:Create(TabLabel, Library.TweenInfo, {
+                TextTransparency = 0.5,
+            }):Play()
+            if TabIcon then
+                TweenService:Create(TabIcon, Library.TweenInfo, {
+                    ImageTransparency = 0.5,
+                }):Play()
             end
+            TabContainer.Visible = false
 
-            if data.Name then
-                description = description .. "Name: " .. tostring(data.Name) .. "\n"
-            end
-
-            InfoLabel:SetText(description)
-        else
-            InfoLabel:SetText("No data available for: " .. tostring(selected))
-        end
-    end
-})
-
-labels.VersionLabel = Groupboxes.CreditsGroupbox:AddLabel("V.2.2.3")
-labels.ChangelogLabel = Groupboxes.CreditsGroupbox:AddLabel({
-    Text = table.concat({
-    "Added a new tab called pets so stuff is more organized, the cosmetics tab is now in the main tab so the ui is more clean, auto delete fruits stops when it finds that there is another script interfering or the game breaking. Auto Quest was added (wip not completly done tho) "
-    }, "\n"),
-DoesWrap = true
-})
-
-labels.VersionLabel = Groupboxes.CreditsGroupbox:AddLabel("How to use pet sync")
-labels.ChangelogLabel = Groupboxes.CreditsGroupbox:AddLabel({
-    Text = table.concat({
-    "To use Pet Mover, select the Echo Frog (or the specified pet, which you can confirm by idling each manually), then enable Auto Sync when its timer is between 1:00 and 1:15—other pets will automatically idle to sync, no need to change the pet's action."
-    }, "\n"),
-DoesWrap = true
-})
-
-
- Button = Groupboxes.CreditsGroupbox:AddButton({
-    Text = "Discord",
-    Func = function()
-        setclipboard('https://discord.com/invite/CaUVkK2YuV')
-    end,
-    DoubleClick = false
-})
-
-
-
-
-local findStockTables2 = LPH_NO_VIRTUALIZE(function()
-    for _, v in ipairs(getgc(true)) do
-        if type(v) == "table" and rawget(v, "SeedStock") and rawget(v, "GearStock") and rawget(v, "PetEggStock") and rawget(v, "NightEventShopStock") and rawget(v, "CosmeticStock") and rawget(v, "EventShopStock") then
-            return v.SeedStock, v.GearStock, v.PetEggStock, v.NightEventShopStock, v.CosmeticStock, v.EventShopStock
-        end
-    end
-end)
-
-vars.cachedSeedStock, vars.cachedGearStock, vars.cachedPetEggStock, vars.cachedNightEventStock, vars.cachedCosmeticStock, vars.cachedEventShopStock = findStockTables2()
-
-for key, info in pairs(modules.CosmeticCrateShopData) do
-    if typeof(info) == "table" and info.Price then
-        local rarity = info.CrateRarity or info.Rarity or "Common"
-        local displayName = string.format("%s [%s]", info.CrateName or key, rarity)
-        table.insert(vars.crateArray, { Name = key, DisplayName = displayName, Price = info.Price, Rarity = rarity })
-        vars.displayNameToCrateKey[displayName] = key
-    end
-end
-
-table.sort(vars.crateArray, function(a, b)
-    local ar, br = vars.getRarityRank(a.Rarity), vars.getRarityRank(b.Rarity)
-    return ar == br and a.Price < b.Price or ar < br
-end)
-
-table.insert(vars.crateDisplayNames, "All")
-for _, c in ipairs(vars.crateArray) do
-    table.insert(vars.crateDisplayNames, c.DisplayName)
-    CosmeticsPricesTab:AddLabel(c.DisplayName)
-    CosmeticsPricesTab:AddLabel(vars.formatNumberWithCommas(c.Price) .. " Sheckles")
-end
-
-for key, info in pairs(modules.CosmeticItemShopData) do
-    if typeof(info) == "table" and info.Price then
-        local rarity = info.CosmeticRarity or info.ItemRarity or info.Rarity or "Common"
-        local displayName = string.format("%s [%s]", info.CosmeticName or key, rarity)
-        table.insert(vars.itemArray, { Name = key, DisplayName = displayName, Price = info.Price, Rarity = rarity })
-        vars.displayNameToItemKey[displayName] = key
-    end
-end
-
-table.sort(vars.itemArray, function(a, b)
-    local ar, br = vars.getRarityRank(a.Rarity), vars.getRarityRank(b.Rarity)
-    return ar == br and a.Price < b.Price or ar < br
-end)
-
-table.insert(vars.itemDisplayNames, "All")
-for _, i in ipairs(vars.itemArray) do
-    table.insert(vars.itemDisplayNames, i.DisplayName)
-    CosmeticsPricesTab:AddLabel(i.DisplayName)
-    CosmeticsPricesTab:AddLabel(vars.formatNumberWithCommas(i.Price) .. " Sheckles")
-end
-
-CosmeticsTab:AddDropdown("CosmeticCrateSelector_Dropdown", {
-    Values = vars.crateDisplayNames,
-    Multi = true,
-    Text = "Select Cosmetic Crates",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedCosmeticCrateKeys = {}
-        if values["All"] then
-            for _, crate in ipairs(vars.crateArray) do
-                table.insert(vars.selectedCosmeticCrateKeys, crate.Name)
-            end
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    table.insert(vars.selectedCosmeticCrateKeys, vars.displayNameToCrateKey[name])
-                end
-            end
-        end
-    end
-})
-
-CosmeticsTab:AddDropdown("CosmeticItemSelector_Dropdown", {
-    Values = vars.itemDisplayNames,
-    Multi = true,
-    Text = "Select Cosmetic Items",
-    Searchable = true,
-    Callback = function(values)
-        vars.selectedCosmeticItemKeys = {}
-        if values["All"] then
-            for _, item in ipairs(vars.itemArray) do
-                table.insert(vars.selectedCosmeticItemKeys, item.Name)
-            end
-        else
-            for name, selected in pairs(values) do
-                if selected and name ~= "All" then
-                    table.insert(vars.selectedCosmeticItemKeys, vars.displayNameToItemKey[name])
-                end
-            end
-        end
-    end
-})
-
-
-
-
-local function buyCosmetics()
-    if not vars.cachedCosmeticStock then return end
-
-    if running.autoBuyCosmeticCrates and vars.cachedCosmeticStock.CrateStocks then
-        for crateName, data in pairs(vars.cachedCosmeticStock.CrateStocks) do
-            local stock = data.Stock or 0
-            if table.find(vars.selectedCosmeticCrateKeys, crateName) then
-                        for _ = 1, stock do
-                    remotes.BuyCosmeticCrateRemote:FireServer(crateName)
-                    task.wait(0.05)
-                        end
-                    end
-        end
-    end
-
-    if running.autoBuyCosmeticItems and vars.cachedCosmeticStock.ItemStocks then
-        for f, data in pairs(vars.cachedCosmeticStock.ItemStocks) do
-            local stock = data.Stock or 0
-            if table.find(vars.selectedCosmeticItemKeys, f) then
-                for _ = 1, stock do
-                    remotes.BuyCosmeticItemRemote:FireServer(f)
-                    task.wait(0.05)
-                end
-            end
-        end
-    end
-end
-
-CosmeticsTab:AddToggle("AutoBuyCosmeticCrates_Toggle", {
-    Text = "Auto Buy Cosmetic Crates",
-    Callback = function(enabled)
-        running.autoBuyCosmeticCrates = enabled
-        if enabled then
-            task.spawn(LPH_NO_VIRTUALIZE(function()
-                while running.autoBuyCosmeticCrates do
-                    pcall(buyCosmetics)
-                    task.wait(10)  
-                end
-            end))
-        end
-    end
-})
-
-CosmeticsTab:AddToggle("AutoBuyCosmeticItems_Toggle", {
-    Text = "Auto Buy Cosmetic Items",
-    Callback = function(enabled)
-        running.autoBuyCosmeticItems = enabled
-        if enabled then
-            task.spawn(LPH_NO_VIRTUALIZE(function()
-                while running.autoBuyCosmeticItems do
-                    pcall(buyCosmetics)
-                    task.wait(10)  
-                end
-            end))
-        end
-    end
-})
-
-
-
-
-
-
-
-CosmeticsTab:AddToggle("AutoOpenCrates_Toggle", {
-    Text = "Auto Open Crates",
-    Default = false,
-    Tooltip = "Auto Open Crates when they're ready",
-    Callback = function(Value)
-        if Value and not running.HatchLoopRunning10 then
-            running.HatchLoopRunning10 = true
-            task.spawn(function()
-                while running.HatchLoopRunning10 do
-                    for _, farm in ipairs(vars.Workspace:WaitForChild("Farm"):GetChildren()) do
-                        local important = farm:FindFirstChild("Important")
-                        local data = important and important:FindFirstChild("Data")
-                        local ownerValue = data and data:FindFirstChild("Owner")
-
-                        if ownerValue and ownerValue.Value == vars.LocalPlayer.Name then
-                            local objects = important:FindFirstChild("Objects_Physical")
-                            if objects then
-                                for _, obj in ipairs(objects:GetChildren()) do
-                                    if obj:GetAttribute("OBJECT_TYPE") == "CosmeticCrate"
-                                        and obj:GetAttribute("TimeToOpen") == 0
-                                        and not vars.FiredCrates[obj] then
-
-                                        vars.FiredCrates[obj] = true
-
-                                        pcall(function()
-                                            remotes.OpenCrateRemote:FireServer("OpenCrate", obj)
-                                        end)
-
-                                        local CrateName = obj:GetAttribute("CrateType") or "Unknown"
-
-                                        Library:Notify({
-                                            Title = "Opened Crate!",
-                                            Description = "Crate: " .. CrateName .. "\nOwner: " .. vars.LocalPlayer.Name,
-                                            Time = 5
-                                        })
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    task.wait(0.1)
-                end
-            end)
-        else
-            running.HatchLoopRunning10 = false
-        end
-    end
-})
-
-
-vars.iku = coroutine.create(function() 
-    vars.VirtualUser = game:GetService("VirtualUser")
-    vars.LocalPlayer.Idled:Connect(function()
-        vars.VirtualUser:CaptureController()
-        vars.VirtualUser:ClickButton2(Vector2.new())
-    end)
-end) 
-coroutine.resume(vars.iku)
-
-
-local function CloseUI(ui)
-    if ui.Enabled then
-        modules.UIManager:Close(ui)
-    end
-end
-local function OpenAndCloseUI(ui)
-    if ui.Enabled then
-        modules.UIManager:Close(ui)
-    else
-        modules.UIManager:Open(ui)
-    end
-end
-local Button = Groupboxes.UI:AddButton({
-    Text = "Seed",
-    Func = function()
-        OpenAndCloseUI(game:GetService("Players").LocalPlayer.PlayerGui.Seed_Shop)
-    end,
-})
-local Button = Groupboxes.UI:AddButton({
-    Text = "Gear",
-    Func = function()
-        OpenAndCloseUI(game:GetService("Players").LocalPlayer.PlayerGui.Gear_Shop)
-    end,
-})
-
-local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-local notif = PlayerGui:FindFirstChild("Top_Notification")
-
-local MyTToggle = Groupboxes.UI:AddToggle("NotificationRemover", {
-    Text = "Remove Notifications",
-    Default = false,
-    Tooltip = "Remove Notifications if  true",
-    Callback = function(Value)
-        if notif then
-            notif.Enabled = Value
-        end
-    end
-})
-
-
-
-
-
-local Button = Groupboxes.UI:AddButton({
-    Text = "Cosmetic",
-    Func = function()
-        OpenAndCloseUI(game:GetService("Players").LocalPlayer.PlayerGui.CosmeticShop_UI)
-    end,
-})
-local Button = Groupboxes.UI:AddButton({
-    Text = "Summer",
-    Func = function()
-        OpenAndCloseUI(game:GetService("Players").LocalPlayer.PlayerGui.EventShop_UI)
-    end,
-})
-local Button = Groupboxes.UI:AddButton({
-    Text = "PetInfo",
-    Func = function()
-        OpenAndCloseUI(game:GetService("Players").LocalPlayer.PlayerGui.PetEquipSlots_UI)
-    end,
-})
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-local Button = Groupboxes.UI:AddButton({
-    Text = "GearRecipe",
-    Func = function()
-        for _, desc in pairs(workspace.CraftingTables.EventCraftingWorkBench:GetDescendants()) do
-            if desc:IsA("ProximityPrompt") then
-                local prompt = desc
-                local ui = LocalPlayer.PlayerGui:FindFirstChild("RecipeSelection_UI")
-                if ui and ui.Enabled == false then
-                    fireproximityprompt(prompt)
-                elseif ui and ui.Enabled == true then
-                    CloseUI(ui)
-                end
-                break
-            end
-        end
-    end,
-})
-
-local Button = Groupboxes.UI:AddButton({
-    Text = "SeedRecipe",
-    Func = function()
-    if game:GetService("Players").LocalPlayer.PlayerGui.RecipeSelection_UI.Enabled == false then
-    fireproximityprompt(workspace.CraftingTables.SeedEventCraftingWorkBench.Model.BenchTable.CraftingProximityPrompt)
-    else
-    CloseUI(game:GetService("Players").LocalPlayer.PlayerGui.RecipeSelection_UI)
-    end
-    end,
-})
-local Button = Groupboxes.UI:AddButton({
-    Text = "SummerRewards",
-    Func = function()
-        OpenAndCloseUI(game:GetService("Players").LocalPlayer.PlayerGui.SummerRewards_UI)
-    end,
-})
-local Button = Groupboxes.UI:AddLabel({
-    Text = "TravelingMerchant and Summer Shop will not work before the update",
-    DoesWrap = true
-})
-local Button = Groupboxes.UI:AddButton({
-    Text = "TravelingMerchant",
-    Func = function()
-        OpenAndCloseUI(game:GetService("Players").LocalPlayer.PlayerGui.TravelingMerchantShop_UI)
-    end,
-})
-
-
-
-local findStockTables2 = LPH_NO_VIRTUALIZE(function()
-    for _, v in ipairs(getgc(true)) do
-        if type(v) == "table" and rawget(v, "SeedStock") and rawget(v, "GearStock") and rawget(v, "PetEggStock") and rawget(v, "NightEventShopStock") and rawget(v, "CosmeticStock") and rawget(v, "EventShopStock") and rawget(v, "TravelingMerchantShopStock") then
-            return v.SeedStock, v.GearStock, v.PetEggStock, v.NightEventShopStock, v.CosmeticStock, v.EventShopStock, v.TravelingMerchantShopStock
-        end
-    end
-end)
-
-vars.cachedSeedStock, vars.cachedGearStock, vars.cachedPetEggStock, vars.cachedNightEventStock, vars.cachedCosmeticStock, vars.cachedEventShopStock, vars.TravelingMerchantShopStock = findStockTables2()
-
-for key, info in pairs(modules.GnomeData) do
-    if typeof(info) == "table" and info.Price then
-        local rarity = info.SeedRarity or info.Rarity or "Common"
-        local displayName = string.format("%s [%s]", info.SeedName or key, rarity)
-        table.insert(vars.GnomeArray, { Name = key, DisplayName = displayName, Price = info.Price, Rarity = rarity })
-        vars.displayNameToGnomeKey[displayName] = key
-    end
-end
-
-table.sort(vars.GnomeArray, function(a, b)
-    local ar, br = vars.getRarityRank(a.Rarity), vars.getRarityRank(b.Rarity)
-    return ar == br and a.Price < b.Price or ar < br
-end)
-
-table.insert(vars.GnomeDisplayNames, "All")
-for _, c in ipairs(vars.GnomeArray) do
-    table.insert(vars.GnomeDisplayNames, c.DisplayName)
-
-
-end
-
-for key, info in pairs(modules.SkyData) do
-    if typeof(info) == "table" and info.Price then
-        local rarity = info.SeedRarity or info.SeedRarity or info.Rarity or "Common"
-        local displayName = string.format("%s [%s]", info.SeedName or key, rarity)
-        table.insert(vars.SkyArray, { Name = key, DisplayName = displayName, Price = info.Price, Rarity = rarity })
-        vars.displayNameToSkyKey[displayName] = key
-    end
-end
-
-table.sort(vars.SkyArray, function(a, b)
-    local ar, br = vars.getRarityRank(a.Rarity), vars.getRarityRank(b.Rarity)
-    return ar == br and a.Price < b.Price or ar < br
-end)
-
-table.insert(vars.SkyDisplayNames, "All")
-for _, i in ipairs(vars.SkyArray) do
-    table.insert(vars.SkyDisplayNames, i.DisplayName)
-
-
-end
-local TravelingMerchantFolder = vars.ReplicatedStorage.Data.TravelingMerchant.TravelingMerchantData
-for _, merchantModule in ipairs(TravelingMerchantFolder:GetChildren()) do
-    if merchantModule:IsA("ModuleScript") then
-        local moduleName = merchantModule.Name
-        modules[moduleName] = require(merchantModule)
-    end
-end
-
-local TravelingMerchantFolder = vars.ReplicatedStorage.Data.TravelingMerchant.TravelingMerchantData
-local BuyMerchantRemote = remotes.BuyMerchantShopStock
-
-vars.merchantData = {}
-vars.merchantSelectedKeys = {}
-vars.merchantAutoBuyRunning = {}
-
-for _, moduleScript in ipairs(TravelingMerchantFolder:GetChildren()) do
-    if moduleScript:IsA("ModuleScript") then
-        local rawName = moduleScript.Name
-        local merchantName = rawName:gsub("MerchantShopData", "") .. "Merchant"
-        local merchantModule = require(moduleScript)
-
-        vars.merchantData[merchantName] = {
-            array = {},
-            displayToKey = {},
-            displayNames = { "All" },
-        }
-        vars.merchantSelectedKeys[merchantName] = {}
-        vars.merchantAutoBuyRunning[merchantName] = false
-
-        for key, info in pairs(merchantModule) do
-            if typeof(info) == "table" and info.Price then
-                local rarity = info.SeedRarity or info.Rarity or "Common"
-                local displayName = string.format("%s [%s]", info.SeedName or key, rarity)
-                table.insert(vars.merchantData[merchantName].array, { Name = key, DisplayName = displayName, Price = info.Price, Rarity = rarity })
-                vars.merchantData[merchantName].displayToKey[displayName] = key
-                table.insert(vars.merchantData[merchantName].displayNames, displayName)
-            end
+            Library.ActiveTab = nil
         end
 
-        table.sort(vars.merchantData[merchantName].array, function(a, b)
-            local rankA = vars.getRarityRank(a.Rarity)
-            local rankB = vars.getRarityRank(b.Rarity)
-            return rankA == rankB and a.Price < b.Price or rankA < rankB
+        --// Execution \\--
+        if not Library.ActiveTab then
+            Tab:Show()
+        end
+
+        TabButton.MouseEnter:Connect(function()
+            Tab:Hover(true)
         end)
-        Groupboxes.Merchant:AddDropdown(merchantName .. "_Dropdown", {
-            Text = "Select " .. merchantName .. " Items",
-            Multi = true,
-            Values = vars.merchantData[merchantName].displayNames,
-            Searchable = true,
-            Callback = function(selected)
-                vars.merchantSelectedKeys[merchantName] = {}
-                if selected["All"] then
-                    for _, item in ipairs(vars.merchantData[merchantName].array) do
-                        table.insert(vars.merchantSelectedKeys[merchantName], item.Name)
-                    end
-                else
-                    for name, chosen in pairs(selected) do
-                        if chosen and name ~= "All" then
-                            table.insert(vars.merchantSelectedKeys[merchantName], vars.merchantData[merchantName].displayToKey[name])
-                        end
-                    end
-                end
-            end
-        })
+        TabButton.MouseLeave:Connect(function()
+            Tab:Hover(false)
+        end)
+        TabButton.MouseButton1Click:Connect(Tab.Show)
 
-        Groupboxes.Merchant:AddToggle("AutoBuy_" .. merchantName, {
-            Text = "Auto Buy " .. merchantName,
-            Callback = function(enabled)
-                vars.merchantAutoBuyRunning[merchantName] = enabled
-                if enabled then
-                    task.spawn(function()
-                        while vars.merchantAutoBuyRunning[merchantName] do
-                            updateCachedStockTables()
-                            pcall(function()
-                                local stock = vars.cachedTravelingMerchantShopStock and vars.cachedTravelingMerchantShopStock.Stocks or {}
-                                for itemKey, stockData in pairs(stock) do
-                                    if table.find(vars.merchantSelectedKeys[merchantName], itemKey) then
-                                        local available = stockData.Stock or 0
-                                        for i = 1, available do
-                                            BuyMerchantRemote:FireServer(itemKey)
-                                            task.wait(0.05)
-                                        end
-                                    end
-                                end
-                            end)
-                            task.wait(10)
-                        end
-                    end)
-                end
-            end
-        })
+        Library.Tabs[Name] = Tab
+
+        return Tab
     end
-end
 
+    function Window:AddKeyTab(Name)
+        local TabButton: TextButton
+        local TabLabel
+        local TabIcon
 
+        local TabContainer
 
-Library.ToggleKeybind = Options.MenuKeybind
+        do
+            TabButton = New("TextButton", {
+                BackgroundColor3 = "MainColor",
+                BackgroundTransparency = 1,
+                Size = UDim2.new(1, 0, 0, 40),
+                Text = "",
+                Parent = Tabs,
+            })
+            New("UIPadding", {
+                PaddingBottom = UDim.new(0, 11),
+                PaddingLeft = UDim.new(0, 12),
+                PaddingRight = UDim.new(0, 12),
+                PaddingTop = UDim.new(0, 11),
+                Parent = TabButton,
+            })
 
-Groupboxes.MenuGroup:AddToggle("KeybindMenuOpen", {
-    Default = '',
-    Text = "Open Keybind Menu",
-    Callback = function(value)
-        Library.ToggleKeybind = value
-    end,
-})
-Groupboxes.MenuGroup:AddToggle("ShowCustomCursor", {
-    Text = "Custom Cursor",
-    Default = true,
-    Callback = function(Value)
-        Library.ShowCustomCursor = Value
-    end,
-})
-Groupboxes.MenuGroup:AddDropdown("NotificationSide", {
-    Values = { "Left", "Right" },
-    Default = "Right",
-    Searchable = true,
-    Text = "Notification Side",
+            TabLabel = New("TextLabel", {
+                BackgroundTransparency = 1,
+                Position = UDim2.fromOffset(30, 0),
+                Size = UDim2.new(1, -30, 1, 0),
+                Text = Name,
+                TextSize = 16,
+                TextTransparency = 0.5,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = TabButton,
+            })
 
-    Callback = function(Value)
-        Library:SetNotifySide(Value)
-    end,
-})
-Groupboxes.MenuGroup:AddDropdown("DPIDropdown", {
-    Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
-    Default = "100%",
-    Searchable = true,
-    Text = "DPI Scale",
-
-    Callback = function(Value)
-        Value = Value:gsub("%%", "")
-        local DPI = tonumber(Value)
-
-        Library:SetDPIScale(DPI)
-    end,
-})
-Groupboxes.MenuGroup:AddDivider()
-
-
-Groupboxes.MenuGroup:AddLabel("Menu bind")
-    :AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
-
-Groupboxes.MenuGroup:AddButton("Unload", function()
-    Library:Unload()
-end)
-
-
---[[
-local function getPetIds()
-    local petIds = {}
-    local petsPhysical = vars.Workspace:FindFirstChild("PetsPhysical")
-    
-    if petsPhysical and vars.LocalPlayer then
-        for _, petMover in pairs(petsPhysical:GetChildren()) do
-            if petMover.Name == "PetMover" then
-                local owner = petMover:GetAttribute("OWNER")
-                local uuid = petMover:GetAttribute("UUID")
-                
-                if owner and owner == vars.LocalPlayer.Name then
-                    if uuid then
-                        table.insert(petIds, uuid)
-                    end
-                end
+            if KeyIcon then
+                TabIcon = New("ImageLabel", {
+                    Image = KeyIcon.Url,
+                    ImageColor3 = "AccentColor",
+                    ImageRectOffset = KeyIcon.ImageRectOffset,
+                    ImageRectSize = KeyIcon.ImageRectSize,
+                    ImageTransparency = 0.5,
+                    Size = UDim2.fromScale(1, 1),
+                    SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                    Parent = TabButton,
+                })
             end
+
+            --// Tab Container \\--
+            TabContainer = New("ScrollingFrame", {
+                AutomaticCanvasSize = Enum.AutomaticSize.Y,
+                BackgroundTransparency = 1,
+                CanvasSize = UDim2.fromScale(0, 0),
+                ScrollBarThickness = 0,
+                Size = UDim2.fromScale(1, 1),
+                Visible = false,
+                Parent = Container,
+            })
+            New("UIListLayout", {
+                HorizontalAlignment = Enum.HorizontalAlignment.Center,
+                Padding = UDim.new(0, 8),
+                VerticalAlignment = Enum.VerticalAlignment.Center,
+                Parent = TabContainer,
+            })
+            New("UIPadding", {
+                PaddingLeft = UDim.new(0, 1),
+                PaddingRight = UDim.new(0, 1),
+                Parent = TabContainer,
+            })
         end
-    end
-    
-    return petIds
-end
---]]
 
---[[
-local function setPetState(petId, state)
-    if not petId or petId == "" then
-        return false
-    end
-    
-    local args = {
-        "SetPetState",
-        petId,
-        state or "FollowPlayer"
-    }
-    
-    local success = pcall(function()
-        remotes.event:FireServer(unpack(args))
-    end)
-    
-    return success
-end
---]]
+        --// Tab Table \\--
+        local Tab = {
+            Elements = {},
+            IsKeyTab = true,
+        }
 
---[[
-local function updatePetDropdown(showNotification)
-    local availablePets = getPetIds()
-    Options.PetSelection:SetValues(availablePets)
-    
-    if showNotification then
-        if #availablePets > 0 then
-            
-        else
-            
-        end
-    end
-end
---]]
+        function Tab:AddKeyBox(...)
+            local Data = {}
 
-local screen = Instance.new("ScreenGui",game:GetService("CoreGui"))
-screen.Name = "Black Racist Sreen"
-screen.Enabled = false
-screen.ClipToDeviceSafeArea = false
-screen.ScreenInsets = "DeviceSafeInsets"
-local wall = Instance.new("Frame",screen)
-wall.BackgroundColor3 = Color3.fromRGB(0,0,0)
-wall.Position = UDim2.new(0.5,0,0.5,0)
-wall.AnchorPoint = Vector2.new(0.5,0.5)
-wall.Size = UDim2.new(1,0,1,0)
-wall.Active = false
+            local First = select(1, ...)
 
-Groupboxes.OptimizationGroupbox:AddToggle("BlackScreenToggle", {
-    Text = "Black Screen",
-    Default = false,
-    Callback = function(enabled)
-        screen.Enabled = enabled
-    end
-})
-
-local originalTransparencies = {}
-
---[[
-local function updateHideShowToggle(enabled)
-    for _, farm in ipairs(vars.Workspace.Farm:GetChildren()) do
-        local important = farm:FindFirstChild("Important")
-        local data = important and important:FindFirstChild("Data")
-        local ownerValue = data and data:FindFirstChild("Owner")
-        if ownerValue and ownerValue.Value ~= vars.LocalPlayer.Name then
-            local plants = important:FindFirstChild("Plants_Physical")
-            if plants then
-                for _, plant in ipairs(plants:GetChildren()) do
-                        if plant.Parent == plants then
-                        vars.originalParents[plant] = plants
-                            plant.Parent = nil
-                    end
-                end
-            end
-        end
-    end
-end
---]]
-
---[[
-local function updateDeleteRestoreToggle(enabled)
-    if enabled then
-        for _, farm in ipairs(vars.Workspace.Farm:GetChildren()) do
-            local important = farm:FindFirstChild("Important")
-            local data = important and important:FindFirstChild("Data")
-            local ownerValue = data and data:FindFirstChild("Owner")
-            if ownerValue and ownerValue.Value ~= vars.LocalPlayer.Name then
-                local plants = important:FindFirstChild("Plants_Physical")
-                if plants then
-                    for _, plant in ipairs(plants:GetChildren()) do
-                        if plant.Parent == plants then
-                            originalParents[plant] = plants
-                            plant.Parent = nil
-                        end
-                    end
-                end
-            end
-        end
-    else
-        for plant, parent in pairs(originalParents) do
-            if parent and parent.Parent and pcall(function() return plant.Name end) then
-                plant.Parent = parent
-            end
-        end
-        originalParents = {}
-    end
-end
---]]
-
---[[
-local function updateHideAllPlantsToggle(enabled)
-    for _, farm in ipairs(vars.Workspace.Farm:GetChildren()) do
-        local important = farm:FindFirstChild("Important")
-        if important then
-            local plants = important:FindFirstChild("Plants_Physical")
-            if plants then
-                for _, plant in ipairs(plants:GetChildren()) do
-                    for _, descendant in ipairs(plant:GetDescendants()) do
-                        if descendant:IsA("BasePart") then
-                            descendant.LocalTransparencyModifier = enabled and 1 or 0
-                        end
-                    end
-                end
-            end
-        end
-    end
-end
---]]
-
-vars.hideShowToggle_obj = Groupboxes.OptimizationGroupbox:AddToggle("HideShowToggle", {
-    Text = "Hide Others' Plants",
-    Default = false,
-    Tooltip = "Makes other players' plants transparent to improve performance.",
-    Callback = LPH_NO_VIRTUALIZE(function(enabled)
-        for _, farm in ipairs(vars.Workspace.Farm:GetChildren()) do
-            local important = farm:FindFirstChild("Important")
-            local data = important and important:FindFirstChild("Data")
-            local ownerValue = data and data:FindFirstChild("Owner")
-            if ownerValue and ownerValue.Value ~= vars.LocalPlayer.Name then
-                local plants = important:FindFirstChild("Plants_Physical")
-                if plants then
-                    for _, plant in ipairs(plants:GetChildren()) do
-                        for _, descendant in ipairs(plant:GetDescendants()) do
-                            if descendant:IsA("BasePart") then
-                                descendant.LocalTransparencyModifier = enabled and 1 or 0
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end)
-})
-
-vars.deleteRestoreToggle_obj = Groupboxes.OptimizationGroupbox:AddToggle("DeleteRestoreToggle", {
-    Text = "Delete Others' Plants",
-    Default = false,
-    Tooltip = "Removes other players' plants from the game for max performance.",
-    Callback = LPH_NO_VIRTUALIZE(function(enabled)
-        if enabled then
-            for _, farm in ipairs(vars.Workspace.Farm:GetChildren()) do
-                local important = farm:FindFirstChild("Important")
-                local data = important and important:FindFirstChild("Data")
-                local ownerValue = data and data:FindFirstChild("Owner")
-                if ownerValue and ownerValue.Value ~= vars.LocalPlayer.Name then
-                    local plants = important:FindFirstChild("Plants_Physical")
-                    if plants then
-                        for _, plant in ipairs(plants:GetChildren()) do
-                            if plant.Parent == plants then
-                                originalParents[plant] = plants
-                                plant.Parent = nil
-                            end
-                        end
-                    end
-                end
-            end
-        else
-            for plant, parent in pairs(originalParents) do
-                if parent and parent.Parent and pcall(function() return plant.Name end) then
-                    plant.Parent = parent
-                end
-            end
-            vars.originalParents = {}
-        end
-    end)
-})
-
-vars.hideAllPlantsToggle_obj = Groupboxes.OptimizationGroupbox:AddToggle("HideAllPlantsToggle", {
-    Text = "Hide All Plants",
-    Default = false,
-    Tooltip = "Makes all plants, including your own, transparent.",
-    Callback = LPH_NO_VIRTUALIZE(function(enabled)
-        for _, farm in ipairs(vars.Workspace.Farm:GetChildren()) do
-            local important = farm:FindFirstChild("Important")
-            if important then
-                local plants = important:FindFirstChild("Plants_Physical")
-                if plants then
-                    for _, plant in ipairs(plants:GetChildren()) do
-                        for _, descendant in ipairs(plant:GetDescendants()) do
-                            if descendant:IsA("BasePart") then
-                                descendant.LocalTransparencyModifier = enabled and 1 or 0
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end)
-})
-
-vars.Players.PlayerAdded:Connect(function()
-    task.wait(2)
-    if vars.hideShowToggle_obj and vars.hideShowToggle_obj.Value then vars.hideShowToggle_obj.Callback(true) end
-    if vars.deleteRestoreToggle_obj and vars.deleteRestoreToggle_obj.Value then vars.deleteRestoreToggle_obj.Callback(true) end
-    if vars.hideAllPlantsToggle_obj and vars.hideAllPlantsToggle_obj.Value then vars.hideAllPlantsToggle_obj.Callback(true) end
-end)
-
-vars.Players.PlayerRemoving:Connect(function()
-task.wait(1)
-    if vars.deleteRestoreToggle_obj and vars.deleteRestoreToggle_obj.Value then
-        for plant, _ in pairs(vars.originalParents) do
-            local success, _ = pcall(function() return plant.Name end)
-            if not success then
-                vars.originalParents[plant] = nil
-            end
-        end
-    end
-end)
-
-Groupboxes.OptimizationGroupbox:AddToggle("AntiLagToggle", {
-    Text = "Anti Lag",
-    Default = false,
-    Tooltip = "",
-    Callback = function(enabled)
-        local Lighting = game:GetService("Lighting")
-        local RunService = game:GetService("RunService")
-        local Terrain = workspace:FindFirstChildOfClass('Terrain')
-
-        if enabled then
-            if Terrain then
-                vars.originalAntiLagSettings.Terrain.WaterWaveSize = Terrain.WaterWaveSize
-                vars.originalAntiLagSettings.Terrain.WaterWaveSpeed = Terrain.WaterWaveSpeed
-                vars.originalAntiLagSettings.Terrain.WaterReflectance = Terrain.WaterReflectance
-                vars.originalAntiLagSettings.Terrain.WaterTransparency = Terrain.WaterTransparency
-            end
-            vars.originalAntiLagSettings.Lighting.GlobalShadows = Lighting.GlobalShadows
-            vars.originalAntiLagSettings.Lighting.FogEnd = Lighting.FogEnd
-            vars.originalAntiLagSettings.Lighting.FogStart = Lighting.FogStart
-            vars.originalAntiLagSettings.QualityLevel = settings().Rendering.QualityLevel
-            
-            vars.originalAntiLagSettings.PostEffects = {}
-            for _, v in pairs(Lighting:GetDescendants()) do
-                if v:IsA("PostEffect") then
-                    vars.originalAntiLagSettings.PostEffects[v] = v.Enabled
-                end
-            end
-
-            
-            if Terrain then
-                Terrain.WaterWaveSize = 0
-                Terrain.WaterWaveSpeed = 0
-                Terrain.WaterReflectance = 0
-                Terrain.WaterTransparency = 1
-            end
-            Lighting.GlobalShadows = false
-            Lighting.FogEnd = 9e9
-            Lighting.FogStart = 9e9
-            settings().Rendering.QualityLevel = 1
-            
-            LPH_NO_VIRTUALIZE(function()
-                for _, v in pairs(game:GetDescendants()) do
-                    pcall(function()
-                        if v:IsA("BasePart") then
-                            v.Material = "Plastic"
-                            v.Reflectance = 0
-                            v.BackSurface = "SmoothNoOutlines"
-                            v.BottomSurface = "SmoothNoOutlines"
-                            v.FrontSurface = "SmoothNoOutlines"
-                            v.LeftSurface = "SmoothNoOutlines"
-                            v.RightSurface = "SmoothNoOutlines"
-                            v.TopSurface = "SmoothNoOutlines"
-                        elseif v:IsA("Decal") then
-                            v.Transparency = 1
-                        elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-                            v.Lifetime = NumberRange.new(0)
-                        end
-                    end)
-                end
-            end)()
-            
-            for _, v in pairs(Lighting:GetDescendants()) do
-                if v:IsA("PostEffect") then
-                    v.Enabled = false
-                end
-            end
-            
-            vars.originalAntiLagSettings.DescendantAddedConn = workspace.DescendantAdded:Connect(function(child)
-                task.spawn(function()
-                    if child:IsA('ForceField') or child:IsA('Sparkles') or child:IsA('Smoke') or child:IsA('Fire') or child:IsA('Beam') then
-                        RunService.Heartbeat:Wait()
-                        child:Destroy()
-                    end
-                end)
-            end)
-            
-        else
-            
-            if Terrain and vars.originalAntiLagSettings.Terrain.WaterWaveSize ~= nil then
-                Terrain.WaterWaveSize = vars.originalAntiLagSettings.Terrain.WaterWaveSize
-                Terrain.WaterWaveSpeed = vars.originalAntiLagSettings.Terrain.WaterWaveSpeed
-                Terrain.WaterReflectance = vars.originalAntiLagSettings.Terrain.WaterReflectance
-                Terrain.WaterTransparency = vars.originalAntiLagSettings.Terrain.WaterTransparency
-            end
-            
-            if vars.originalAntiLagSettings.Lighting.GlobalShadows ~= nil then
-                Lighting.GlobalShadows = vars.originalAntiLagSettings.Lighting.GlobalShadows
-                Lighting.FogEnd = vars.originalAntiLagSettings.Lighting.FogEnd
-                Lighting.FogStart = vars.originalAntiLagSettings.Lighting.FogStart
-            end
-            
-            if vars.originalAntiLagSettings.QualityLevel ~= nil then
-                settings().Rendering.QualityLevel = vars.originalAntiLagSettings.QualityLevel
-            end
-            
-            for effect, originalState in pairs(vars.originalAntiLagSettings.PostEffects) do
-                if effect and effect.Parent then
-                    effect.Enabled = originalState
-                end
-            end
-
-            if vars.originalAntiLagSettings.DescendantAddedConn then
-                vars.originalAntiLagSettings.DescendantAddedConn:Disconnect()
-                vars.originalAntiLagSettings.DescendantAddedConn = nil
-            end
-
-            vars.originalAntiLagSettings = { Terrain = {}, Lighting = {}, PostEffects = {}, QualityLevel = nil, DescendantAddedConn = nil }
-        end
-    end
-})
-
-running.plantESP = false
-vars.processedPlants = {}
-
-local function inspectAllPlants()
-    for _, farmPlot in ipairs(vars.Workspace.Farm:GetChildren()) do
-        local important = farmPlot:FindFirstChild("Important")
-        if not important then continue end
-
-        local plants = important:FindFirstChild("Plants_Physical")
-        if not plants then continue end
-
-        for _, plant in ipairs(plants:GetChildren()) do
-            local targets = {}
-            local fruits = plant:FindFirstChild("Fruits")
-            if fruits and fruits:IsA("Folder") then
-                targets = fruits:GetChildren()
+            if typeof(First) == "function" then
+                Data.Callback = First
             else
-                table.insert(targets, plant)
+                Data.ExpectedKey = First
+                Data.Callback = select(2, ...)
             end
 
-            for _, target in ipairs(targets) do
-                if not vars.processedPlants[target] then
-                    if target:GetAttribute("Inspected") ~= true then
-                        target:SetAttribute("Inspected", true)
-                    end
-                    vars.processedPlants[target] = true
+            local Holder = New("Frame", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0.75, 0, 0, 21),
+                Parent = TabContainer,
+            })
+
+            local Box = New("TextBox", {
+                BackgroundColor3 = "MainColor",
+                BorderColor3 = "OutlineColor",
+                BorderSizePixel = 1,
+                PlaceholderText = "Key",
+                Size = UDim2.new(1, -71, 1, 0),
+                TextSize = 14,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                Parent = Holder,
+            })
+            New("UIPadding", {
+                PaddingLeft = UDim.new(0, 8),
+                PaddingRight = UDim.new(0, 8),
+                Parent = Box,
+            })
+
+            local Button = New("TextButton", {
+                AnchorPoint = Vector2.new(1, 0),
+                BackgroundColor3 = "MainColor",
+                BorderColor3 = "OutlineColor",
+                BorderSizePixel = 1,
+                Position = UDim2.fromScale(1, 0),
+                Size = UDim2.new(0, 63, 1, 0),
+                Text = "Execute",
+                TextSize = 14,
+                Parent = Holder,
+            })
+
+            Button.MouseButton1Click:Connect(function()
+                if Data.ExpectedKey and Box.Text ~= Data.ExpectedKey then
+                    Data.Callback(false, Box.Text)
+                    return
                 end
-            end
-        end
-    end
-end
 
-task.spawn(LPH_NO_VIRTUALIZE(function()
-    while true do
-        if running.plantESP then
-            pcall(inspectAllPlants)
-        end
-        task.wait(0.2)
-    end
-end))
-local function setPetState(petId, state)
-    if not petId or petId == "" then return end
-    pcall(function()
-        remotes.event:FireServer("SetPetState", petId, state or "FollowPlayer")
-    end)
-end
-
-vars.petTypeToUuids = {}
-vars.petNameToUuid = {}
-
-local function getPetInfo()
-    local petDisplayList = {}
-    vars.petTypeToUuids = {}
-    vars.petNameToUuid = {}
-
-    local myData = modules.DataService:GetData()
-    if not myData or not myData.PetsData or not myData.PetsData.EquippedPets or not (myData.PetsData.PetInventory and myData.PetsData.PetInventory.Data) then return petDisplayList end
-
-    local petCounts = {}
-    local equippedPetsData = {}
-
-    for _, equippedUuid in ipairs(myData.PetsData.EquippedPets) do
-        local petData = myData.PetsData.PetInventory.Data[equippedUuid]
-        if petData and petData.PetType then
-            local petType = tostring(petData.PetType)
-            petCounts[petType] = (petCounts[petType] or 0) + 1
-            table.insert(equippedPetsData, {uuid = equippedUuid, type = petType})
-        end
-    end
-
-    local petRunningCounts = {}
-    for _, pet in ipairs(equippedPetsData) do
-        local petType = pet.type
-        local displayName = petType
-        
-        if petCounts[petType] > 1 then
-            petRunningCounts[petType] = (petRunningCounts[petType] or 0) + 1
-            displayName = string.format("%s (%d)", petType, petRunningCounts[petType])
-        end
-
-        table.insert(petDisplayList, displayName)
-        vars.petNameToUuid[displayName] = pet.uuid
-
-        if not vars.petTypeToUuids[petType] then
-            vars.petTypeToUuids[petType] = {}
-        end
-        table.insert(vars.petTypeToUuids[petType], pet.uuid)
-    end
-    
-    table.sort(petDisplayList)
-    return petDisplayList
-end
-
-local petDropdown = Groupboxes.PetMoverGroupbox:AddDropdown("PetTypeDropdown", {
-    Values = getPetInfo(),
-    Multi = true,
-    Text = "Select Pet Type(s)",
-})
-
-Groupboxes.PetMoverGroupbox:AddDropdown("PetStateDropdown", {
-    Values = { "Idle", "FollowPlayer", "TargetPlant", "Inspection" },
-    Default = "FollowPlayer",
-    Multi = false,
-    Text = "Action",
-})
-
-Groupboxes.PetMoverGroupbox:AddToggle("PetStateSpamToggle", {
-    Text = "Set Pet Action",
-    Default = false,
-    Callback = function(state)
-        if state then
-            task.spawn(function()
-                while Toggles.PetStateSpamToggle.Value do
-                    local selectedDisplayNames = Options.PetTypeDropdown.Value
-                    local selectedState = Options.PetStateDropdown.Value
-
-                    if selectedDisplayNames and selectedState and selectedState ~= "" then
-                        for displayName, isSelected in pairs(selectedDisplayNames) do
-                            if isSelected then
-                                local uuid = vars.petNameToUuid[displayName]
-                                if uuid then
-                                    remotes.event:FireServer("SetPetState", uuid, selectedState)
-                                end
-                            end
-                        end
-                    end
-
-                    task.wait(0.1)
-                end
+                Data.Callback(true, Box.Text)
             end)
         end
-    end,
-})
 
+        function Tab:Resize() end
 
-Groupboxes.PetMoverGroupbox:AddInput("CooldownRangeInput", {
-	Text = "Cooldown Range (min-max)",
-	Default = "60-75",
-	Tooltip = "e.g., 60-80",
-	Numeric = false, 
-})
+        function Tab:Hover(Hovering)
+            if Library.ActiveTab == Tab then
+                return
+            end
 
-Groupboxes.PetMoverGroupbox:AddButton("Refresh Pet List", function()
-    petDropdown:SetValues(getPetInfo())
-    Library:Notify("Pet list refreshed!")
-end)
+            TweenService:Create(TabLabel, Library.TweenInfo, {
+                TextTransparency = Hovering and 0.25 or 0.5,
+            }):Play()
+            if TabIcon then
+                TweenService:Create(TabIcon, Library.TweenInfo, {
+                    ImageTransparency = Hovering and 0.25 or 0.5,
+                }):Play()
+            end
+        end
 
-Groupboxes.PetMoverGroupbox:AddLabel("Auto Sync", { Text = "Auto sync works by idling unselected pets", DoesWrap = true })
-Groupboxes.PetMoverGroupbox:AddLabel("Recommended Sync Range: 60-75s")
+        function Tab:Show()
+            if Library.ActiveTab then
+                Library.ActiveTab:Hide()
+            end
 
-Groupboxes.PetMoverGroupbox:AddToggle("AutoSyncToggle", {
-	Text = "Auto Sync",
-	Tooltip = "When the inputted cooldown is between the range it will automatically sync the pets",
-	Default = false,
-	Callback = function(value)
-		if value then
-			if vars.autoSyncConnection then task.cancel(vars.autoSyncConnection) end
-			vars.autoSyncConnection = task.spawn(function()
-				while Toggles.AutoSyncToggle.Value do
-					local minTime, maxTime = 60, 75
-					if Options.CooldownRangeInput and Options.CooldownRangeInput.Value then
-						local minStr, maxStr = Options.CooldownRangeInput.Value:match("^(%d+)%s*-%s*(%d+)$")
-						if minStr and maxStr then
-							minTime, maxTime = tonumber(minStr), tonumber(maxStr)
-						end
-					end
+            TweenService:Create(TabButton, Library.TweenInfo, {
+                BackgroundTransparency = 0,
+            }):Play()
+            TweenService:Create(TabLabel, Library.TweenInfo, {
+                TextTransparency = 0,
+            }):Play()
+            if TabIcon then
+                TweenService:Create(TabIcon, Library.TweenInfo, {
+                    ImageTransparency = 0,
+                }):Play()
+            end
+            TabContainer.Visible = true
 
-					local selectedDisplayNames = Options.PetTypeDropdown.Value or {}
-					local selectedBaseTypes = {}
-					local primaryPetDisplayName
-					for displayName, isSelected in pairs(selectedDisplayNames) do
-						if isSelected then
-							if not primaryPetDisplayName then primaryPetDisplayName = displayName end
-							local baseType = displayName:match("^(.-)%s*%(%d+%)$") or displayName
-							selectedBaseTypes[baseType] = true
-						end
-					end
-					
-					if primaryPetDisplayName and vars.petNameToUuid[primaryPetDisplayName] then
-						local success, result = pcall(remotes.GetPetCooldown.InvokeServer, remotes.GetPetCooldown, vars.petNameToUuid[primaryPetDisplayName])
-						if success and type(result) == "table" and result[1] and type(result[1].Time) == "number" then
-							local cooldown = result[1].Time
-							if cooldown >= minTime and cooldown <= maxTime then
-								if not vars.hasTriggeredInZone then
-									vars.hasTriggeredInZone = true
-									for petType, uuids in pairs(vars.petTypeToUuids) do
-										if not selectedBaseTypes[petType] then
-											task.spawn(function()
-												for i = 1, 50 do
-													for _, uuid in ipairs(uuids) do setPetState(uuid, "Idle") end
-													task.wait()
-												end
-											end)
-										end
-									end
-								end
-							else
-								vars.hasTriggeredInZone = false
-							end
-						else
-							vars.hasTriggeredInZone = false
-						end
-					end
-					task.wait(1)
-				end
-			end)
-		else
-			if vars.autoSyncConnection then task.cancel(vars.autoSyncConnection); vars.autoSyncConnection = nil end
-			vars.hasTriggeredInZone = false
-		end
-	end,
-})
+            Library.ActiveTab = Tab
+        end
 
-Groupboxes.PetMoverGroupbox:AddToggle("HoldIdleToggle", {
-	Text = "Hold Pets Idle Until Sync",
-	Tooltip = "Keeps non-selected pets idle until main pet's cooldown enters sync range",
-	Default = false,
-	Callback = function(value)
-		if value then
-			if vars.holdIdleConnection then task.cancel(vars.holdIdleConnection) end
-			vars.holdIdleConnection = task.spawn(function()
-				while Toggles.HoldIdleToggle.Value do
-					local maxTime = 75
-					if Options.CooldownRangeInput and Options.CooldownRangeInput.Value then
-						local _, maxStr = Options.CooldownRangeInput.Value:match("^(%d+)%s*-%s*(%d+)$")
-						if maxStr then maxTime = tonumber(maxStr) end
-					end
+        function Tab:Hide()
+            TweenService:Create(TabButton, Library.TweenInfo, {
+                BackgroundTransparency = 1,
+            }):Play()
+            TweenService:Create(TabLabel, Library.TweenInfo, {
+                TextTransparency = 0.5,
+            }):Play()
+            if TabIcon then
+                TweenService:Create(TabIcon, Library.TweenInfo, {
+                    ImageTransparency = 0.5,
+                }):Play()
+            end
+            TabContainer.Visible = false
 
-					local selectedDisplayNames = Options.PetTypeDropdown.Value or {}
-					local selectedBaseTypes = {}
-					local primaryPetDisplayName
-					for displayName, isSelected in pairs(selectedDisplayNames) do
-						if isSelected then
-							if not primaryPetDisplayName then primaryPetDisplayName = displayName end
-							local baseType = displayName:match("^(.-)%s*%(%d+%)$") or displayName
-							selectedBaseTypes[baseType] = true
-						end
-					end
+            Library.ActiveTab = nil
+        end
 
-					if primaryPetDisplayName and vars.petNameToUuid[primaryPetDisplayName] then
-						local success, result = pcall(remotes.GetPetCooldown.InvokeServer, remotes.GetPetCooldown, vars.petNameToUuid[primaryPetDisplayName])
-						if success and type(result) == "table" and result[1] and type(result[1].Time) == "number" then
-							if result[1].Time > maxTime then
-								for petType, uuids in pairs(vars.petTypeToUuids) do
-									if not selectedBaseTypes[petType] then
-										task.spawn(function()
-											for i = 1, 50 do
-												for _, uuid in ipairs(uuids) do setPetState(uuid, "Idle") end
-												task.wait()
-											end
-										end)
-									end
-								end
-							else
-								for petType, uuids in pairs(vars.petTypeToUuids) do
-									if not selectedBaseTypes[petType] then
-										 task.spawn(function()
-											for i = 1, 50 do
-												for _, uuid in ipairs(uuids) do setPetState(uuid) end
-												task.wait()
-											end
-										end)
-									end
-								end
-							end
-						end
-					end
-					task.wait(1)
-				end
-			end)
-		else
-			if vars.holdIdleConnection then task.cancel(vars.holdIdleConnection); vars.holdIdleConnection = nil end
-			local selectedDisplayNames = Options.PetTypeDropdown.Value or {}
-			local selectedBaseTypes = {}
-			for displayName, isSelected in pairs(selectedDisplayNames) do
-				if isSelected then
-					local baseType = displayName:match("^(.-)%s*%(%d+%)$") or displayName
-					selectedBaseTypes[baseType] = true
-				end
-			end
-			for petType, uuids in pairs(vars.petTypeToUuids) do
-				if not selectedBaseTypes[petType] then
-					for _, uuid in ipairs(uuids) do setPetState(uuid) end
-				end
-			end
-		end
-	end
-})
+        --// Execution \\--
+        if not Library.ActiveTab then
+            Tab:Show()
+        end
 
-vars.formatNumberWithCommas = function(number)
-    local formatted = tostring(number)
-    while true do
-        formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
-        if k == 0 then break end
+        TabButton.MouseEnter:Connect(function()
+            Tab:Hover(true)
+        end)
+        TabButton.MouseLeave:Connect(function()
+            Tab:Hover(false)
+        end)
+        TabButton.MouseButton1Click:Connect(Tab.Show)
+
+        Tab.Container = TabContainer
+        setmetatable(Tab, BaseGroupbox)
+
+        Library.Tabs[Name] = Tab
+
+        return Tab
     end
-    return formatted
+
+    function Library:Toggle(Value: boolean?)
+        if typeof(Value) == "boolean" then
+            Library.Toggled = Value
+        else
+            Library.Toggled = not Library.Toggled
+        end
+
+        MainFrame.Visible = Library.Toggled
+        ModalElement.Modal = Library.Toggled
+
+        if Library.Toggled and not Library.IsMobile then
+            local OldMouseIconEnabled = UserInputService.MouseIconEnabled
+            pcall(function()
+                RunService:UnbindFromRenderStep("ShowCursor")
+            end)
+            RunService:BindToRenderStep("ShowCursor", Enum.RenderPriority.Last.Value, function()
+                UserInputService.MouseIconEnabled = not Library.ShowCustomCursor
+
+                Cursor.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
+                Cursor.Visible = Library.ShowCustomCursor
+
+                if not (Library.Toggled and ScreenGui and ScreenGui.Parent) then
+                    UserInputService.MouseIconEnabled = OldMouseIconEnabled
+                    Cursor.Visible = false
+                    RunService:UnbindFromRenderStep("ShowCursor")
+                end
+            end)
+        elseif not Library.Toggled then
+            TooltipLabel.Visible = false
+            for _, Option in pairs(Library.Options) do
+                if Option.Type == "ColorPicker" then
+                    Option.ColorMenu:Close()
+                    Option.ContextMenu:Close()
+                elseif Option.Type == "Dropdown" or Option.Type == "KeyPicker" then
+                    Option.Menu:Close()
+                end
+            end
+        end
+    end
+
+    if WindowInfo.AutoShow then
+        task.spawn(Library.Toggle)
+    end
+
+    if Library.IsMobile then
+        local ToggleButton = Library:AddDraggableButton("Toggle", function()
+            Library:Toggle()
+        end)
+
+        local LockButton = Library:AddDraggableButton("Lock", function(self)
+            Library.CantDragForced = not Library.CantDragForced
+            self:SetText(Library.CantDragForced and "Unlock" or "Lock")
+        end)
+
+        if WindowInfo.MobileButtonsSide == "Right" then
+            ToggleButton.Button.Position = UDim2.new(1, -6, 0, 6)
+            ToggleButton.Button.AnchorPoint = Vector2.new(1, 0)
+
+            LockButton.Button.Position = UDim2.new(1, -6, 0, 46)
+            LockButton.Button.AnchorPoint = Vector2.new(1, 0)
+        else
+            LockButton.Button.Position = UDim2.fromOffset(6, 46)
+        end
+    end
+
+    --// Execution \\--
+    SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+        Library:UpdateSearch(SearchBox.Text)
+    end)
+
+    Library:GiveSignal(UserInputService.InputBegan:Connect(function(Input: InputObject)
+        if UserInputService:GetFocusedTextBox() then
+            return
+        end
+
+        if
+            (
+                typeof(Library.ToggleKeybind) == "table"
+                and Library.ToggleKeybind.Type == "KeyPicker"
+                and Input.KeyCode.Name == Library.ToggleKeybind.Value
+            ) or Input.KeyCode == Library.ToggleKeybind
+        then
+            Library.Toggle()
+        end
+    end))
+
+    Library:GiveSignal(UserInputService.WindowFocused:Connect(function()
+        Library.IsRobloxFocused = true
+    end))
+    Library:GiveSignal(UserInputService.WindowFocusReleased:Connect(function()
+        Library.IsRobloxFocused = false
+    end))
+
+    return Window
 end
 
-ThemeManager:SetLibrary(Library)
-SaveManager:SetLibrary(Library)
+local function OnPlayerChange()
+    local PlayerList, ExcludedPlayerList = GetPlayers(), GetPlayers(true)
 
+    for _, Dropdown in pairs(Options) do
+        if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Player" then
+            Dropdown:SetValues(Dropdown.ExcludeLocalPlayer and ExcludedPlayerList or PlayerList)
+        end
+    end
+end
+local function OnTeamChange()
+    local TeamList = GetTeams()
 
-
-SaveManager:IgnoreThemeSettings()
-
-
-
-SaveManager:SetIgnoreIndexes({ "MenuKeybind" })
-
-
-
-
-ThemeManager:SetFolder("LuminTheme")
-SaveManager:SetFolder("LuminHub")
-SaveManager:SetSubFolder("GrowAGarden") 
-
-
-
-
-
-SaveManager:BuildConfigSection(Tabs.ConfigTab)
-
-
-
-ThemeManager:ApplyToTab(Tabs.ConfigTab)
-
-
-
-SaveManager:LoadAutoloadConfig()
-
-    
-
-Library:Toggle(true)
-
-if Library and Library.Options and Library.Options.AccentColor then
-	Library.Options.AccentColor:SetValueRGB(Color3.fromRGB(255, 0, 0))
-	ThemeManager:ThemeUpdate()
+    for _, Dropdown in pairs(Options) do
+        if Dropdown.Type == "Dropdown" and Dropdown.SpecialType == "Team" then
+            Dropdown:SetValues(TeamList)
+        end
+    end
 end
 
+Library:GiveSignal(Players.PlayerAdded:Connect(OnPlayerChange))
+Library:GiveSignal(Players.PlayerRemoving:Connect(OnPlayerChange))
 
-local AntiDebug = loadstring(game:HttpGet("https://raw.githubusercontent.com/Hosvile/InfiniX/main/Library/Anti/AntiDebug/main.lua", true))()
-    
-if not (type(AntiDebug) == "table") then
+Library:GiveSignal(Teams.ChildAdded:Connect(OnTeamChange))
+Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
-task.wait(1)
-end   
-
+getgenv().Library = Library
+return Library
