@@ -2214,8 +2214,8 @@ do
         })
 
         --// Context Menu \\--
-        local ContextMenu = Library:AddContextMenu(Holder, UDim.fromOffset(93, 0), function()
-            return { Holder.AbsoluteSize.X + 1.5, 0.5 }
+        local ContextMenu = Library:AddContextMenu(Holder, UDim2.fromOffset(93, 0), function()
+                        return { Holder.AbsoluteSize.X + 1.5, 0.5 }
         end, 1)
         ColorPicker.ContextMenu = ContextMenu
         do
@@ -5223,12 +5223,12 @@ function Library:CreateWindow(WindowInfo)
                 })
 
                 Arrow = New("ImageLabel", {
-                    AnchorPoint = Vector2.new(1, 0.5),
+                    AnchorPoint = Vector2.new(1, 0),
                     Image = ArrowIcon and ArrowIcon.Url or "",
                     ImageColor3 = "FontColor",
                     ImageRectOffset = ArrowIcon and ArrowIcon.ImageRectOffset or Vector2.zero,
                     ImageRectSize = ArrowIcon and ArrowIcon.ImageRectSize or Vector2.zero,
-                    Position = UDim2.new(1, -12, 0, 17),
+                    Position = UDim2.new(1, -12, 0, 9),
                     Size = UDim2.fromOffset(16, 16),
                     Parent = GroupboxHolder,
                 })
@@ -5273,12 +5273,12 @@ function Library:CreateWindow(WindowInfo)
             }
 
             GroupboxContainer.Visible = not Groupbox.IsCollapsed
-            Arrow.Rotation = Groupbox.IsCollapsed and 90 or 180
+            Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
 
             HeaderButton.MouseButton1Click:Connect(function()
                 Groupbox.IsCollapsed = not Groupbox.IsCollapsed
                 GroupboxContainer.Visible = not Groupbox.IsCollapsed
-                Arrow.Rotation = Groupbox.IsCollapsed and 90 or 180
+                Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
                 Groupbox:Resize()
             end)
 
