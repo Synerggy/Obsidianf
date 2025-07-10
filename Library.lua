@@ -26,6 +26,7 @@ local Labels = {}
 local Buttons = {}
 local Toggles = {}
 local Options = {}
+local Images = {}
 
 local Library = {
     LocalPlayer = LocalPlayer,
@@ -60,6 +61,7 @@ local Library = {
     Buttons = Buttons,
     Toggles = Toggles,
     Options = Options,
+    Images = Images,
 
     NotifySide = "Right",
     ShowCustomCursor = true,
@@ -247,6 +249,12 @@ local Templates = {
 
         Callback = function() end,
         Changed = function() end,
+    },
+    Image = {
+        AssetId = "rbxasset://textures/ui/GuiImagePlaceholder.png",
+        Size = UDim2.fromOffset(80, 80),
+        Height = 110,
+        Visible = true,
     },
 }
 
@@ -2441,6 +2449,63 @@ do
             Holder = Holder,
             Type = "Divider",
         })
+    end
+
+    function Funcs:AddImage(Idx, Info)
+        Info = Library:Validate(Info, Templates.Image)
+
+        local Groupbox = self
+        local Container = Groupbox.Container
+
+        local ImageComponent = {
+            Visible = Info.Visible,
+            Type = "Image",
+        }
+
+        local imagePosition = Info.Position or UDim2.new(0.5, -Info.Size.X.Offset / 2, 0, 5)
+
+        local Holder = New("Frame", {
+            BackgroundColor3 = "MainColor",
+            BorderColor3 = "OutlineColor",
+            BorderSizePixel = 1,
+            Size = UDim2.new(1, 0, 0, Info.Height),
+            Visible = ImageComponent.Visible,
+            Parent = Container,
+        })
+
+        local previewImage = New("ImageLabel", {
+            Size = Info.Size,
+            Position = imagePosition,
+            BackgroundTransparency = 1,
+            ScaleType = Enum.ScaleType.Fit,
+            Image = Info.AssetId,
+            ZIndex = Holder.ZIndex + 1,
+            Parent = Holder,
+        })
+
+        function ImageComponent:UpdateImage(newAssetId)
+            previewImage.Image = newAssetId
+        end
+
+        function ImageComponent:SetVisible(Visible)
+            ImageComponent.Visible = Visible
+            Holder.Visible = Visible
+            Groupbox:Resize()
+        end
+
+        ImageComponent.Holder = Holder
+        ImageComponent.ImageLabel = previewImage
+
+        table.insert(Groupbox.Elements, ImageComponent)
+        Groupbox:Resize()
+
+        if Idx then
+            Images[Idx] = ImageComponent
+        else
+            table.insert(Images, ImageComponent)
+        end
+
+        return ImageComponent
     end
 
     function Funcs:AddLabel(...)
