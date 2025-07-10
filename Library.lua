@@ -5324,7 +5324,7 @@ function Library:CreateWindow(WindowInfo)
                     Parent = GroupboxContainer,
                 })
                 New("UIPadding", {
-                    PaddingBottom = UDim.new(0, 10),
+                    PaddingBottom = UDim.new(0, 15),
                     PaddingLeft = UDim.new(0, 7),
                     PaddingRight = UDim.new(0, 7),
                     PaddingTop = UDim.new(0, 7),
@@ -5355,13 +5355,13 @@ function Library:CreateWindow(WindowInfo)
 
             function Groupbox:Resize()
                 if Groupbox.IsCollapsed then
-                    Background.Size = UDim2.new(1, 0, 0, 38)
+                    Background.Size = UDim2.new(1, 0, 0, 38 * Library.DPIScale)
                 else
                     Background.Size = UDim2.new(
                         1,
                         0,
                         0,
-                        GroupboxList.AbsoluteContentSize.Y + 45
+                        GroupboxList.AbsoluteContentSize.Y + 56 * Library.DPIScale
                     )
                 end
             end
@@ -5508,7 +5508,7 @@ function Library:CreateWindow(WindowInfo)
                     if Tabbox.ActiveTab ~= Tab then
                         return
                     end
-                    Background.Size = UDim2.new(1, 0, 0, List.AbsoluteContentSize.Y + 53 * Library.DPIScale)
+                    Background.Size = UDim2.new(1, 0, 0, List.AbsoluteContentSize.Y + 56 * Library.DPIScale)
                 end
 
                 --// Execution \\--
