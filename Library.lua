@@ -3735,7 +3735,7 @@ do
             BackgroundColor3 = "MainColor",
             BorderColor3 = "OutlineColor",
             BorderSizePixel = 1,
-            Position = UDim.fromScale(0, 1),
+            Position = UDim2.fromScale(0, 1),
             Size = UDim2.new(1, 0, 0, 21),
             Text = "---",
             TextSize = 14,
@@ -3756,7 +3756,7 @@ do
             ImageRectOffset = ArrowIcon and ArrowIcon.ImageRectOffset or Vector2.zero,
             ImageRectSize = ArrowIcon and ArrowIcon.ImageRectSize or Vector2.zero,
             ImageTransparency = 0.5,
-            Position = UDim.fromScale(1, 0.5),
+            Position = UDim2.fromScale(1, 0.5),
             Size = UDim2.fromOffset(16, 16),
             Parent = Display,
         })
@@ -5228,7 +5228,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageColor3 = "FontColor",
                     ImageRectOffset = ArrowIcon and ArrowIcon.ImageRectOffset or Vector2.zero,
                     ImageRectSize = ArrowIcon and ArrowIcon.ImageRectSize or Vector2.zero,
-                    Position = UDim2.new(1, -12, 0.5, 0),
+                    Position = UDim2.new(1, -12, 0, 17),
                     Size = UDim2.fromOffset(16, 16),
                     Parent = GroupboxHolder,
                 })
@@ -5273,12 +5273,12 @@ function Library:CreateWindow(WindowInfo)
             }
 
             GroupboxContainer.Visible = not Groupbox.IsCollapsed
-            Arrow.Rotation = Groupbox.IsCollapsed and 0 or -90
+            Arrow.Rotation = Groupbox.IsCollapsed and 90 or 180
 
             HeaderButton.MouseButton1Click:Connect(function()
                 Groupbox.IsCollapsed = not Groupbox.IsCollapsed
                 GroupboxContainer.Visible = not Groupbox.IsCollapsed
-                Arrow.Rotation = Groupbox.IsCollapsed and 0 or -90
+                Arrow.Rotation = Groupbox.IsCollapsed and 90 or 180
                 Groupbox:Resize()
             end)
 
