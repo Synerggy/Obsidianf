@@ -2686,6 +2686,12 @@ do
             Parent = Container,
         })
 
+        New("UIPadding", {
+            PaddingLeft = UDim.new(0, 4),
+            PaddingRight = UDim.new(0, 4),
+            Parent = Holder,
+        })
+
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
             HorizontalFlex = Enum.UIFlexAlignment.Fill,
