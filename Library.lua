@@ -2059,7 +2059,7 @@ do
         --// Color Menu \\--
         local ColorMenu = Library:AddContextMenu(
             Holder,
-            UDim.fromOffset(Info.Transparency and 256 or 234, 0),
+            UDim2.fromOffset(Info.Transparency and 256 or 234, 0),
             function()
                 return { 0.5, Holder.AbsoluteSize.Y + 1.5 }
             end,
@@ -4935,7 +4935,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim.fromScale(1, 1),
+                    Size = UDim2.fromScale(1, 1),
                     SizeConstraint = Enum.SizeConstraint.RelativeYY,
                     Parent = TabButton,
                 })
