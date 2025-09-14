@@ -5515,7 +5515,7 @@ function Library:CreateWindow(WindowInfo)
         Icon = Library:GetIcon(Icon)
         do
             TabButton = New("TextButton", {
-                BackgroundColor3 = Color3.fromRGB(200, 200, 200), -- Light gray for better visibility
+                BackgroundColor3 = Color3.fromRGB(255, 100, 100), -- Light red background
                 BackgroundTransparency = 1,
                 Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
                 Text = "",
@@ -6640,4 +6640,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluaasdasdsadsadsadasdsa
+--talua
