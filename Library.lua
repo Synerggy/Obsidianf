@@ -5428,7 +5428,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0.3, 0, 1, -70),
+            Size = UDim2.new(0, 50, 1, -70), -- Make tabs area much smaller (50px wide)
             Parent = MainFrame,
         })
 
@@ -5443,8 +5443,8 @@ function Library:CreateWindow(WindowInfo)
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             Name = "Container",
-            Position = UDim2.new(1, 0, 0, 49),
-            Size = UDim2.new(0.7, -1, 1, -70),
+            Position = UDim2.fromOffset(50, 49), -- Start right after tabs area
+            Size = UDim2.new(1, -50, 1, -70), -- Take remaining space after tabs
             Parent = MainFrame,
         })
 
@@ -5515,6 +5515,7 @@ function Library:CreateWindow(WindowInfo)
                 TextSize = 16,
                 TextTransparency = 1, -- Hide text completely
                 TextXAlignment = Enum.TextXAlignment.Left,
+                Visible = false, -- Completely hide the text label
                 Parent = TabButton,
             })
 
@@ -6201,6 +6202,7 @@ function Library:CreateWindow(WindowInfo)
                 TextSize = 16,
                 TextTransparency = 1, -- Hide text completely
                 TextXAlignment = Enum.TextXAlignment.Left,
+                Visible = false, -- Completely hide the text label
                 Parent = TabButton,
             })
 
@@ -6529,4 +6531,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--talua2
