@@ -5522,13 +5522,19 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
             
-            -- Separate background frame for highlighting (wider)
+            -- Separate background frame for highlighting
             TabBackground = New("Frame", {
-                BackgroundColor3 = Color3.fromRGB(255, 100, 100), -- Light red background
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255), -- Subtle white background
                 BackgroundTransparency = 1, -- Start invisible
-                Size = UDim2.new(1, 20, 1, 0), -- Extend 20 pixels wider (10px on each side)
-                Position = UDim2.new(0, -10, 0, 0), -- Offset to center the wider background
+                Size = UDim2.new(1, 0, 1, 0), -- Fill entire TabButton exactly
+                Position = UDim2.new(0, 0, 0, 0),
                 Parent = TabButton,
+            })
+            
+            -- Add subtle rounded corners to background
+            New("UICorner", {
+                CornerRadius = UDim.new(0, 4),
+                Parent = TabBackground,
             })
             
 
@@ -6150,7 +6156,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.7, -- More transparent light red background for active tab
+                BackgroundTransparency = 0.85, -- Very subtle white background for active tab
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6434,7 +6440,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.7, -- More transparent light red background for active tab
+                BackgroundTransparency = 0.85, -- Very subtle white background for active tab
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
