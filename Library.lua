@@ -5168,8 +5168,8 @@ function Library:CreateWindow(WindowInfo)
                     Size = UDim2.new(1, 0, 0, 1),
                 },
                 {
-                    Position = UDim2.fromScale(0.3, 0),
-                    Size = UDim2.new(0, 1, 1, -21),
+                    Position = UDim2.fromOffset(50, 49),
+                    Size = UDim2.new(0, 1, 1, -69),
                 },
                 {
                     AnchorPoint = Vector2.new(0, 1),
@@ -5438,12 +5438,12 @@ function Library:CreateWindow(WindowInfo)
 
         --// Container \\--
         Container = New("Frame", {
-            AnchorPoint = Vector2.new(0, 0), -- Corrected AnchorPoint
+            AnchorPoint = Vector2.new(1, 0),
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             Name = "Container",
-            Position = UDim2.new(0, 50, 0, 49), -- Corrected Position
+            Position = UDim2.fromOffset(50, 49), -- Start right after tabs area
             Size = UDim2.new(1, -50, 1, -70), -- Take remaining space after tabs
             Parent = MainFrame,
         })
@@ -6068,8 +6068,6 @@ function Library:CreateWindow(WindowInfo)
             if Library.ActiveTab == Tab then
                 return
             end
-
-            -- Keep text labels hidden on hover
             TabLabel.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -6086,7 +6084,6 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 0,
             }):Play()
-            -- Keep text labels hidden even when tab is active
             TabLabel.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -6110,7 +6107,6 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            -- Keep text labels hidden
             TabLabel.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -6310,8 +6306,6 @@ function Library:CreateWindow(WindowInfo)
             if Library.ActiveTab == Tab then
                 return
             end
-
-            -- Keep text labels hidden on hover
             TabLabel.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -6328,7 +6322,6 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 0,
             }):Play()
-            -- Keep text labels hidden even when tab is active
             TabLabel.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -6344,7 +6337,6 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            -- Keep text labels hidden
             TabLabel.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
@@ -6525,4 +6517,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua3
+--talua5
