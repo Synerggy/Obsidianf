@@ -5189,8 +5189,8 @@ function Library:CreateWindow(WindowInfo)
                 return Library.Scheme.OutlineColor
             end,
             BorderSizePixel = 0,
-            Position = UDim2.fromOffset(60, 49),
-            Size = UDim2.new(0, 1, 1, -69),
+            Position = UDim2.fromOffset(60, 0),
+            Size = UDim2.new(0, 1, 1, 0),
             Parent = MainFrame,
         })
 
@@ -5264,15 +5264,13 @@ function Library:CreateWindow(WindowInfo)
                 NumberSequenceKeypoint.new(1, 1),
             })
 
-            local RedGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
-                Transparency = glowTransparency,
-            })
+            local RedGlow = New("UIGradient")
+            RedGlow.Color = ColorSequence.new(Color3.fromRGB(255, 0, 0))
+            RedGlow.Transparency = glowTransparency
 
-            local PurpleGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
-                Transparency = glowTransparency,
-            })
+            local PurpleGlow = New("UIGradient")
+            PurpleGlow.Color = ColorSequence.new(Color3.fromRGB(138, 43, 226))
+            PurpleGlow.Transparency = glowTransparency
 
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 6),
@@ -5965,15 +5963,13 @@ function Library:CreateWindow(WindowInfo)
                 NumberSequenceKeypoint.new(1, 1),
             })
 
-            local RedGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
-                Transparency = glowTransparency,
-            })
+            local RedGlow = New("UIGradient")
+            RedGlow.Color = ColorSequence.new(Color3.fromRGB(255, 0, 0))
+            RedGlow.Transparency = glowTransparency
 
-            local PurpleGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
-                Transparency = glowTransparency,
-            })
+            local PurpleGlow = New("UIGradient")
+            PurpleGlow.Color = ColorSequence.new(Color3.fromRGB(138, 43, 226))
+            PurpleGlow.Transparency = glowTransparency
 
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 6),
@@ -6314,4 +6310,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluasteak
+--talua
