@@ -5477,6 +5477,10 @@ function Library:CreateWindow(WindowInfo)
     --// Window Table \\--
     local Window = {}
 
+    if not MainFrame then
+        return Window
+    end
+
     function Window:AddTab(...)
         local Name = nil
         local Icon = nil
