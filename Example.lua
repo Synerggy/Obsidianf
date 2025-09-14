@@ -286,6 +286,27 @@ end)
 -- This should print to the console: "MySlider was changed! New value: 3"
 Options.MySlider:SetValue(3)
 
+LeftGroupBox:AddSlider("MySlider2", {
+	Text = "This is my custom display slider!",
+	Default = 0,
+	Min = 0,
+	Max = 5,
+	Rounding = 0,
+	Compact = false,
+
+	FormatDisplayValue = function(slider, value)
+		if value == slider.Max then return 'Everything' end
+		if value == slider.Min then return 'Nothing' end
+		-- If you return nil, the default formatting will be applied
+	end,
+
+	Tooltip = "I am a slider!", -- Information shown when you hover over the slider
+	DisabledTooltip = "I am disabled!", -- Information shown when you hover over the slider while it's disabled
+
+	Disabled = false, -- Will disable the slider (true / false)
+	Visible = true, -- Will make the slider invisible (true / false)
+})
+
 -- Groupbox:AddInput
 -- Arguments: Idx, Info
 LeftGroupBox:AddInput("MyTextbox", {
