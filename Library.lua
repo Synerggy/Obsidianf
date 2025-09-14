@@ -5544,15 +5544,6 @@ function Library:CreateWindow(WindowInfo)
                 Parent = TabButton,
             })
 
-            -- Active tab indicator (left border)
-            TabIndicator = New("Frame", {
-                BackgroundColor3 = Color3.fromRGB(255, 80, 80),
-                BorderSizePixel = 0,
-                Size = UDim2.new(0, 3, 1, 0),
-                Position = UDim2.new(0, 0, 0, 0),
-                Visible = false,
-                Parent = TabButton,
-            })
 
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 8),
@@ -5581,7 +5572,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.new(0, 20, 0, 20), -- Smaller, fixed size icon
+                    Size = UDim2.new(0, 30, 0, 30), -- 30x30px icon size
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -5705,6 +5696,16 @@ function Library:CreateWindow(WindowInfo)
                 Parent = WarningText,
             })
         end
+
+        -- Active tab indicator (left border)
+        TabIndicator = New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(255, 80, 80),
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 3, 1, 0),
+            Position = UDim2.new(0, 0, 0, 0),
+            Visible = false,
+            Parent = TabButton,
+        })
 
         --// Tab Table \\--
         local Tab = {
@@ -6280,16 +6281,6 @@ function Library:CreateWindow(WindowInfo)
             Enabled = false,
             Parent = TabButton,
         })
-
-        -- Active tab indicator (left border)
-        TabIndicator = New("Frame", {
-            BackgroundColor3 = Color3.fromRGB(255, 80, 80),
-            BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 1, 0),
-            Position = UDim2.new(0, 0, 0, 0),
-            Visible = false,
-            Parent = TabButton,
-        })
         do
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 8),
@@ -6317,7 +6308,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageRectOffset = KeyIcon.ImageRectOffset,
                     ImageRectSize = KeyIcon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.new(0, 20, 0, 20), -- Smaller, fixed size icon
+                    Size = UDim2.new(0, 30, 0, 30), -- 30x30px icon size
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -6347,6 +6338,16 @@ function Library:CreateWindow(WindowInfo)
                 Parent = TabContainer,
             })
         end
+
+        -- Active tab indicator (left border)
+        TabIndicator = New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(255, 80, 80),
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 3, 1, 0),
+            Position = UDim2.new(0, 0, 0, 0),
+            Visible = false,
+            Parent = TabButton,
+        })
 
         --// Tab Table \\--
         local Tab = {
