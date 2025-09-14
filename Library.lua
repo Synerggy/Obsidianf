@@ -5183,6 +5183,17 @@ function Library:CreateWindow(WindowInfo)
             Library:MakeOutline(MainFrame, WindowInfo.CornerRadius, 0)
         end
 
+        New("Frame", {
+            Name = "VerticalSeparator",
+            BackgroundColor3 = function()
+                return Library.Scheme.OutlineColor
+            end,
+            BorderSizePixel = 0,
+            Position = UDim2.fromOffset(60, 49),
+            Size = UDim2.new(0, 1, 1, -70),
+            Parent = MainFrame,
+        })
+
         if WindowInfo.BackgroundImage then
             New("ImageLabel", {
                 Image = WindowInfo.BackgroundImage,
@@ -5449,8 +5460,8 @@ function Library:CreateWindow(WindowInfo)
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             Name = "Container",
-            Position = UDim2.fromOffset(60, 49), -- Start right after tabs area
-            Size = UDim2.new(1, -60, 1, -70), -- Take remaining space after tabs
+            Position = UDim2.fromOffset(61, 49),
+            Size = UDim2.new(1, -61, 1, -70),
             Parent = MainFrame,
         })
 
@@ -5506,15 +5517,25 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
 
-            TabIndicator = New("Frame", {
-                AnchorPoint = Vector2.new(0, 0.5),
-                Position = UDim2.new(0, 0, 0.5, 0),
-                Size = UDim2.new(0, 3, 0, 20),
-                BackgroundColor3 = Color3.fromRGB(255, 0, 0),
+            local glowTransparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),
+                NumberSequenceKeypoint.new(0.5, 0.2),
+                NumberSequenceKeypoint.new(1, 1),
+            })
+
+            local RedGlow = New("UIGradient", {
+                Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
+                Transparency = glowTransparency,
                 Visible = false,
                 Parent = TabButton,
             })
-            New("UICorner", { Parent = TabIndicator })
+
+            local PurpleGlow = New("UIGradient", {
+                Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
+                Transparency = glowTransparency,
+                Visible = false,
+                Parent = TabButton,
+            })
 
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 6),
@@ -6085,7 +6106,7 @@ function Library:CreateWindow(WindowInfo)
             if Library.ActiveTab == Tab then
                 return
             end
-            TabLabel.Visible = false
+            PurpleGlow.Visible = Hovering
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = Hovering and 0.25 or 0.5,
@@ -6102,7 +6123,8 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 0,
             }):Play()
             TabLabel.Visible = false
-            TabIndicator.Visible = true
+            RedGlow.Visible = true
+            PurpleGlow.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6126,7 +6148,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
-            TabIndicator.Visible = false
+            RedGlow.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6200,16 +6222,26 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
 
-            TabIndicator = New("Frame", {
-                AnchorPoint = Vector2.new(0, 0.5),
-                Position = UDim2.new(0, 0, 0.5, 0),
-                Size = UDim2.new(0, 3, 0, 20),
-                BackgroundColor3 = Color3.fromRGB(255, 0, 0),
+            local glowTransparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),
+                NumberSequenceKeypoint.new(0.5, 0.2),
+                NumberSequenceKeypoint.new(1, 1),
+            })
+
+            local RedGlow = New("UIGradient", {
+                Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
+                Transparency = glowTransparency,
                 Visible = false,
                 Parent = TabButton,
             })
-            New("UICorner", { Parent = TabIndicator })
-            
+
+            local PurpleGlow = New("UIGradient", {
+                Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
+                Transparency = glowTransparency,
+                Visible = false,
+                Parent = TabButton,
+            })
+
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 6),
                 PaddingLeft = UDim.new(0, 6),
@@ -6336,7 +6368,7 @@ function Library:CreateWindow(WindowInfo)
             if Library.ActiveTab == Tab then
                 return
             end
-            TabLabel.Visible = false
+            PurpleGlow.Visible = Hovering
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = Hovering and 0.25 or 0.5,
@@ -6352,8 +6384,8 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 0,
             }):Play()
-            TabLabel.Visible = false
-            TabIndicator.Visible = true
+            RedGlow.Visible = true
+            PurpleGlow.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6369,7 +6401,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
-            TabIndicator.Visible = false
+            RedGlow.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6549,4 +6581,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua324324532543546
+--taluade
