@@ -6245,16 +6245,18 @@ function Library:CreateWindow(WindowInfo)
         local TabContainer
 
         TabButton = New("TextButton", {
-            BackgroundColor3 = Color3.fromRGB(40, 40, 40), -- Visible highlight color
-            BackgroundTransparency = 1,
+            BackgroundTransparency = 1, -- Completely transparent
             Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
             Text = "",
             Parent = Tabs,
         })
         
-        -- Add rounded corners to tab button for modern look
-        New("UICorner", {
-            CornerRadius = UDim.new(0, 6),
+        -- Separate background frame for highlighting (wider)
+        TabBackground = New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(255, 100, 100), -- Light red background
+            BackgroundTransparency = 1, -- Start invisible
+            Size = UDim2.new(1, 20, 1, 0), -- Extend 20 pixels wider (10px on each side)
+            Position = UDim2.new(0, -10, 0, 0), -- Offset to center the wider background
             Parent = TabButton,
         })
 
