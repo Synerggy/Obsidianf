@@ -5522,11 +5522,6 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
             
-            -- Add rounded corners to tab button for modern look
-            New("UICorner", {
-                CornerRadius = UDim.new(0, 6),
-                Parent = TabButton,
-            })
 
             -- Enhanced glow effects with better visibility
             local glowTransparency = NumberSequence.new({
@@ -6626,4 +6621,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluafasfasf
+--taluasad
