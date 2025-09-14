@@ -5500,7 +5500,7 @@ function Library:CreateWindow(WindowInfo)
         local TabButton: TextButton
         local TabLabel
         local TabIcon
-        local TabIndicator
+        local RedGlow, PurpleGlow
 
         local TabContainer
         local TabLeft
@@ -5527,14 +5527,14 @@ function Library:CreateWindow(WindowInfo)
                 NumberSequenceKeypoint.new(1, 1),
             })
 
-            local RedGlow = New("UIGradient", {
+            RedGlow = New("UIGradient", {
                 Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
             })
 
-            local PurpleGlow = New("UIGradient", {
+            PurpleGlow = New("UIGradient", {
                 Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
                 Transparency = glowTransparency,
                 Enabled = false,
@@ -6213,7 +6213,7 @@ function Library:CreateWindow(WindowInfo)
         local TabButton: TextButton
         local TabLabel
         local TabIcon
-        local TabIndicator
+        local RedGlow, PurpleGlow
 
         local TabContainer
 
@@ -6232,14 +6232,14 @@ function Library:CreateWindow(WindowInfo)
                 NumberSequenceKeypoint.new(1, 1),
             })
 
-            local RedGlow = New("UIGradient", {
+            RedGlow = New("UIGradient", {
                 Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
             })
 
-            local PurpleGlow = New("UIGradient", {
+            PurpleGlow = New("UIGradient", {
                 Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
                 Transparency = glowTransparency,
                 Enabled = false,
