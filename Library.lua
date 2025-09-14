@@ -5454,12 +5454,6 @@ function Library:CreateWindow(WindowInfo)
             Parent = Tabs,
         })
 
-        New("Frame", {
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
-            Padding = UDim.new(0, 8),
-            Parent = Tabs,
-        })
-
         --// Container \\--
         Container = New("Frame", {
             AnchorPoint = Vector2.new(0, 0),
@@ -6631,4 +6625,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluadepso
+--talua
