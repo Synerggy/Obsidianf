@@ -5522,12 +5522,12 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
             
-            -- Separate background frame for highlighting
+            -- Separate background frame for highlighting (wider)
             TabBackground = New("Frame", {
                 BackgroundColor3 = Color3.fromRGB(255, 100, 100), -- Light red background
                 BackgroundTransparency = 1, -- Start invisible
-                Size = UDim2.new(1, 0, 1, 0), -- Fill entire TabButton
-                Position = UDim2.new(0, 0, 0, 0),
+                Size = UDim2.new(1, 20, 1, 0), -- Extend 20 pixels wider (10px on each side)
+                Position = UDim2.new(0, -10, 0, 0), -- Offset to center the wider background
                 Parent = TabButton,
             })
             
@@ -6631,4 +6631,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--taluatalua
