@@ -5515,7 +5515,7 @@ function Library:CreateWindow(WindowInfo)
         Icon = Library:GetIcon(Icon)
         do
             TabButton = New("TextButton", {
-                BackgroundColor3 = Color3.fromRGB(255, 255, 255), -- White transparent background
+                BackgroundColor3 = Color3.fromRGB(200, 200, 200), -- Light gray for better visibility
                 BackgroundTransparency = 1,
                 Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
                 Text = "",
@@ -6153,7 +6153,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0.8, -- White transparent background for active tab
+                BackgroundTransparency = 0.4, -- Much more visible white background for active tab
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6441,7 +6441,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0.8, -- White transparent background for active tab
+                BackgroundTransparency = 0.4, -- Much more visible white background for active tab
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6640,4 +6640,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--taluaasdasdsadsadsadasdsa
