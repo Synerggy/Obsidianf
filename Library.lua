@@ -5445,7 +5445,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 0), -- Start from top
             ScrollBarThickness = 0,
-            Size = UDim2.new(0, 60, 1, -21), -- Adjust height to account for top bar
+            Size = UDim2.new(0, 60, 1, 0), -- Full height, no bottom offset
             Parent = MainFrame,
         })
 
@@ -6639,4 +6639,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluafr
+--taluafgfggg
