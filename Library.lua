@@ -5494,16 +5494,16 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 40, 0, 40), -- Make tab button square for icon-only
+                Size = UDim2.new(0, 32, 0, 32), -- Make tab button smaller square for icon-only
                 Text = "",
                 Parent = Tabs,
             })
 
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 11),
-                PaddingLeft = UDim.new(0, 12),
-                PaddingRight = UDim.new(0, 12),
-                PaddingTop = UDim.new(0, 11),
+                PaddingBottom = UDim.new(0, 6),
+                PaddingLeft = UDim.new(0, 6),
+                PaddingRight = UDim.new(0, 6),
+                PaddingTop = UDim.new(0, 6),
                 Parent = TabButton,
             })
 
@@ -6139,8 +6139,46 @@ function Library:CreateWindow(WindowInfo)
         end)
         TabButton.MouseButton1Click:Connect(Tab.Show)
 
-        -- Add tooltip to show tab name on hover
-        Library:AddTooltip(Name, "", TabButton)
+        -- Add simple tooltip for tab name
+        TabButton.MouseEnter:Connect(function()
+            if CurrentHoverInstance == TabButton then return end
+            CurrentHoverInstance = TabButton
+            TooltipLabel.Text = Name
+            TooltipLabel.Visible = true
+        end)
+        
+        TabButton.MouseMoved:Connect(function()
+            if CurrentHoverInstance ~= TabButton then return end
+            local tabPos = TabButton.AbsolutePosition
+            local tabSize = TabButton.AbsoluteSize
+            TooltipLabel.Position = UDim2.fromOffset(
+                tabPos.X + tabSize.X + 8,
+                tabPos.Y + (tabSize.Y - 20) / 2
+            )
+        end)
+        
+        TabButton.MouseLeave:Connect(function()
+            -- Only hide if mouse is not over the tooltip itself
+            task.wait(0.1) -- Small delay to check if mouse moved to tooltip
+            if CurrentHoverInstance == TabButton and not Library:MouseIsOverFrame(TooltipLabel, Mouse) then
+                TooltipLabel.Visible = false
+                CurrentHoverInstance = nil
+            end
+        end)
+        
+        -- Keep tooltip visible when hovering over it
+        TooltipLabel.MouseEnter:Connect(function()
+            if CurrentHoverInstance == TabButton then
+                -- Keep tooltip visible
+            end
+        end)
+        
+        TooltipLabel.MouseLeave:Connect(function()
+            if CurrentHoverInstance == TabButton then
+                TooltipLabel.Visible = false
+                CurrentHoverInstance = nil
+            end
+        end)
 
         Library.Tabs[Name] = Tab
 
@@ -6158,15 +6196,15 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 40, 0, 40), -- Make tab button square for icon-only
+                Size = UDim2.new(0, 32, 0, 32), -- Make tab button smaller square for icon-only
                 Text = "",
                 Parent = Tabs,
             })
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 11),
-                PaddingLeft = UDim.new(0, 12),
-                PaddingRight = UDim.new(0, 12),
-                PaddingTop = UDim.new(0, 11),
+                PaddingBottom = UDim.new(0, 6),
+                PaddingLeft = UDim.new(0, 6),
+                PaddingRight = UDim.new(0, 6),
+                PaddingTop = UDim.new(0, 6),
                 Parent = TabButton,
             })
 
@@ -6349,8 +6387,46 @@ function Library:CreateWindow(WindowInfo)
         end)
         TabButton.MouseButton1Click:Connect(Tab.Show)
 
-        -- Add tooltip to show tab name on hover
-        Library:AddTooltip(Name, "", TabButton)
+        -- Add simple tooltip for tab name
+        TabButton.MouseEnter:Connect(function()
+            if CurrentHoverInstance == TabButton then return end
+            CurrentHoverInstance = TabButton
+            TooltipLabel.Text = Name
+            TooltipLabel.Visible = true
+        end)
+        
+        TabButton.MouseMoved:Connect(function()
+            if CurrentHoverInstance ~= TabButton then return end
+            local tabPos = TabButton.AbsolutePosition
+            local tabSize = TabButton.AbsoluteSize
+            TooltipLabel.Position = UDim2.fromOffset(
+                tabPos.X + tabSize.X + 8,
+                tabPos.Y + (tabSize.Y - 20) / 2
+            )
+        end)
+        
+        TabButton.MouseLeave:Connect(function()
+            -- Only hide if mouse is not over the tooltip itself
+            task.wait(0.1) -- Small delay to check if mouse moved to tooltip
+            if CurrentHoverInstance == TabButton and not Library:MouseIsOverFrame(TooltipLabel, Mouse) then
+                TooltipLabel.Visible = false
+                CurrentHoverInstance = nil
+            end
+        end)
+        
+        -- Keep tooltip visible when hovering over it
+        TooltipLabel.MouseEnter:Connect(function()
+            if CurrentHoverInstance == TabButton then
+                -- Keep tooltip visible
+            end
+        end)
+        
+        TooltipLabel.MouseLeave:Connect(function()
+            if CurrentHoverInstance == TabButton then
+                TooltipLabel.Visible = false
+                CurrentHoverInstance = nil
+            end
+        end)
 
         Tab.Container = TabContainer
         setmetatable(Tab, BaseGroupbox)
