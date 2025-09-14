@@ -5443,7 +5443,7 @@ function Library:CreateWindow(WindowInfo)
             AutomaticCanvasSize = Enum.AutomaticSize.Y,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
-            Position = UDim2.fromOffset(0, 0), -- Start from top (0 instead of 49)
+            Position = UDim2.fromOffset(0, 49), -- Start below top bar
             ScrollBarThickness = 0,
             Size = UDim2.new(0, 60, 1, -70), -- Make tabs area wider
             Parent = MainFrame,
@@ -5454,6 +5454,15 @@ function Library:CreateWindow(WindowInfo)
             Parent = Tabs,
         })
 
+        -- Vertical separator line that goes all the way to the top
+        New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 1, 1, 0), -- Full height, 1px wide
+            Position = UDim2.fromOffset(60, 0), -- At the edge of tabs, from top
+            Parent = MainFrame,
+        })
+
         --// Container \\--
         Container = New("Frame", {
             AnchorPoint = Vector2.new(0, 0),
@@ -5461,8 +5470,8 @@ function Library:CreateWindow(WindowInfo)
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             Name = "Container",
-            Position = UDim2.fromOffset(61, 0), -- Start from top (0 instead of 49)
-            Size = UDim2.new(1, -61, 1, -21), -- Extend to almost full height
+            Position = UDim2.fromOffset(61, 49), -- Start below top bar
+            Size = UDim2.new(1, -61, 1, -70), -- Proper height calculation
             Parent = MainFrame,
         })
 
@@ -6639,4 +6648,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--taluasadfddssdf
