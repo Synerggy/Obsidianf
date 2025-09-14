@@ -5211,45 +5211,51 @@ function Library:CreateWindow(WindowInfo)
         --// Title
         local TitleHolder = New("Frame", {
             BackgroundTransparency = 1,
-            Size = UDim2.fromScale(0.3, 1),
+            Size = UDim2.new(1, -266, 1, 0),
             Parent = TopBar,
         })
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            HorizontalAlignment = Enum.HorizontalAlignment.Left,
             VerticalAlignment = Enum.VerticalAlignment.Center,
             Padding = UDim.new(0, 6),
+            Parent = TitleHolder,
+        })
+        New("UIPadding", {
+            PaddingLeft = UDim.new(0, 8),
             Parent = TitleHolder,
         })
 
         if WindowInfo.Icon then
             New("ImageLabel", {
                 Image = if tonumber(WindowInfo.Icon) then `rbxassetid://{WindowInfo.Icon}` else WindowInfo.Icon,
-                Size = WindowInfo.IconSize,
+                Size = UDim2.fromOffset(32, 32),
                 Parent = TitleHolder,
             })
         end
 
-        local X = Library:GetTextBounds(
-            WindowInfo.Title,
-            Library.Scheme.Font,
-            20,
-            TitleHolder.AbsoluteSize.X - (WindowInfo.Icon and WindowInfo.IconSize.X.Offset + 6 or 0) - 12
-        )
-        New("TextLabel", {
-            BackgroundTransparency = 1,
-            Size = UDim2.new(0, X, 1, 0),
-            Text = WindowInfo.Title,
-            TextSize = 20,
-            Parent = TitleHolder,
-        })
+        if WindowInfo.Title and WindowInfo.Title ~= "" then
+            local X = Library:GetTextBounds(
+                WindowInfo.Title,
+                Library.Scheme.Font,
+                20,
+                TitleHolder.AbsoluteSize.X - (WindowInfo.Icon and 32 + 6 or 0) - 12
+            )
+            New("TextLabel", {
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0, X, 1, 0),
+                Text = WindowInfo.Title,
+                TextSize = 20,
+                Parent = TitleHolder,
+            })
+        end
 
         --// Top Right Bar
         local RightWrapper = New("Frame", {
             BackgroundTransparency = 1,
-            AnchorPoint = Vector2.new(0, 0.5),
-            Position = UDim2.new(0.3, 8, 0.5, 0),
-            Size = UDim2.new(0.7, -57, 1, -16),
+            AnchorPoint = Vector2.new(1, 0.5),
+            Position = UDim2.new(1, -8, 0.5, 0),
+            Size = UDim2.new(0, 250, 1, -16),
             Parent = TopBar,
         })
 
@@ -6517,4 +6523,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua34
+--talua354354
