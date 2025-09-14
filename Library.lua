@@ -5443,9 +5443,18 @@ function Library:CreateWindow(WindowInfo)
             AutomaticCanvasSize = Enum.AutomaticSize.Y,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
-            Position = UDim2.fromOffset(0, 0), -- Start from top
+            Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0, 60, 1, 0), -- Full height, no bottom offset
+            Size = UDim2.new(0, 60, 1, -70), -- Make tabs area wider
+            Parent = MainFrame,
+        })
+
+        -- Vertical separator line that goes all the way to the top
+        New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 1, 1, 0), -- Full height, 1px wide
+            Position = UDim2.fromOffset(60, 0), -- At the edge of tabs, from top
             Parent = MainFrame,
         })
 
@@ -6639,4 +6648,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluafgfggg
+--taluafgvddfggdfdgf
