@@ -6150,7 +6150,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.4, -- Much more visible light red background for active tab
+                BackgroundTransparency = 0.7, -- More transparent light red background for active tab
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6432,7 +6432,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.4, -- Much more visible light red background for active tab
+                BackgroundTransparency = 0.7, -- More transparent light red background for active tab
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6631,4 +6631,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluatalua
+--talua
