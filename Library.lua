@@ -6157,6 +6157,18 @@ local TabLabel
                     ImageTransparency = Hovering and 0.25 or 0.5,
                 }):Play()
             end
+            
+            if TabBackground then
+                TweenService:Create(TabBackground, Library.TweenInfo, {
+                    BackgroundTransparency = Hovering and 0.6 or 1,
+                }):Play()
+            end
+            
+            if TabLabel then
+                TweenService:Create(TabLabel, Library.TweenInfo, {
+                    TextTransparency = Hovering and 0 or 1,
+                }):Play()
+            end
         end
 
         function Tab:Show()
@@ -6225,6 +6237,10 @@ local TabLabel
             CurrentHoverInstance = TabButton
             TooltipLabel.Text = Name
             TooltipLabel.Visible = true
+            
+            TweenService:Create(TooltipLabel, Library.TweenInfo, {
+                TextTransparency = 0,
+            }):Play()
         end)
         
         TabButton.MouseMoved:Connect(function()
@@ -6240,6 +6256,12 @@ local TabLabel
         
         TabButton.MouseLeave:Connect(function()
             if CurrentHoverInstance == TabButton then
+                
+                TweenService:Create(TooltipLabel, Library.TweenInfo, {
+                    TextTransparency = 1,
+                }):Play()
+                
+                wait(Library.TweenInfo.Time)
                 TooltipLabel.Visible = false
                 CurrentHoverInstance = nil
             end
@@ -6441,6 +6463,18 @@ local TabLabel
                     ImageTransparency = Hovering and 0.25 or 0.5,
                 }):Play()
             end
+            
+            if TabBackground then
+                TweenService:Create(TabBackground, Library.TweenInfo, {
+                    BackgroundTransparency = Hovering and 0.6 or 1,
+                }):Play()
+            end
+            
+            if TabLabel then
+                TweenService:Create(TabLabel, Library.TweenInfo, {
+                    TextTransparency = Hovering and 0 or 1,
+                }):Play()
+            end
         end
 
         function Tab:Show()
@@ -6497,6 +6531,10 @@ local TabLabel
             CurrentHoverInstance = TabButton
             TooltipLabel.Text = Name
             TooltipLabel.Visible = true
+            
+            TweenService:Create(TooltipLabel, Library.TweenInfo, {
+                TextTransparency = 0,
+            }):Play()
         end)
         
         TabButton.MouseMoved:Connect(function()
@@ -6512,6 +6550,12 @@ local TabLabel
         
         TabButton.MouseLeave:Connect(function()
             if CurrentHoverInstance == TabButton then
+                
+                TweenService:Create(TooltipLabel, Library.TweenInfo, {
+                    TextTransparency = 1,
+                }):Play()
+                
+                wait(Library.TweenInfo.Time)
                 TooltipLabel.Visible = false
                 CurrentHoverInstance = nil
             end
