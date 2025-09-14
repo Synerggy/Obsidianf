@@ -5450,6 +5450,13 @@ function Library:CreateWindow(WindowInfo)
         })
 
         New("UIListLayout", {
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            Parent = Tabs,
+        })
+
+        New("Frame", {
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            Padding = UDim.new(0, 8),
             Parent = Tabs,
         })
 
@@ -5516,7 +5523,7 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 40, 0, 40), -- Make tab button larger for bigger icon
+                Size = UDim2.new(0, 50, 0, 50), -- Make tab button larger for bigger icon
                 Text = "",
                 Parent = Tabs,
             })
@@ -6240,7 +6247,7 @@ function Library:CreateWindow(WindowInfo)
         TabButton = New("TextButton", {
             BackgroundColor3 = "MainColor",
             BackgroundTransparency = 1,
-            Size = UDim2.new(0, 40, 0, 40), -- Make tab button larger for bigger icon
+            Size = UDim2.new(0, 50, 0, 50), -- Make tab button larger for bigger icon
             Text = "",
             Parent = Tabs,
         })
@@ -6624,4 +6631,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--taluadepso
