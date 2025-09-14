@@ -5502,6 +5502,7 @@ function Library:CreateWindow(WindowInfo)
         local TabLabel
         local TabIcon
         local RedGlow, PurpleGlow
+        local TabIndicator
 
         local TabContainer
         local TabLeft
@@ -5544,7 +5545,7 @@ function Library:CreateWindow(WindowInfo)
             })
 
             -- Active tab indicator (left border)
-            local TabIndicator = New("Frame", {
+            TabIndicator = New("Frame", {
                 BackgroundColor3 = Color3.fromRGB(255, 80, 80),
                 BorderSizePixel = 0,
                 Size = UDim2.new(0, 3, 1, 0),
@@ -6247,6 +6248,7 @@ function Library:CreateWindow(WindowInfo)
         local TabLabel
         local TabIcon
         local RedGlow, PurpleGlow
+        local TabIndicator
 
         local TabContainer
 
@@ -6280,7 +6282,7 @@ function Library:CreateWindow(WindowInfo)
         })
 
         -- Active tab indicator (left border)
-        local TabIndicator = New("Frame", {
+        TabIndicator = New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 80, 80),
             BorderSizePixel = 0,
             Size = UDim2.new(0, 3, 1, 0),
