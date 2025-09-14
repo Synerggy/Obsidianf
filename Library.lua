@@ -5265,7 +5265,7 @@ function Library:CreateWindow(WindowInfo)
         local RightWrapper = New("Frame", {
             BackgroundTransparency = 1,
             AnchorPoint = Vector2.new(1, 0.5),
-            Position = UDim2.new(1, -18, 0.5, 0), -- Moved 10px to the left
+            Position = UDim2.new(1, -28, 0.5, 0), -- Moved another 10px to the left
             Size = UDim2.new(0, 250, 1, -16),
             Parent = TopBar,
         })
@@ -5443,24 +5443,15 @@ function Library:CreateWindow(WindowInfo)
             AutomaticCanvasSize = Enum.AutomaticSize.Y,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
-            Position = UDim2.fromOffset(0, 49), -- Start below top bar
+            Position = UDim2.fromOffset(0, 0), -- Start from top
             ScrollBarThickness = 0,
-            Size = UDim2.new(0, 60, 1, -70), -- Make tabs area wider
+            Size = UDim2.new(0, 60, 1, -21), -- Adjust height to account for top bar
             Parent = MainFrame,
         })
 
         New("UIListLayout", {
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
             Parent = Tabs,
-        })
-
-        -- Vertical separator line that goes all the way to the top
-        New("Frame", {
-            BackgroundColor3 = Color3.fromRGB(40, 40, 40),
-            BorderSizePixel = 0,
-            Size = UDim2.new(0, 1, 1, 0), -- Full height, 1px wide
-            Position = UDim2.fromOffset(60, 0), -- At the edge of tabs, from top
-            Parent = MainFrame,
         })
 
         --// Container \\--
@@ -5470,8 +5461,8 @@ function Library:CreateWindow(WindowInfo)
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             Name = "Container",
-            Position = UDim2.fromOffset(61, 49), -- Start below top bar
-            Size = UDim2.new(1, -61, 1, -70), -- Proper height calculation
+            Position = UDim2.fromOffset(61, 49),
+            Size = UDim2.new(1, -61, 1, -70),
             Parent = MainFrame,
         })
 
@@ -6165,7 +6156,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.7, -- Visible white highlight for active tab
+                BackgroundTransparency = 0.85, -- More transparent light red highlight for active tab
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6449,7 +6440,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.7, -- Visible white highlight for active tab
+                BackgroundTransparency = 0.85, -- More transparent light red highlight for active tab
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6648,4 +6639,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluasadfddssdf
+--taluaisgoated
