@@ -5517,19 +5517,20 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 50, 0, 50), -- Make tab button larger for bigger icon
+                Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
                 Text = "",
                 Parent = Tabs,
             })
 
+            -- Enhanced glow effects with better visibility
             local glowTransparency = NumberSequence.new({
-                NumberSequenceKeypoint.new(0, 1),
-                NumberSequenceKeypoint.new(0.5, 0.2),
-                NumberSequenceKeypoint.new(1, 1),
+                NumberSequenceKeypoint.new(0, 0.8),
+                NumberSequenceKeypoint.new(0.5, 0),
+                NumberSequenceKeypoint.new(1, 0.8),
             })
 
             RedGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
+                Color = ColorSequence.new(Color3.fromRGB(255, 80, 80)),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
@@ -5542,11 +5543,21 @@ function Library:CreateWindow(WindowInfo)
                 Parent = TabButton,
             })
 
+            -- Active tab indicator (left border)
+            local TabIndicator = New("Frame", {
+                BackgroundColor3 = Color3.fromRGB(255, 80, 80),
+                BorderSizePixel = 0,
+                Size = UDim2.new(0, 3, 1, 0),
+                Position = UDim2.new(0, 0, 0, 0),
+                Visible = false,
+                Parent = TabButton,
+            })
+
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 6),
-                PaddingLeft = UDim.new(0, 6),
-                PaddingRight = UDim.new(0, 6),
-                PaddingTop = UDim.new(0, 6),
+                PaddingBottom = UDim.new(0, 8),
+                PaddingLeft = UDim.new(0, 8),
+                PaddingRight = UDim.new(0, 8),
+                PaddingTop = UDim.new(0, 8),
                 Parent = TabButton,
             })
 
@@ -5569,8 +5580,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.fromScale(1, 1),
-                    SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                    Size = UDim2.new(0, 20, 0, 20), -- Smaller, fixed size icon
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -6150,6 +6160,7 @@ function Library:CreateWindow(WindowInfo)
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
+            TabIndicator.Visible = true
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6174,6 +6185,7 @@ function Library:CreateWindow(WindowInfo)
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
+            TabIndicator.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6241,19 +6253,20 @@ function Library:CreateWindow(WindowInfo)
         TabButton = New("TextButton", {
             BackgroundColor3 = "MainColor",
             BackgroundTransparency = 1,
-            Size = UDim2.new(0, 50, 0, 50), -- Make tab button larger for bigger icon
+            Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
             Text = "",
             Parent = Tabs,
         })
 
+        -- Enhanced glow effects with better visibility
         local glowTransparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 1),
-            NumberSequenceKeypoint.new(0.5, 0.2),
-            NumberSequenceKeypoint.new(1, 1),
+            NumberSequenceKeypoint.new(0, 0.8),
+            NumberSequenceKeypoint.new(0.5, 0),
+            NumberSequenceKeypoint.new(1, 0.8),
         })
 
         RedGlow = New("UIGradient", {
-            Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
+            Color = ColorSequence.new(Color3.fromRGB(255, 80, 80)),
             Transparency = glowTransparency,
             Enabled = false,
             Parent = TabButton,
@@ -6265,12 +6278,22 @@ function Library:CreateWindow(WindowInfo)
             Enabled = false,
             Parent = TabButton,
         })
+
+        -- Active tab indicator (left border)
+        local TabIndicator = New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(255, 80, 80),
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 3, 1, 0),
+            Position = UDim2.new(0, 0, 0, 0),
+            Visible = false,
+            Parent = TabButton,
+        })
         do
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 6),
-                PaddingLeft = UDim.new(0, 6),
-                PaddingRight = UDim.new(0, 6),
-                PaddingTop = UDim.new(0, 6),
+                PaddingBottom = UDim.new(0, 8),
+                PaddingLeft = UDim.new(0, 8),
+                PaddingRight = UDim.new(0, 8),
+                PaddingTop = UDim.new(0, 8),
                 Parent = TabButton,
             })
 
@@ -6292,8 +6315,7 @@ function Library:CreateWindow(WindowInfo)
                     ImageRectOffset = KeyIcon.ImageRectOffset,
                     ImageRectSize = KeyIcon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.fromScale(1, 1),
-                    SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                    Size = UDim2.new(0, 20, 0, 20), -- Smaller, fixed size icon
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -6430,6 +6452,7 @@ function Library:CreateWindow(WindowInfo)
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
+            TabIndicator.Visible = true
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6446,6 +6469,7 @@ function Library:CreateWindow(WindowInfo)
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
+            TabIndicator.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
