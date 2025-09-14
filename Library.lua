@@ -5522,18 +5522,18 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
             
-            -- Separate background frame for highlighting
+            -- Highlight bar (60x40px)
             TabBackground = New("Frame", {
-                BackgroundColor3 = Color3.fromRGB(255, 255, 255), -- Subtle white background
+                BackgroundColor3 = Color3.fromRGB(255, 100, 100), -- Light red highlight
                 BackgroundTransparency = 1, -- Start invisible
-                Size = UDim2.new(1, 0, 1, 0), -- Fill entire TabButton exactly
-                Position = UDim2.new(0, 0, 0, 0),
+                Size = UDim2.new(0, 60, 0, 40), -- 60px wide, 40px tall
+                Position = UDim2.new(0, -10, 0, 0), -- Center the wider highlight
                 Parent = TabButton,
             })
             
-            -- Add subtle rounded corners to background
+            -- Rounded corners for highlight
             New("UICorner", {
-                CornerRadius = UDim.new(0, 4),
+                CornerRadius = UDim.new(0, 6),
                 Parent = TabBackground,
             })
             
@@ -6156,7 +6156,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.85, -- Very subtle white background for active tab
+                BackgroundTransparency = 0.7, -- Visible white highlight for active tab
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6440,7 +6440,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.85, -- Very subtle white background for active tab
+                BackgroundTransparency = 0.7, -- Visible white highlight for active tab
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
