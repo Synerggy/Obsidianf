@@ -5705,6 +5705,26 @@ function Library:CreateWindow(WindowInfo)
             },
         }
 
+        local glowTransparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 1),
+            NumberSequenceKeypoint.new(0.5, 0.2),
+            NumberSequenceKeypoint.new(1, 1),
+        })
+
+        Tab.RedGlow = New("UIGradient", {
+            Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
+            Transparency = glowTransparency,
+            Enabled = false,
+            Parent = TabButton,
+        })
+
+        Tab.PurpleGlow = New("UIGradient", {
+            Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
+            Transparency = glowTransparency,
+            Enabled = false,
+            Parent = TabButton,
+        })
+
         function Tab:UpdateWarningBox(Info)
             if typeof(Info.Visible) == "boolean" then
                 WarningBox.Visible = Info.Visible
@@ -6110,7 +6130,7 @@ function Library:CreateWindow(WindowInfo)
             if Library.ActiveTab == Tab then
                 return
             end
-            PurpleGlow.Enabled = Hovering
+            Tab.PurpleGlow.Enabled = Hovering
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = Hovering and 0.25 or 0.5,
@@ -6127,8 +6147,8 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 0,
             }):Play()
             TabLabel.Visible = false
-            RedGlow.Enabled = true
-            PurpleGlow.Enabled = false
+            Tab.RedGlow.Enabled = true
+            Tab.PurpleGlow.Enabled = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6152,7 +6172,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
-            RedGlow.Enabled = false
+            Tab.RedGlow.Enabled = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6309,6 +6329,26 @@ function Library:CreateWindow(WindowInfo)
             IsKeyTab = true,
         }
 
+        local glowTransparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 1),
+            NumberSequenceKeypoint.new(0.5, 0.2),
+            NumberSequenceKeypoint.new(1, 1),
+        })
+
+        Tab.RedGlow = New("UIGradient", {
+            Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
+            Transparency = glowTransparency,
+            Enabled = false,
+            Parent = TabButton,
+        })
+
+        Tab.PurpleGlow = New("UIGradient", {
+            Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
+            Transparency = glowTransparency,
+            Enabled = false,
+            Parent = TabButton,
+        })
+
         function Tab:AddKeyBox(...)
             local Data = {}
 
@@ -6371,7 +6411,7 @@ function Library:CreateWindow(WindowInfo)
             if Library.ActiveTab == Tab then
                 return
             end
-            PurpleGlow.Enabled = Hovering
+            Tab.PurpleGlow.Enabled = Hovering
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = Hovering and 0.25 or 0.5,
@@ -6387,8 +6427,8 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 0,
             }):Play()
-            RedGlow.Enabled = true
-            PurpleGlow.Enabled = false
+            Tab.RedGlow.Enabled = true
+            Tab.PurpleGlow.Enabled = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6404,7 +6444,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
-            RedGlow.Enabled = false
+            Tab.RedGlow.Enabled = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6584,4 +6624,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluadrgfgdfgfdg
+--talua
