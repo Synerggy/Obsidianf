@@ -5516,7 +5516,7 @@ function Library:CreateWindow(WindowInfo)
         Icon = Library:GetIcon(Icon)
         do
             TabButton = New("TextButton", {
-                BackgroundColor3 = "MainColor",
+                BackgroundColor3 = Color3.fromRGB(40, 40, 40), -- Visible highlight color
                 BackgroundTransparency = 1,
                 Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
                 Text = "",
@@ -5707,9 +5707,8 @@ function Library:CreateWindow(WindowInfo)
         TabIndicator = New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 80, 80),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 0, 20), -- Thin indicator at actual edge
-            Position = UDim2.new(0, 0, 0.5, -10), -- 0px from left edge (actual edge), centered vertically
-            AnchorPoint = Vector2.new(0, 0.5),
+            Size = UDim2.new(0, 3, 1, 0), -- Full height indicator at edge
+            Position = UDim2.new(0, 0, 0, 0), -- At the very left edge
             Visible = false,
             Parent = TabButton,
         })
@@ -6267,7 +6266,7 @@ function Library:CreateWindow(WindowInfo)
         local TabContainer
 
         TabButton = New("TextButton", {
-            BackgroundColor3 = "MainColor",
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40), -- Visible highlight color
             BackgroundTransparency = 1,
             Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
             Text = "",
@@ -6362,9 +6361,8 @@ function Library:CreateWindow(WindowInfo)
         TabIndicator = New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 80, 80),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 0, 20), -- Thin indicator at actual edge
-            Position = UDim2.new(0, 0, 0.5, -10), -- 0px from left edge (actual edge), centered vertically
-            AnchorPoint = Vector2.new(0, 0.5),
+            Size = UDim2.new(0, 3, 1, 0), -- Full height indicator at edge
+            Position = UDim2.new(0, 0, 0, 0), -- At the very left edge
             Visible = false,
             Parent = TabButton,
         })
@@ -6678,4 +6676,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluadfgdgf
+--taluadcdffghfghyt jhg jghghjjgh
