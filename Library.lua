@@ -5550,13 +5550,6 @@ function Library:CreateWindow(WindowInfo)
             })
 
 
-            New("UIPadding", {
-                PaddingBottom = UDim.new(0, 8),
-                PaddingLeft = UDim.new(0, 8),
-                PaddingRight = UDim.new(0, 8),
-                PaddingTop = UDim.new(0, 8),
-                Parent = TabButton,
-            })
 
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
@@ -6281,13 +6274,6 @@ function Library:CreateWindow(WindowInfo)
             Parent = TabButton,
         })
         do
-            New("UIPadding", {
-                PaddingBottom = UDim.new(0, 8),
-                PaddingLeft = UDim.new(0, 8),
-                PaddingRight = UDim.new(0, 8),
-                PaddingTop = UDim.new(0, 8),
-                Parent = TabButton,
-            })
 
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
@@ -6640,4 +6626,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--taluafasfasf
