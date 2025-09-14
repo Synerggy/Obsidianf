@@ -5522,6 +5522,12 @@ function Library:CreateWindow(WindowInfo)
                 Text = "",
                 Parent = Tabs,
             })
+            
+            -- Add rounded corners to tab button for modern look
+            New("UICorner", {
+                CornerRadius = UDim.new(0, 6),
+                Parent = TabButton,
+            })
 
             -- Enhanced glow effects with better visibility
             local glowTransparency = NumberSequence.new({
@@ -5697,14 +5703,21 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        -- Active tab indicator (left border)
+        -- Modern active tab indicator (rounded, positioned right)
         TabIndicator = New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 80, 80),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 1, 0),
-            Position = UDim2.new(0, 0, 0, 0),
+            Size = UDim2.new(0, 4, 0, 20), -- Taller, thicker indicator
+            Position = UDim2.new(0, 6, 0.5, -10), -- 6px from left, centered vertically
+            AnchorPoint = Vector2.new(0, 0.5),
             Visible = false,
             Parent = TabButton,
+        })
+        
+        -- Add rounded corners to indicator
+        New("UICorner", {
+            CornerRadius = UDim.new(0, 2),
+            Parent = TabIndicator,
         })
 
         --// Tab Table \\--
@@ -6157,7 +6170,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0,
+                BackgroundTransparency = 0.85, -- Subtle highlight background
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6260,6 +6273,12 @@ function Library:CreateWindow(WindowInfo)
             Text = "",
             Parent = Tabs,
         })
+        
+        -- Add rounded corners to tab button for modern look
+        New("UICorner", {
+            CornerRadius = UDim.new(0, 6),
+            Parent = TabButton,
+        })
 
         -- Enhanced glow effects with better visibility
         local glowTransparency = NumberSequence.new({
@@ -6339,14 +6358,21 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        -- Active tab indicator (left border)
+        -- Modern active tab indicator (rounded, positioned right)
         TabIndicator = New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 80, 80),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 1, 0),
-            Position = UDim2.new(0, 0, 0, 0),
+            Size = UDim2.new(0, 4, 0, 20), -- Taller, thicker indicator
+            Position = UDim2.new(0, 6, 0.5, -10), -- 6px from left, centered vertically
+            AnchorPoint = Vector2.new(0, 0.5),
             Visible = false,
             Parent = TabButton,
+        })
+        
+        -- Add rounded corners to indicator
+        New("UICorner", {
+            CornerRadius = UDim.new(0, 2),
+            Parent = TabIndicator,
         })
 
         --// Tab Table \\--
@@ -6451,7 +6477,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0,
+                BackgroundTransparency = 0.85, -- Subtle highlight background
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6652,4 +6678,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--taluadfdsfds
