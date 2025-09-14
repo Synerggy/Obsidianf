@@ -6158,11 +6158,6 @@ local TabLabel
                 }):Play()
             end
             
-            if TabBackground then
-                TweenService:Create(TabBackground, Library.TweenInfo, {
-                    BackgroundTransparency = Hovering and 0.6 or 1,
-                }):Play()
-            end
             
             if TabLabel then
                 TweenService:Create(TabLabel, Library.TweenInfo, {
@@ -6464,11 +6459,6 @@ local TabLabel
                 }):Play()
             end
             
-            if TabBackground then
-                TweenService:Create(TabBackground, Library.TweenInfo, {
-                    BackgroundTransparency = Hovering and 0.6 or 1,
-                }):Play()
-            end
             
             if TabLabel then
                 TweenService:Create(TabLabel, Library.TweenInfo, {
@@ -6692,3 +6682,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
+--taluae
