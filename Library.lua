@@ -5703,12 +5703,12 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        -- Modern active tab indicator (rounded, positioned right)
+        -- Modern active tab indicator (rounded, at left edge)
         TabIndicator = New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 80, 80),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 4, 0, 20), -- Taller, thicker indicator
-            Position = UDim2.new(0, 6, 0.5, -10), -- 6px from left, centered vertically
+            Size = UDim2.new(0, 3, 0, 20), -- Thinner indicator at edge
+            Position = UDim2.new(0, 2, 0.5, -10), -- 2px from left edge, centered vertically
             AnchorPoint = Vector2.new(0, 0.5),
             Visible = false,
             Parent = TabButton,
@@ -6170,7 +6170,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0.85, -- Subtle highlight background
+                BackgroundTransparency = 0.5, -- Much more visible highlight background
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6358,12 +6358,12 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        -- Modern active tab indicator (rounded, positioned right)
+        -- Modern active tab indicator (rounded, at left edge)
         TabIndicator = New("Frame", {
             BackgroundColor3 = Color3.fromRGB(255, 80, 80),
             BorderSizePixel = 0,
-            Size = UDim2.new(0, 4, 0, 20), -- Taller, thicker indicator
-            Position = UDim2.new(0, 6, 0.5, -10), -- 6px from left, centered vertically
+            Size = UDim2.new(0, 3, 0, 20), -- Thinner indicator at edge
+            Position = UDim2.new(0, 2, 0.5, -10), -- 2px from left edge, centered vertically
             AnchorPoint = Vector2.new(0, 0.5),
             Visible = false,
             Parent = TabButton,
@@ -6477,7 +6477,7 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0.85, -- Subtle highlight background
+                BackgroundTransparency = 0.5, -- Much more visible highlight background
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6678,4 +6678,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluadfdsfds
+--talua
