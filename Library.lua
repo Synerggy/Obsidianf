@@ -5454,6 +5454,15 @@ function Library:CreateWindow(WindowInfo)
             Parent = Tabs,
         })
 
+        -- Vertical separator line that goes all the way to the top
+        New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 1, 1, 0), -- Full height, 1px wide
+            Position = UDim2.fromOffset(60, 0), -- At the edge of tabs, from top
+            Parent = MainFrame,
+        })
+
         --// Container \\--
         Container = New("Frame", {
             AnchorPoint = Vector2.new(0, 0),
@@ -6639,4 +6648,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--talualumingoated
