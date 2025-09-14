@@ -6217,35 +6217,34 @@ function Library:CreateWindow(WindowInfo)
 
         local TabContainer
 
+        TabButton = New("TextButton", {
+            BackgroundColor3 = "MainColor",
+            BackgroundTransparency = 1,
+            Size = UDim2.new(0, 40, 0, 40), -- Make tab button larger for bigger icon
+            Text = "",
+            Parent = Tabs,
+        })
+
+        local glowTransparency = NumberSequence.new({
+            NumberSequenceKeypoint.new(0, 1),
+            NumberSequenceKeypoint.new(0.5, 0.2),
+            NumberSequenceKeypoint.new(1, 1),
+        })
+
+        RedGlow = New("UIGradient", {
+            Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
+            Transparency = glowTransparency,
+            Enabled = false,
+            Parent = TabButton,
+        })
+
+        PurpleGlow = New("UIGradient", {
+            Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
+            Transparency = glowTransparency,
+            Enabled = false,
+            Parent = TabButton,
+        })
         do
-            TabButton = New("TextButton", {
-                BackgroundColor3 = "MainColor",
-                BackgroundTransparency = 1,
-                Size = UDim2.new(0, 40, 0, 40), -- Make tab button larger for bigger icon
-                Text = "",
-                Parent = Tabs,
-            })
-
-            local glowTransparency = NumberSequence.new({
-                NumberSequenceKeypoint.new(0, 1),
-                NumberSequenceKeypoint.new(0.5, 0.2),
-                NumberSequenceKeypoint.new(1, 1),
-            })
-
-            RedGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 0, 0)),
-                Transparency = glowTransparency,
-                Enabled = false,
-                Parent = TabButton,
-            })
-
-            PurpleGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
-                Transparency = glowTransparency,
-                Enabled = false,
-                Parent = TabButton,
-            })
-
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 6),
                 PaddingLeft = UDim.new(0, 6),
@@ -6585,4 +6584,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--taluadrgfgdfgfdg
