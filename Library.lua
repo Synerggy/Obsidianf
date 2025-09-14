@@ -5485,6 +5485,7 @@ function Library:CreateWindow(WindowInfo)
         local TabButton: TextButton
         local TabLabel
         local TabIcon
+        local TabIndicator
 
         local TabContainer
         local TabLeft
@@ -5500,10 +5501,20 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 35, 0, 32), -- Make tab button slightly wider than icon (3px more)
+                Size = UDim2.new(0, 40, 0, 40), -- Make tab button larger for bigger icon
                 Text = "",
                 Parent = Tabs,
             })
+
+            TabIndicator = New("Frame", {
+                AnchorPoint = Vector2.new(0, 0.5),
+                Position = UDim2.new(0, 0, 0.5, 0),
+                Size = UDim2.new(0, 3, 0, 20),
+                BackgroundColor3 = Color3.fromRGB(255, 0, 0),
+                Visible = false,
+                Parent = TabButton,
+            })
+            New("UICorner", { Parent = TabIndicator })
 
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 6),
@@ -6091,6 +6102,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 0,
             }):Play()
             TabLabel.Visible = false
+            TabIndicator.Visible = true
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6114,6 +6126,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
+            TabIndicator.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6174,6 +6187,7 @@ function Library:CreateWindow(WindowInfo)
         local TabButton: TextButton
         local TabLabel
         local TabIcon
+        local TabIndicator
 
         local TabContainer
 
@@ -6181,10 +6195,21 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 35, 0, 32), -- Make tab button slightly wider than icon (3px more)
+                Size = UDim2.new(0, 40, 0, 40), -- Make tab button larger for bigger icon
                 Text = "",
                 Parent = Tabs,
             })
+
+            TabIndicator = New("Frame", {
+                AnchorPoint = Vector2.new(0, 0.5),
+                Position = UDim2.new(0, 0, 0.5, 0),
+                Size = UDim2.new(0, 3, 0, 20),
+                BackgroundColor3 = Color3.fromRGB(255, 0, 0),
+                Visible = false,
+                Parent = TabButton,
+            })
+            New("UICorner", { Parent = TabIndicator })
+            
             New("UIPadding", {
                 PaddingBottom = UDim.new(0, 6),
                 PaddingLeft = UDim.new(0, 6),
@@ -6195,7 +6220,6 @@ function Library:CreateWindow(WindowInfo)
 
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(30, 0),
                 Size = UDim2.new(1, -30, 1, 0),
                 Text = Name,
                 TextSize = 16,
@@ -6329,6 +6353,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 0,
             }):Play()
             TabLabel.Visible = false
+            TabIndicator.Visible = true
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6344,6 +6369,7 @@ function Library:CreateWindow(WindowInfo)
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
+            TabIndicator.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6523,4 +6549,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua354354
+--talua213123213123
