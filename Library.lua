@@ -5502,7 +5502,6 @@ function Library:CreateWindow(WindowInfo)
         local TabLabel
         local TabIcon
         local RedGlow, PurpleGlow
-        local TabIndicator
 
         local TabContainer
         local TabLeft
@@ -5516,7 +5515,7 @@ function Library:CreateWindow(WindowInfo)
         Icon = Library:GetIcon(Icon)
         do
             TabButton = New("TextButton", {
-                BackgroundColor3 = Color3.fromRGB(40, 40, 40), -- Visible highlight color
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255), -- White transparent background
                 BackgroundTransparency = 1,
                 Size = UDim2.new(0, 40, 0, 40), -- Smaller tab button for better proportions
                 Text = "",
@@ -5703,21 +5702,6 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        -- Modern active tab indicator (rounded, at actual left edge)
-        TabIndicator = New("Frame", {
-            BackgroundColor3 = Color3.fromRGB(255, 80, 80),
-            BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 1, 0), -- Full height indicator at edge
-            Position = UDim2.new(0, 0, 0, 0), -- At the very left edge
-            Visible = false,
-            Parent = TabButton,
-        })
-        
-        -- Add rounded corners to indicator
-        New("UICorner", {
-            CornerRadius = UDim.new(0, 2),
-            Parent = TabIndicator,
-        })
 
         --// Tab Table \\--
         local Tab = {
@@ -6169,12 +6153,11 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0, -- Solid background highlight like Obsidian
+                BackgroundTransparency = 0.8, -- White transparent background for active tab
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
-            TabIndicator.Visible = true
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6199,7 +6182,6 @@ function Library:CreateWindow(WindowInfo)
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
-            TabIndicator.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6261,7 +6243,6 @@ function Library:CreateWindow(WindowInfo)
         local TabLabel
         local TabIcon
         local RedGlow, PurpleGlow
-        local TabIndicator
 
         local TabContainer
 
@@ -6357,21 +6338,6 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        -- Modern active tab indicator (rounded, at actual left edge)
-        TabIndicator = New("Frame", {
-            BackgroundColor3 = Color3.fromRGB(255, 80, 80),
-            BorderSizePixel = 0,
-            Size = UDim2.new(0, 3, 1, 0), -- Full height indicator at edge
-            Position = UDim2.new(0, 0, 0, 0), -- At the very left edge
-            Visible = false,
-            Parent = TabButton,
-        })
-        
-        -- Add rounded corners to indicator
-        New("UICorner", {
-            CornerRadius = UDim.new(0, 2),
-            Parent = TabIndicator,
-        })
 
         --// Tab Table \\--
         local Tab = {
@@ -6475,11 +6441,10 @@ function Library:CreateWindow(WindowInfo)
             end
 
             TweenService:Create(TabButton, Library.TweenInfo, {
-                BackgroundTransparency = 0, -- Solid background highlight like Obsidian
+                BackgroundTransparency = 0.8, -- White transparent background for active tab
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
-            TabIndicator.Visible = true
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0,
@@ -6496,7 +6461,6 @@ function Library:CreateWindow(WindowInfo)
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
-            TabIndicator.Visible = false
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = 0.5,
@@ -6676,4 +6640,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluadcdffghfghyt jhg jghghjjgh
+--talua
