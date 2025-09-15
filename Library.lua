@@ -6228,39 +6228,8 @@ local TabLabel
         TabButton.MouseButton1Click:Connect(Tab.Show)
 
         
-        TabButton.MouseEnter:Connect(function()
-            CurrentHoverInstance = TabButton
-            TooltipLabel.Text = Name
-            TooltipLabel.Visible = true
-            
-            TweenService:Create(TooltipLabel, Library.TweenInfo, {
-                TextTransparency = 0,
-            }):Play()
-        end)
         
-        TabButton.MouseMoved:Connect(function()
-            if CurrentHoverInstance == TabButton then
-                local tabPos = TabButton.AbsolutePosition
-                local tabSize = TabButton.AbsoluteSize
-                TooltipLabel.Position = UDim2.fromOffset(
-                    tabPos.X + tabSize.X + 8,
-                    tabPos.Y + (tabSize.Y - 20) / 2
-                )
-            end
-        end)
-        
-        TabButton.MouseLeave:Connect(function()
-            if CurrentHoverInstance == TabButton then
-                
-                TweenService:Create(TooltipLabel, Library.TweenInfo, {
-                    TextTransparency = 1,
-                }):Play()
-                
-                wait(Library.TweenInfo.Time)
-                TooltipLabel.Visible = false
-                CurrentHoverInstance = nil
-            end
-        end)
+        Library:AddTooltip(Name, nil, TabButton)
 
         Library.Tabs[Name] = Tab
 
@@ -6517,39 +6486,8 @@ local TabLabel
         TabButton.MouseButton1Click:Connect(Tab.Show)
 
         
-        TabButton.MouseEnter:Connect(function()
-            CurrentHoverInstance = TabButton
-            TooltipLabel.Text = Name
-            TooltipLabel.Visible = true
-            
-            TweenService:Create(TooltipLabel, Library.TweenInfo, {
-                TextTransparency = 0,
-            }):Play()
-        end)
         
-        TabButton.MouseMoved:Connect(function()
-            if CurrentHoverInstance == TabButton then
-                local tabPos = TabButton.AbsolutePosition
-                local tabSize = TabButton.AbsoluteSize
-                TooltipLabel.Position = UDim2.fromOffset(
-                    tabPos.X + tabSize.X + 8,
-                    tabPos.Y + (tabSize.Y - 20) / 2
-                )
-            end
-        end)
-        
-        TabButton.MouseLeave:Connect(function()
-            if CurrentHoverInstance == TabButton then
-                
-                TweenService:Create(TooltipLabel, Library.TweenInfo, {
-                    TextTransparency = 1,
-                }):Play()
-                
-                wait(Library.TweenInfo.Time)
-                TooltipLabel.Visible = false
-                CurrentHoverInstance = nil
-            end
-        end)
+        Library:AddTooltip(Name, nil, TabButton)
 
         Tab.Container = TabContainer
         setmetatable(Tab, BaseGroupbox)
@@ -6682,4 +6620,3 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---taluae
