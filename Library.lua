@@ -5241,8 +5241,8 @@ function Library:CreateWindow(WindowInfo)
             New("ImageLabel", {
                 Image = (tonumber(WindowInfo.Icon) and{(string.format('rbxassetid://%s', tostring(WindowInfo.Icon)))}or{(WindowInfo.Icon)})[1],
                 Size = UDim2.fromOffset(64, 64),
-                Position = UDim2.fromScale(0.5, 0.5),
-                AnchorPoint = Vector2.new(0.5, 0.5),
+                Position = UDim2.fromOffset(32, 0),
+                AnchorPoint = Vector2.new(0, 0.5),
                 Parent = TitleHolder,
             })
         end
@@ -6622,4 +6622,3 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
