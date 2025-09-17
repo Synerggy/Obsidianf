@@ -5240,7 +5240,9 @@ function Library:CreateWindow(WindowInfo)
         if WindowInfo.Icon then
             New("ImageLabel", {
                 Image = (tonumber(WindowInfo.Icon) and{(string.format('rbxassetid://%s', tostring(WindowInfo.Icon)))}or{(WindowInfo.Icon)})[1],
-                Size = UDim2.fromOffset(48, 48),
+                Size = UDim2.fromOffset(64, 64),
+                Position = UDim2.fromOffset(8, 8),
+                AnchorPoint = Vector2.new(0, 0),
                 Parent = TitleHolder,
             })
         end
@@ -5250,7 +5252,7 @@ function Library:CreateWindow(WindowInfo)
                 WindowInfo.Title,
                 Library.Scheme.Font,
                 20,
-                TitleHolder.AbsoluteSize.X - (WindowInfo.Icon and 48 + 6 or 0) - 12
+                TitleHolder.AbsoluteSize.X - (WindowInfo.Icon and 64 + 6 or 0) - 12
             )
             New("TextLabel", {
                 BackgroundTransparency = 1,
