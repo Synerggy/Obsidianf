@@ -5598,7 +5598,7 @@ local TabLabel
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0,
-                    Size = UDim2.new(0, 35, 0, 35), 
+                    Size = UDim2.new(0, 45, 0, 45), 
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -6185,9 +6185,11 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 0.2, 
             }):Play()
-            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
-                BackgroundTransparency = 0, 
-            }):Play()
+            if Tab.TabIndicator then
+                TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
+                    BackgroundTransparency = 0, 
+                }):Play()
+            end
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6213,9 +6215,11 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
-                BackgroundTransparency = 1,
-            }):Play()
+            if Tab.TabIndicator then
+                TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
+                    BackgroundTransparency = 1,
+                }):Play()
+            end
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
             if TabIcon then
@@ -6318,7 +6322,7 @@ local TabLabel
                     ImageRectOffset = KeyIcon.ImageRectOffset,
                     ImageRectSize = KeyIcon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.new(0, 30, 0, 30), 
+                    Size = UDim2.new(0, 40, 0, 40), 
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -6479,9 +6483,11 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
-                BackgroundTransparency = 1,
-            }):Play()
+            if Tab.TabIndicator then
+                TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
+                    BackgroundTransparency = 1,
+                }):Play()
+            end
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
             if TabIcon then
