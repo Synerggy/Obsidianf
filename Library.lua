@@ -5452,10 +5452,17 @@ function Library:CreateWindow(WindowInfo)
 
         New("UIListLayout", {
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
-            Padding = UDim.new(0, 8),
             Parent = Tabs,
         })
 
+        
+        New("Frame", {
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+            BorderSizePixel = 0,
+            Size = UDim2.new(0, 1, 1, 0), 
+            Position = UDim2.fromOffset(60, 0), 
+            Parent = MainFrame,
+        })
 
         
         Container = New("Frame", {
@@ -5540,14 +5547,6 @@ local TabLabel
                 Parent = TabBackground,
             })
             
-            -- Tab indicator line
-            local TabIndicator = New("Frame", {
-                BackgroundColor3 = "AccentColor",
-                BackgroundTransparency = 1,
-                Size = UDim2.new(0, 2, 1, -70),
-                Position = UDim2.new(1, 0, 0, 49),
-                Parent = MainFrame,
-            })
 
             
             local glowTransparency = NumberSequence.new({
@@ -5557,14 +5556,14 @@ local TabLabel
             })
 
             RedGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 165, 0)),
+                Color = ColorSequence.new("AccentColor"),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
             })
 
             PurpleGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 140, 0)),
+                Color = ColorSequence.new("AccentColor"),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
@@ -5590,8 +5589,8 @@ local TabLabel
                     ImageColor3 = "AccentColor",
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
-                    ImageTransparency = 0,
-                    Size = UDim2.new(0, 45, 0, 45), 
+                    ImageTransparency = 0.5,
+                    Size = UDim2.new(0, 35, 0, 35), 
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -5747,8 +5746,6 @@ local TabLabel
             Enabled = false,
             Parent = TabButton,
         })
-
-        Tab.TabIndicator = TabIndicator
 
         function Tab:UpdateWarningBox(Info)
             if typeof(Info.Visible) == "boolean" then
@@ -6178,11 +6175,6 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 0.2, 
             }):Play()
-            if Tab.TabIndicator then
-                TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
-                    BackgroundTransparency = 0, 
-                }):Play()
-            end
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6208,11 +6200,6 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            if Tab.TabIndicator then
-                TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
-                    BackgroundTransparency = 1,
-                }):Play()
-            end
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
             if TabIcon then
@@ -6315,7 +6302,7 @@ local TabLabel
                     ImageRectOffset = KeyIcon.ImageRectOffset,
                     ImageRectSize = KeyIcon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.new(0, 40, 0, 40), 
+                    Size = UDim2.new(0, 30, 0, 30), 
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -6372,8 +6359,6 @@ local TabLabel
             Enabled = false,
             Parent = TabButton,
         })
-
-        Tab.TabIndicator = TabIndicator
 
         function Tab:AddKeyBox(...)
             local Data = {}
@@ -6476,11 +6461,6 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            if Tab.TabIndicator then
-                TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
-                    BackgroundTransparency = 1,
-                }):Play()
-            end
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
             if TabIcon then
@@ -6641,5 +6621,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
-
---
+--talua
