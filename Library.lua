@@ -5189,7 +5189,7 @@ function Library:CreateWindow(WindowInfo)
                 return Library.Scheme.OutlineColor
             end,
             BorderSizePixel = 0,
-            Position = UDim2.fromOffset(60, 49),
+            Position = UDim2.fromOffset(50, 49),
             Size = UDim2.new(0, 1, 1, -200),
             Parent = MainFrame,
         })
@@ -5446,7 +5446,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0, 60, 1, -70), 
+            Size = UDim2.new(0, 50, 1, -70), 
             Parent = MainFrame,
         })
 
@@ -5527,7 +5527,7 @@ local TabLabel
         do
             TabButton = New("TextButton", {
                 BackgroundTransparency = 1, 
-                Size = UDim2.new(0, 40, 0, 40), 
+                Size = UDim2.new(0, 35, 0, 35), 
                 Text = "",
                 Parent = Tabs,
             })
@@ -5536,7 +5536,7 @@ local TabLabel
             TabBackground = New("Frame", {
                 BackgroundColor3 = "AccentColor", 
                 BackgroundTransparency = 1, 
-                Size = UDim2.new(0, 30, 0, 30), 
+                Size = UDim2.new(0, 25, 0, 25), 
                 Position = UDim2.new(0, 5, 0, 5), 
                 Parent = TabButton,
             })
@@ -6621,4 +6621,3 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---ff
