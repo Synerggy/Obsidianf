@@ -5452,6 +5452,7 @@ function Library:CreateWindow(WindowInfo)
 
         New("UIListLayout", {
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            Padding = UDim.new(0, 10),
             Parent = Tabs,
         })
 
@@ -5535,7 +5536,7 @@ local TabLabel
             
             TabBackground = New("Frame", {
                 BackgroundColor3 = "AccentColor", 
-                BackgroundTransparency = 1, 
+                BackgroundTransparency = 0.3, 
                 Size = UDim2.new(0, 35, 0, 25), 
                 Position = UDim2.new(0, -5, 0, 0), 
                 Parent = TabButton,
@@ -5586,7 +5587,7 @@ local TabLabel
             if Icon then
                 TabIcon = New("ImageLabel", {
                     Image = Icon.Url,
-                    ImageColor3 = "AccentColor",
+                    ImageColor3 = Library.Scheme.AccentColor,
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0.5,
@@ -6621,4 +6622,3 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---diddy
