@@ -5446,7 +5446,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0, 40, 1, -70), 
+            Size = UDim2.new(0, 60, 1, -70), 
             Parent = MainFrame,
         })
 
@@ -5527,17 +5527,17 @@ local TabLabel
         do
             TabButton = New("TextButton", {
                 BackgroundTransparency = 1, 
-                Size = UDim2.new(0, 25, 0, 25), 
+                Size = UDim2.new(0, 40, 0, 40), 
                 Text = "",
                 Parent = Tabs,
             })
             
             
             TabBackground = New("Frame", {
-                BackgroundColor3 = "AccentColor", 
+                BackgroundColor3 = Color3.fromRGB(255, 100, 100), 
                 BackgroundTransparency = 1, 
-                Size = UDim2.new(0, 35, 0, 25), 
-                Position = UDim2.new(0, -5, 0, 0), 
+                Size = UDim2.new(0, 60, 0, 40), 
+                Position = UDim2.new(0, -10, 0, 0), 
                 Parent = TabButton,
             })
             
@@ -5547,14 +5547,6 @@ local TabLabel
                 Parent = TabBackground,
             })
             
-            -- Tab indicator line
-            local TabIndicator = New("Frame", {
-                BackgroundColor3 = "AccentColor",
-                BackgroundTransparency = 1,
-                Size = UDim2.new(0, 2, 1, 0),
-                Position = UDim2.new(1, 0, 0, 0),
-                Parent = TabButton,
-            })
 
             
             local glowTransparency = NumberSequence.new({
@@ -5564,14 +5556,14 @@ local TabLabel
             })
 
             RedGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 165, 0)),
+                Color = ColorSequence.new(Color3.fromRGB(255, 80, 80)),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
             })
 
             PurpleGlow = New("UIGradient", {
-                Color = ColorSequence.new(Color3.fromRGB(255, 140, 0)),
+                Color = ColorSequence.new(Color3.fromRGB(138, 43, 226)),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
@@ -5597,8 +5589,8 @@ local TabLabel
                     ImageColor3 = "AccentColor",
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
-                    ImageTransparency = 0,
-                    Size = UDim2.new(0, 35, 0, 35), 
+                    ImageTransparency = 0.5,
+                    Size = UDim2.new(0, 30, 0, 30), 
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -5733,7 +5725,6 @@ local TabLabel
                 TabLeft,
                 TabRight,
             },
-            TabIndicator = TabIndicator,
         }
 
         local glowTransparency = NumberSequence.new({
@@ -6182,10 +6173,7 @@ local TabLabel
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.2, 
-            }):Play()
-            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
-                BackgroundTransparency = 0, 
+                BackgroundTransparency = 0.85, 
             }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
@@ -6210,9 +6198,6 @@ local TabLabel
 
         function Tab:Hide()
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 1,
-            }):Play()
-            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
@@ -6458,7 +6443,7 @@ local TabLabel
             end
 
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 0.2, 
+                BackgroundTransparency = 0.85, 
             }):Play()
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6474,9 +6459,6 @@ local TabLabel
 
         function Tab:Hide()
             TweenService:Create(TabBackground, Library.TweenInfo, {
-                BackgroundTransparency = 1,
-            }):Play()
-            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
