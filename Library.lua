@@ -5452,17 +5452,10 @@ function Library:CreateWindow(WindowInfo)
 
         New("UIListLayout", {
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            Padding = UDim.new(0, 8),
             Parent = Tabs,
         })
 
-        
-        New("Frame", {
-            BackgroundColor3 = Color3.fromRGB(40, 40, 40),
-            BorderSizePixel = 0,
-            Size = UDim2.new(0, 1, 1, 0), 
-            Position = UDim2.fromOffset(60, 0), 
-            Parent = MainFrame,
-        })
 
         
         Container = New("Frame", {
@@ -5551,9 +5544,9 @@ local TabLabel
             local TabIndicator = New("Frame", {
                 BackgroundColor3 = "AccentColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(0, 2, 1, 0),
-                Position = UDim2.new(1, 0, 0, 0),
-                Parent = TabButton,
+                Size = UDim2.new(0, 2, 1, -70),
+                Position = UDim2.new(1, 0, 0, 49),
+                Parent = MainFrame,
             })
 
             
@@ -6648,3 +6641,5 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
+
+--
