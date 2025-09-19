@@ -5946,7 +5946,7 @@ local TabLabel
                 Tab = Tab,
                 DependencyBoxes = {},
                 Elements = {},
-                IsCollapsed = true,
+                IsCollapsed = false,
             }
 
             GroupboxContainer.Visible = not Groupbox.IsCollapsed
