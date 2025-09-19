@@ -5556,14 +5556,14 @@ local TabLabel
             })
 
             RedGlow = New("UIGradient", {
-                Color = ColorSequence.new("AccentColor"),
+                Color = ColorSequence.new(Library.Scheme.AccentColor),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
             })
 
             PurpleGlow = New("UIGradient", {
-                Color = ColorSequence.new("AccentColor"),
+                Color = ColorSequence.new(Library.Scheme.AccentColor),
                 Transparency = glowTransparency,
                 Enabled = false,
                 Parent = TabButton,
@@ -6621,4 +6621,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---talua
+--diddy
