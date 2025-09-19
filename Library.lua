@@ -5179,16 +5179,6 @@ function Library:CreateWindow(WindowInfo)
             Library:MakeOutline(MainFrame, WindowInfo.CornerRadius, 0)
         end
 
-        New("Frame", {
-            Name = "VerticalSeparator",
-            BackgroundColor3 = function()
-                return Library.Scheme.OutlineColor
-            end,
-            BorderSizePixel = 0,
-            Position = UDim2.fromOffset(50, 49),
-            Size = UDim2.new(0, 1, 1, 0),
-            Parent = MainFrame,
-        })
 
         if WindowInfo.BackgroundImage then
             New("ImageLabel", {
@@ -5237,7 +5227,7 @@ function Library:CreateWindow(WindowInfo)
             New("ImageLabel", {
                 Image = (tonumber(WindowInfo.Icon) and{(string.format('rbxassetid://%s', tostring(WindowInfo.Icon)))}or{(WindowInfo.Icon)})[1],
                 Size = UDim2.fromOffset(64, 64),
-                Position = UDim2.fromOffset(10, 0),
+                Position = UDim2.fromOffset(30, 0),
                 BackgroundTransparency = 1,
                 Parent = TitleHolder,
             })
@@ -5947,12 +5937,12 @@ local TabLabel
             }
 
             GroupboxContainer.Visible = not Groupbox.IsCollapsed
-            Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
+            Arrow.Rotation = Groupbox.IsCollapsed and 180 or 0
 
             HeaderButton.MouseButton1Click:Connect(function()
                 Groupbox.IsCollapsed = not Groupbox.IsCollapsed
                 GroupboxContainer.Visible = not Groupbox.IsCollapsed
-                Arrow.Rotation = Groupbox.IsCollapsed and 0 or 180
+                Arrow.Rotation = Groupbox.IsCollapsed and 180 or 0
                 Groupbox:Resize()
             end)
 
@@ -6618,4 +6608,3 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---piracyu
