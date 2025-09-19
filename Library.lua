@@ -5446,7 +5446,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0, 60, 1, -70), 
+            Size = UDim2.new(0, 40, 1, -70), 
             Parent = MainFrame,
         })
 
@@ -5534,7 +5534,7 @@ local TabLabel
             
             
             TabBackground = New("Frame", {
-                BackgroundColor3 = Color3.fromRGB(255, 165, 0), 
+                BackgroundColor3 = "AccentColor", 
                 BackgroundTransparency = 1, 
                 Size = UDim2.new(0, 35, 0, 25), 
                 Position = UDim2.new(0, -5, 0, 0), 
@@ -5547,6 +5547,14 @@ local TabLabel
                 Parent = TabBackground,
             })
             
+            -- Tab indicator line
+            local TabIndicator = New("Frame", {
+                BackgroundColor3 = "AccentColor",
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0, 2, 1, 0),
+                Position = UDim2.new(1, 0, 0, 0),
+                Parent = TabButton,
+            })
 
             
             local glowTransparency = NumberSequence.new({
@@ -5589,8 +5597,8 @@ local TabLabel
                     ImageColor3 = "AccentColor",
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
-                    ImageTransparency = 0.5,
-                    Size = UDim2.new(0, 20, 0, 20), 
+                    ImageTransparency = 0,
+                    Size = UDim2.new(0, 35, 0, 35), 
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.fromScale(0.5, 0.5),
                     Parent = TabButton,
@@ -6175,6 +6183,9 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 0.2, 
             }):Play()
+            TweenService:Create(TabIndicator, Library.TweenInfo, {
+                BackgroundTransparency = 0, 
+            }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = true
             Tab.PurpleGlow.Enabled = false
@@ -6198,6 +6209,9 @@ local TabLabel
 
         function Tab:Hide()
             TweenService:Create(TabBackground, Library.TweenInfo, {
+                BackgroundTransparency = 1,
+            }):Play()
+            TweenService:Create(TabIndicator, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
@@ -6461,6 +6475,9 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
+            TweenService:Create(TabIndicator, Library.TweenInfo, {
+                BackgroundTransparency = 1,
+            }):Play()
             TabLabel.Visible = false
             Tab.RedGlow.Enabled = false
             if TabIcon then
@@ -6621,3 +6638,4 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
+--moskaw
