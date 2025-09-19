@@ -5733,6 +5733,7 @@ local TabLabel
                 TabLeft,
                 TabRight,
             },
+            TabIndicator = TabIndicator,
         }
 
         local glowTransparency = NumberSequence.new({
@@ -6183,7 +6184,7 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 0.2, 
             }):Play()
-            TweenService:Create(TabIndicator, Library.TweenInfo, {
+            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
                 BackgroundTransparency = 0, 
             }):Play()
             TabLabel.Visible = false
@@ -6211,7 +6212,7 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            TweenService:Create(TabIndicator, Library.TweenInfo, {
+            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
@@ -6475,7 +6476,7 @@ local TabLabel
             TweenService:Create(TabBackground, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            TweenService:Create(TabIndicator, Library.TweenInfo, {
+            TweenService:Create(Tab.TabIndicator, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
             TabLabel.Visible = false
@@ -6638,4 +6639,3 @@ Library:GiveSignal(Teams.ChildRemoved:Connect(OnTeamChange))
 
 getgenv().Library = Library
 return Library
---moskaw
